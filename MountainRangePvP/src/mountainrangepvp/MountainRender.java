@@ -67,7 +67,8 @@ public class MountainRender extends javax.swing.JPanel {
 
     private float Noise1(int x) {
         x = (x << 13) ^ x;
-        return Math.abs(1.0f - ((seed * x * (x * x * 15731 + 789221) + 1376312589) & 0x7ffffff) / 1073741824.0f);
+        return Math.abs(
+                1.0f - ((seed * x * (x * x * 15731 + 789221) + 1376312589) & 0x7ffffff) / 1073741824.0f);
     }
 
     private float Noise1(float x) {
