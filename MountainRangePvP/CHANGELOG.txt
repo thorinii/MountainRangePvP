@@ -1,0 +1,6 @@
+0.1 Render Mountains | 30-01-13:
+    -Wrote Mountain Renderer
+    -Added Horizontal and Vertical Scrolling
+
+pre 30-01-13:
+    initial work; Perlin noise generator

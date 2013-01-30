@@ -1,0 +1,20 @@
+==================
+Future Milestones
+==================
+
+1.0 Proper Images
+...
+Multiplayer
+Gun Effect
+    -Guy Collision
+    -Terrain Collision
+Guy Jump
+Guy LR Movement
+Guy Draw Placeholder
+
+
+==================
+Complete Milestones
+==================
+
+0.1 Render Mountains

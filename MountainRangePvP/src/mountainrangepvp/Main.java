@@ -67,6 +67,7 @@ public class Main {
         config.width = 1000;
         config.height = 800;
         config.useGL20 = true;
+        config.forceExit = false;
 
         LwjglApplication app = new LwjglApplication(game, config);
     }
