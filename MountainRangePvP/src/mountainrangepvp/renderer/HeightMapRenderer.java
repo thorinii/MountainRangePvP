@@ -24,7 +24,7 @@ public class HeightMapRenderer {
     public HeightMapRenderer(HeightMap map) {
         this.map = map;
 
-        width = Gdx.graphics.getWidth();
+        width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
 
         shapeRenderer = new ShapeRenderer();
@@ -32,29 +32,32 @@ public class HeightMapRenderer {
         blocks = new HashMap<>();
     }
 
-    public void render(int scroll) {
-        int[] block1 = getBlock(scroll / width);
-        int[] block2 = getBlock(scroll / width + 1);
+    public void render(int scrollX, int scrollY) {
+        int[] block1 = getBlock(scrollX / width);
+        int[] block2 = getBlock(scrollX / width + 1);
 
-        int offset = scroll % width;
-
+        int offset = scrollX % width;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(0, 0, 0, 1);
 
         for (int i = 0; i < width; i++) {
-            int height;
+            int column;
             if (i + offset >= width) {
-                height = block2[i + offset - width];
+                column = block2[i + offset - width];
             } else {
-                height = block1[i + offset];
+                column = block1[i + offset];
             }
 
-            if (height < 0) {
+            column -= scrollY;
+
+            if (column <= 0) {
                 continue;
+            } else {
+                column = Math.min(column, height);
             }
 
-            shapeRenderer.line(i, 0, i, height);
+            shapeRenderer.line(i, 0, i, column);
         }
 
         shapeRenderer.end();

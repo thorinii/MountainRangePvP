@@ -32,7 +32,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        heightMapRenderer.render(scroll);
+        heightMapRenderer.render(scroll, -scroll);
 
         scroll += 1;
     }
