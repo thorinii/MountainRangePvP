@@ -17,9 +17,12 @@ import mountainrangepvp.renderer.HeightMapRenderer;
 public class GameScreen implements Screen {
 
     private final HeightMapRenderer heightMapRenderer;
+    private int scroll;
 
     public GameScreen(int seed) {
         heightMapRenderer = new HeightMapRenderer(new MountainHeightMap(seed));
+
+        scroll = 0;
     }
 
     @Override
@@ -29,7 +32,9 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        heightMapRenderer.render(0);
+        heightMapRenderer.render(scroll);
+
+        scroll += 1;
     }
 
     @Override

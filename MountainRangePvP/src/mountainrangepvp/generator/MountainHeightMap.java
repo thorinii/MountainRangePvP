@@ -14,7 +14,7 @@ public class MountainHeightMap extends AbstractHeightMap {
     private final Noise noise;
 
     public MountainHeightMap(int seed) {
-        this.seed = seed;
+        this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
         this.noise = new Noise();
     }
 
@@ -53,6 +53,6 @@ public class MountainHeightMap extends AbstractHeightMap {
     }
 
     private float noise(float x) {
-        return noise.noise(x + seed);
+        return noise.noise(x * seed);
     }
 }
