@@ -10,11 +10,11 @@ Gun Effect
     -Terrain Collision
 Guy Jump
 Guy LR Movement
-Guy Draw Placeholder
 
 
 ==================
 Complete Milestones
 ==================
 
+0.2 Guy Draw Placeholder
 0.1 Render Mountains

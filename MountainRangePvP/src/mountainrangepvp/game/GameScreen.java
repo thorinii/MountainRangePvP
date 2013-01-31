@@ -30,16 +30,12 @@ public class GameScreen implements Screen {
     private final PlayerRenderer playerRenderer;
     private final int width, height;
 
-    public GameScreen(int seed, PlayerManager playerManager) {
+    public GameScreen(HeightMap heightMap, PlayerManager playerManager) {
         this.playerManager = playerManager;
-        this.heightMap = new MountainHeightMap(seed);
+        this.heightMap = heightMap;
 
         heightMapRenderer = new HeightMapRenderer(heightMap);
         playerRenderer = new PlayerRenderer(playerManager);
-
-        Player p = playerManager.getLocalPlayer();
-        p.getPosition().x = 100;
-        p.getPosition().y = heightMap.getBlock(100, 1)[0];
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -52,9 +48,10 @@ public class GameScreen implements Screen {
 
         Vector2 pos = playerManager.getLocalPlayer().getPosition();
 
-        heightMapRenderer.render((int) pos.x - width / 2,
-                                 (int) pos.y - height / 2);
-        playerRenderer.render((int) pos.x - width / 2, (int) pos.y - height / 2);
+        heightMapRenderer.render((int) pos.x - width / 2 + Player.WIDTH / 2,
+                                 (int) pos.y - height / 2 + Player.HEIGHT / 2);
+        playerRenderer.render((int) pos.x - width / 2 + Player.WIDTH / 2,
+                              (int) pos.y - height / 2 + Player.HEIGHT / 2);
     }
 
     @Override

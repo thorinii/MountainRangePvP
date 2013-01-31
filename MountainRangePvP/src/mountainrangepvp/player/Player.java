@@ -18,6 +18,7 @@ public class Player {
     private final String name;
     private final Vector2 position;
     private final Vector2 velocity;
+    private boolean onGround;
 
     public Player(String name) {
         this.name = name;
@@ -36,5 +37,13 @@ public class Player {
 
     public Vector2 getVelocity() {
         return velocity;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
+    public boolean isOnGround() {
+        return onGround;
     }
 }
