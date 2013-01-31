@@ -52,8 +52,6 @@ public class GameScreen implements Screen {
         heightMapRenderer.render((int) pos.x - width / 2,
                                  (int) pos.y - height / 2);
         playerRenderer.render((int) pos.x - width / 2, (int) pos.y - height / 2);
-        
-        pos.x++;
     }
 
     @Override

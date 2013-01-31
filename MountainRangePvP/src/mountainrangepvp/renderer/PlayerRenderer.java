@@ -17,7 +17,6 @@ import mountainrangepvp.player.PlayerManager;
  * @author lachlan
  */
 public class PlayerRenderer {
-    //
 
     private static final Color LOCAL_PLAYER_COLOUR = new Color(0, 1, 1, 1);
     private static final Color REMOTE_PLAYER_COLOUR = new Color(1, 1, 0, 1);

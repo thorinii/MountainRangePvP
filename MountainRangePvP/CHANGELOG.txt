@@ -1,6 +1,13 @@
+0.2 Render Players | 31-01-13:
+    -Discovered Negative Wastelands
+    -Added Player & Player Management
+    -Player rendering (box)
+
+
 0.1 Render Mountains | 30-01-13:
     -Wrote Mountain Renderer
     -Added Horizontal and Vertical Scrolling
+
 
 pre 30-01-13:
     initial work; Perlin noise generator
