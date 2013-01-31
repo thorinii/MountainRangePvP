@@ -36,7 +36,7 @@ public class HeightMapRenderer {
         int[] block1 = getBlock(scrollX / width);
         int[] block2 = getBlock(scrollX / width + 1);
 
-        int offset = scrollX % width;
+        int offset = Math.abs(scrollX % width);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(0, 0, 0, 1);

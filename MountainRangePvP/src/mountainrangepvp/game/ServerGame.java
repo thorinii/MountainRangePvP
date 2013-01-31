@@ -5,6 +5,7 @@
 package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
+import mountainrangepvp.player.ServerPlayerManager;
 
 /**
  *
@@ -12,14 +13,17 @@ import com.badlogic.gdx.Game;
  */
 public class ServerGame extends Game {
 
+    private final ServerPlayerManager playerManager;
     private final int seed;
 
     public ServerGame(String playerName, int seed) {
+        playerManager = new ServerPlayerManager(playerName);
+
         this.seed = seed;
     }
 
     @Override
     public void create() {
-        setScreen(new GameScreen(seed));
+        setScreen(new GameScreen(seed, playerManager));
     }
 }
