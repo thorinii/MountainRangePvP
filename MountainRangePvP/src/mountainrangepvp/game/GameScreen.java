@@ -6,6 +6,7 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.generator.HeightMap;
@@ -21,6 +22,8 @@ import mountainrangepvp.renderer.PlayerRenderer;
  */
 public class GameScreen implements Screen {
 
+    private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
+    //
     private final PlayerManager playerManager;
     private final HeightMap heightMap;
     private final HeightMapRenderer heightMapRenderer;
@@ -44,7 +47,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         Vector2 pos = playerManager.getLocalPlayer().getPosition();
