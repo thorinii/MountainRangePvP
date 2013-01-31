@@ -1,3 +1,8 @@
+0.2.1 | 31-01-13:
+    -Basic Physics
+        -Player -> Terrain Collision
+        -Player Gravity
+
 0.2 Render Players | 31-01-13:
     -Discovered Negative Wastelands
     -Added Player & Player Management
