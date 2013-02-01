@@ -21,5 +21,5 @@ public abstract class AbstractHeightMap implements HeightMap {
         return block;
     }
 
-    protected abstract int getSample(int where);
+    public abstract int getSample(int x);
 }

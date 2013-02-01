@@ -19,19 +19,30 @@ public class MountainHeightMap extends AbstractHeightMap {
     }
 
     @Override
-    protected int getSample(int x) {
+    public int getSample(int x) {
+        if (Math.abs(x % 500) < 10) {
+            // Wall Generator
+            return (int) sample(x / 500 * 500) + 100;
+        } else {
+            // Regular terrain
+            return (int) (sample(x) / 2
+                    + sample(x - 1) / 8 + sample(x - 2) / 16 + sample(x - 3) / 16
+                    + sample(x + 1) / 8 + sample(x + 2) / 16 + sample(x + 3) / 16);
+        }
+    }
+
+    private float sample(float x) {
         float noise = 50;
 
         noise += InterpolatedNoise1(x / 300f) * 4000;
-        noise += InterpolatedNoise1(x / 30f) * 3000;
-        noise += InterpolatedNoise1(x / 15f) * 2000;
-        noise += InterpolatedNoise1(x / 10f) * 700;
+        noise += InterpolatedNoise1(x / 70f) * 3000;
+        noise += InterpolatedNoise1(x / 50f) * 2000;
+        noise += InterpolatedNoise1(x / 30f) * 700;
         noise += InterpolatedNoise1(x / 5f) * 300;
         noise += InterpolatedNoise1(x / 2f) * 100;
-        noise += InterpolatedNoise1(x / 1f) * 80;
-        noise += InterpolatedNoise1(x / 0.5f) * 20;
+        noise += InterpolatedNoise1(x / 1f) * 50;
 
-        return (int) noise;
+        return noise;
     }
 
     private float InterpolatedNoise1(float x) {
