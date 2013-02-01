@@ -39,7 +39,7 @@ public class PhysicsSystem {
         dampenVelocity(vel, dt);
 
         checkWalkUpSlope(vel, pos, dt);
-        slideDownSlope(player, pos, vel);
+        slideDownSlope(player, pos, vel, dt);
 
         vel.y += GRAVITY * dt;
 
@@ -80,7 +80,8 @@ public class PhysicsSystem {
         }
     }
 
-    private void slideDownSlope(Player player, Vector2 pos, Vector2 vel) {
+    private void slideDownSlope(Player player, Vector2 pos, Vector2 vel,
+            float dt) {
         if (player.isOnGround()) {
             int[] block = heightMap.getBlock((int) pos.x - 1, Player.WIDTH + 3);
             int maxIndex = -1, maxHeight = -1;
@@ -94,16 +95,14 @@ public class PhysicsSystem {
                 }
             }
 
-            System.out.println(maxIndex);
-
             if (maxIndex == 1) {
                 // Its our left corner
 
                 int slope = (int) pos.y - block[2];
                 if (slope > Player.MIN_SLIDE_SLOPE) {
                     // Slide right
-                    vel.x += 16;
-                    vel.y -= 10;
+                    vel.x += 500 * dt;
+                    vel.y -= 50 * dt;
                 }
             } else if (maxIndex == Player.WIDTH + 1) {
                 // Its the right corner
@@ -111,8 +110,8 @@ public class PhysicsSystem {
                 int slope = (int) pos.y - block[Player.WIDTH];
                 if (slope > Player.MIN_SLIDE_SLOPE) {
                     // Slide left
-                    vel.x -= 16;
-                    vel.y -= 10;
+                    vel.x -= 500 * dt;
+                    vel.y -= 50 * dt;
                 }
             }
         }

@@ -18,8 +18,11 @@ import mountainrangepvp.player.PlayerManager;
 public class InputHandler implements InputProcessor {
 
     private final PlayerManager playerManager;
+    private final int DOUBLE_JUMP_MIN = 50;
+    private final int DOUBLE_JUMP_MAX = 500;
     //
     private boolean up, left, right;
+    private int jumpTimer;
 
     public InputHandler(PlayerManager playerManager) {
         this.playerManager = playerManager;
@@ -41,11 +44,25 @@ public class InputHandler implements InputProcessor {
             } else {
                 vel.x *= Player.FRICTION;
             }
+
+            if (up) {
+                vel.y = 500;
+                jumpTimer = 0;
+            }
         } else {
             if (left) {
-                vel.x = accelerate(vel.x, -1, -Player.AIR_SPEED);
+                vel.x = accelerate(vel.x, -5, -Player.AIR_SPEED);
             } else if (right) {
                 vel.x = accelerate(vel.x, 5, Player.AIR_SPEED);
+            }
+
+            if (!up) {
+                jumpTimer += (int) (dt * 1000);
+            } else {
+                if (jumpTimer > DOUBLE_JUMP_MIN && jumpTimer < DOUBLE_JUMP_MAX) {
+                    vel.y = 500;
+                    jumpTimer = DOUBLE_JUMP_MAX;
+                }
             }
         }
     }
