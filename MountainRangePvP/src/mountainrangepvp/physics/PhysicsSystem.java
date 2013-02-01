@@ -38,14 +38,84 @@ public class PhysicsSystem {
 
         dampenVelocity(vel, dt);
 
-        // Add Gravity
+        checkWalkUpSlope(vel, pos, dt);
+        slideDownSlope(player, pos, vel);
+
         vel.y += GRAVITY * dt;
 
-        // Apply the velocity
         pos.x += vel.x * dt;
         pos.y += vel.y * dt;
 
         checkGroundIntersection(player, pos, vel);
+    }
+
+    private void checkWalkUpSlope(Vector2 vel, Vector2 pos, float dt) {
+        int base, length;
+        if (vel.x < 0) {
+            base = (int) (pos.x + vel.x * dt);
+            length = (int) -Math.ceil(vel.x * dt) + 1;
+
+            int[] block = heightMap.getBlock(base, length);
+            for (int i = block.length - 1; i >= 0; i--) {
+                int slope = block[i] - (int) pos.y;
+
+                if (slope > Player.MAX_WALK_SLOPE) {
+                    vel.x = 0;
+                    break;
+                }
+            }
+        } else {
+            base = (int) pos.x + Player.WIDTH;
+            length = (int) Math.ceil(vel.x * dt) + 1;
+
+            int[] block = heightMap.getBlock(base, length);
+            for (int i = 0; i < block.length; i++) {
+                int slope = block[i] - (int) pos.y;
+
+                if (slope > Player.MAX_WALK_SLOPE) {
+                    vel.x = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+    private void slideDownSlope(Player player, Vector2 pos, Vector2 vel) {
+        if (player.isOnGround()) {
+            int[] block = heightMap.getBlock((int) pos.x - 1, Player.WIDTH + 3);
+            int maxIndex = -1, maxHeight = -1;
+
+            for (int i = 1; i < block.length; i++) {
+                int height = block[i];
+
+                if (maxHeight < height) {
+                    maxIndex = i;
+                    maxHeight = height;
+                }
+            }
+
+            System.out.println(maxIndex);
+
+            if (maxIndex == 1) {
+                // Its our left corner
+
+                int slope = (int) pos.y - block[2];
+                if (slope > Player.MIN_SLIDE_SLOPE) {
+                    // Slide right
+                    vel.x += 16;
+                    vel.y -= 10;
+                }
+            } else if (maxIndex == Player.WIDTH + 1) {
+                // Its the right corner
+
+                int slope = (int) pos.y - block[Player.WIDTH];
+                if (slope > Player.MIN_SLIDE_SLOPE) {
+                    // Slide left
+                    vel.x -= 16;
+                    vel.y -= 10;
+                }
+            }
+        }
     }
 
     private void checkGroundIntersection(Player player, Vector2 pos, Vector2 vel) {

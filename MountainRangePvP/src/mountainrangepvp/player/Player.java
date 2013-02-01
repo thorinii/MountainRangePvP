@@ -17,8 +17,9 @@ public class Player {
     public static final float WALK_SPEED = 100;
     public static final float AIR_SPEED = 10;
     public static final float FRICTION = 0.3f;
-    public static final int MAX_WALK_SLOPE = 5;
-    public static final int MIN_SLIDE_SLOPE = 10;
+    public static final int MAX_WALK_SLOPE = 3;
+    public static final int MIN_SLIDE_SLOPE = 1;
+    public static final int MAX_SLIDE_SLOPE = 30;
     //
     private final String name;
     private final Vector2 position;
