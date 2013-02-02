@@ -104,10 +104,10 @@ public class PhysicsSystem {
                     vel.x += 500 * dt;
                     vel.y -= 50 * dt;
                 }
-            } else if (maxIndex == Player.WIDTH + 1) {
+            } else if (maxIndex == Player.WIDTH + 2) {
                 // Its the right corner
 
-                int slope = (int) pos.y - block[Player.WIDTH];
+                int slope = (int) pos.y - block[Player.WIDTH - 1];
                 if (slope > Player.MIN_SLIDE_SLOPE) {
                     // Slide left
                     vel.x -= 500 * dt;
