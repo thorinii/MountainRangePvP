@@ -47,6 +47,7 @@ public class InputHandler implements InputProcessor {
 
         if (gun) {
             doShooting(local);
+            gun = false;
         }
 
         gunTimer += (int) (1000 * dt);
@@ -123,7 +124,7 @@ public class InputHandler implements InputProcessor {
 
             Vector2 direction = gpos.cpy().sub(ppos).nor();
             Vector2 base = ppos.cpy().add(
-                    direction.cpy().mul(Player.HEIGHT + 20));
+                    direction.cpy().mul(Player.HEIGHT / 2));
 
             shotManager.addShot(base, direction);
         }

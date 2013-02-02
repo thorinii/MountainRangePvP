@@ -1,6 +1,12 @@
+0.5 Gun Terrain Collision | 02-02-13:
+    -Tweaked Player walk speed
+    -Shot collides with terrain
+
+
 0.4 Gun Effect | 02-02-13:
     -Added ShotManager
     -Added basic gun rendering
+
 
 0.3 Player Movement | 02-02-13:
     -Tweaked mountain generation

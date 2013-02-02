@@ -32,8 +32,7 @@ public class ShotRenderer implements Renderer {
         shapeRenderer.setColor(SHOT_COLOUR);
 
         for (Shot shot : shotManager.getShots()) {
-            Vector2 shotPos = shot.base.cpy();
-            shotPos.add(shot.direction.cpy().mul(Shot.SHOT_SPEED * shot.time));
+            Vector2 shotPos = shot.position();
 
             shotPos.x -= scrollx;
             shotPos.y -= scrolly;

@@ -16,7 +16,7 @@ import mountainrangepvp.generator.HeightMap;
  */
 public class ShotManager {
 
-    public static final int GUN_RATE = 300;
+    public static final int GUN_RATE = 100;
 //
     private final List<Shot> shots;
     private final HeightMap heightMap;
@@ -35,11 +35,38 @@ public class ShotManager {
         Iterator<Shot> itr = shots.iterator();
         while (itr.hasNext()) {
             Shot shot = itr.next();
-            shot.time += dt;
 
             if (shot.time > 5) {
                 itr.remove();
             }
+
+            Vector2 pos = shot.position();
+            Vector2 npos = shot.position(shot.time + dt);
+            if (shot.direction.x > 0) {
+                int[] block = heightMap.getBlock((int) pos.x,
+                                                 (int) Math.ceil(npos.x - pos.x));
+
+                float w = block.length;
+                for (int i = 0; i < block.length; i++) {
+                    if (block[i] >= (w - i) / w * pos.y + i / w * npos.y) {
+                        itr.remove();
+                        break;
+                    }
+                }
+            } else {
+                int[] block = heightMap.getBlock((int) npos.x,
+                                                 (int) Math.ceil(pos.x - npos.x));
+
+                float w = block.length;
+                for (int i = block.length - 1; i >= 0; i--) {
+                    if (block[i] >= (w - i) / w * pos.y + i / w * npos.y) {
+                        itr.remove();
+                        break;
+                    }
+                }
+            }
+
+            shot.time += dt;
         }
     }
 
@@ -57,6 +84,14 @@ public class ShotManager {
             this.base = base;
             this.direction = direction;
             this.time = 0;
+        }
+
+        public Vector2 position() {
+            return position(time);
+        }
+
+        public Vector2 position(float time) {
+            return base.cpy().add(direction.cpy().mul(SHOT_SPEED * time));
         }
     }
 }
