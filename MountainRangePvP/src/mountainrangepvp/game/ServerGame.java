@@ -12,6 +12,7 @@ import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.ServerPlayerManager;
+import mountainrangepvp.shot.ShotManager;
 
 /**
  *
@@ -21,6 +22,7 @@ public class ServerGame extends Game {
 
     private final HeightMap heightMap;
     private final ServerPlayerManager playerManager;
+    private final ShotManager shotManager;
     private final PhysicsSystem physicsSystem;
     private final InputHandler inputHandler;
     private GameScreen gameScreen;
@@ -29,19 +31,16 @@ public class ServerGame extends Game {
         heightMap = new MountainHeightMap(seed);
 
         playerManager = new ServerPlayerManager(playerName);
+        shotManager = new ShotManager(heightMap);
         physicsSystem = new PhysicsSystem(heightMap, playerManager);
-        inputHandler = new InputHandler(playerManager);
-
-        /*Player p = playerManager.getLocalPlayer();
-        p.getPosition().x = 100;
-        p.getPosition().y = heightMap.getBlock(100, 1)[0] + 500;*/
+        inputHandler = new InputHandler(playerManager, shotManager);
     }
 
     @Override
     public void create() {
         inputHandler.register();
 
-        gameScreen = new GameScreen(heightMap, playerManager);
+        gameScreen = new GameScreen(heightMap, playerManager, shotManager);
         setScreen(gameScreen);
     }
 
@@ -50,6 +49,7 @@ public class ServerGame extends Game {
         float dt = Gdx.graphics.getDeltaTime();
 
         inputHandler.update(dt);
+        shotManager.update(dt);
         physicsSystem.update(dt);
         gameScreen.render(dt);
     }

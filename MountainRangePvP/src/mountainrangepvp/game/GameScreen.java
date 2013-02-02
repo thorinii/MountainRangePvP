@@ -10,11 +10,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.generator.HeightMap;
-import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.renderer.HeightMapRenderer;
 import mountainrangepvp.renderer.PlayerRenderer;
+import mountainrangepvp.renderer.ShotRenderer;
+import mountainrangepvp.shot.ShotManager;
 
 /**
  *
@@ -28,14 +29,18 @@ public class GameScreen implements Screen {
     private final HeightMap heightMap;
     private final HeightMapRenderer heightMapRenderer;
     private final PlayerRenderer playerRenderer;
+    private final ShotRenderer shotRenderer;
     private final int width, height;
 
-    public GameScreen(HeightMap heightMap, PlayerManager playerManager) {
+    public GameScreen(HeightMap heightMap,
+            PlayerManager playerManager,
+            ShotManager shotManager) {
         this.playerManager = playerManager;
         this.heightMap = heightMap;
 
         heightMapRenderer = new HeightMapRenderer(heightMap);
         playerRenderer = new PlayerRenderer(playerManager);
+        shotRenderer = new ShotRenderer(shotManager);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -46,12 +51,14 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        Vector2 pos = playerManager.getLocalPlayer().getPosition();
+        Vector2 pos = playerManager.getLocalPlayer().getPosition().cpy();
+        pos.x = pos.x - width / 2 + Player.WIDTH / 2;
+        pos.y = pos.y - height / 2 + Player.HEIGHT / 2;
 
-        heightMapRenderer.render((int) pos.x - width / 2 + Player.WIDTH / 2,
-                                 (int) pos.y - height / 2 + Player.HEIGHT / 2);
-        playerRenderer.render((int) pos.x - width / 2 + Player.WIDTH / 2,
-                              (int) pos.y - height / 2 + Player.HEIGHT / 2);
+
+        heightMapRenderer.render((int) pos.x, (int) pos.y);
+        playerRenderer.render((int) pos.x, (int) pos.y);
+        shotRenderer.render((int) pos.x, (int) pos.y);
     }
 
     @Override

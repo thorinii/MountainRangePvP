@@ -5,8 +5,7 @@ Future Milestones
 1.0 Proper Images
 ...
 Multiplayer
-Gun -Effect
-    -Guy Collision
+Gun -Guy Collision
     -Terrain Collision
 
 
@@ -14,6 +13,7 @@ Gun -Effect
 Complete Milestones
 ==================
 
+0.4 Gun Effect
 0.3 Player Movement
 0.2 Player Draw Placeholder
 0.1 Render Mountains

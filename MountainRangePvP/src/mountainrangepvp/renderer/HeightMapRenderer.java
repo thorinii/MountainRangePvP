@@ -14,7 +14,7 @@ import mountainrangepvp.generator.HeightMap;
  *
  * @author lachlan
  */
-public class HeightMapRenderer {
+public class HeightMapRenderer implements Renderer {
 
     private static final boolean DEBUG = false;
     //

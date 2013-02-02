@@ -20,14 +20,17 @@ public class MountainHeightMap extends AbstractHeightMap {
 
     @Override
     public int getSample(int x) {
-        if (Math.abs(x % 500) < 10) {
+        if (x > 300 && x < 350) {
+            // Hole Generator
+            return -100000;
+        } else if (Math.abs(x % 500) < 10) {
             // Wall Generator
             return (int) sample(x / 500 * 500) + 100;
         } else {
             // Regular terrain
-            return (int) (sample(x) / 2
-                    + sample(x - 1) / 8 + sample(x - 2) / 16 + sample(x - 3) / 16
-                    + sample(x + 1) / 8 + sample(x + 2) / 16 + sample(x + 3) / 16);
+            return (int) (0.2f * sample(x)
+                    + 0.8f * (sample(x - 1) + sample(x - 2) + sample(x - 3)
+                    + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6);
         }
     }
 

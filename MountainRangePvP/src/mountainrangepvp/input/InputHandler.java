@@ -10,6 +10,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.shot.ShotManager;
 
 /**
  *
@@ -18,14 +19,19 @@ import mountainrangepvp.player.PlayerManager;
 public class InputHandler implements InputProcessor {
 
     private final PlayerManager playerManager;
+    private final ShotManager shotManager;
     private final int DOUBLE_JUMP_MIN = 50;
     private final int DOUBLE_JUMP_MAX = 500;
     //
     private boolean up, left, right;
-    private int jumpTimer;
+    private int doubleJumpTimer;
+    //
+    private boolean gun;
+    private int gunTimer;
 
-    public InputHandler(PlayerManager playerManager) {
+    public InputHandler(PlayerManager playerManager, ShotManager shotManager) {
         this.playerManager = playerManager;
+        this.shotManager = shotManager;
     }
 
     public void register() {
@@ -36,6 +42,17 @@ public class InputHandler implements InputProcessor {
         Player local = playerManager.getLocalPlayer();
         Vector2 vel = local.getVelocity();
 
+        doPlayerWalking(local, vel, dt);
+        doGunControl(local);
+
+        if (gun) {
+            doShooting(local);
+        }
+
+        gunTimer += (int) (1000 * dt);
+    }
+
+    private void doPlayerWalking(Player local, Vector2 vel, float dt) {
         if (local.isOnGround()) {
             if (left) {
                 vel.x = accelerate(vel.x, -5, -Player.WALK_SPEED);
@@ -47,7 +64,7 @@ public class InputHandler implements InputProcessor {
 
             if (up) {
                 vel.y = 500;
-                jumpTimer = 0;
+                doubleJumpTimer = 0;
             }
         } else {
             if (left) {
@@ -57,11 +74,11 @@ public class InputHandler implements InputProcessor {
             }
 
             if (!up) {
-                jumpTimer += (int) (dt * 1000);
+                doubleJumpTimer += (int) (dt * 1000);
             } else {
-                if (jumpTimer > DOUBLE_JUMP_MIN && jumpTimer < DOUBLE_JUMP_MAX) {
+                if (doubleJumpTimer > DOUBLE_JUMP_MIN && doubleJumpTimer < DOUBLE_JUMP_MAX) {
                     vel.y = 500;
-                    jumpTimer = DOUBLE_JUMP_MAX;
+                    doubleJumpTimer = DOUBLE_JUMP_MAX;
                 }
             }
         }
@@ -77,6 +94,38 @@ public class InputHandler implements InputProcessor {
         } else {
             v -= accel * 0.04f;
             return v;
+        }
+    }
+
+    private void doGunControl(Player player) {
+        Vector2 pos = player.getPosition();
+
+        int x = Gdx.input.getX();
+        int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+        Vector2 mouse = new Vector2(x, y);
+
+        mouse.x = mouse.x + pos.x - Gdx.graphics.getWidth() / 2 + Player.WIDTH / 2;
+        mouse.y = mouse.y + pos.y - Gdx.graphics.getHeight() / 2 + Player.HEIGHT / 2;
+
+        player.getGunPosition().set(mouse);
+    }
+
+    private void doShooting(Player player) {
+        if (gunTimer > ShotManager.GUN_RATE) {
+            gunTimer = 0;
+
+            Vector2 ppos = player.getPosition().cpy();
+            Vector2 gpos = player.getGunPosition();
+
+            ppos.x += Player.WIDTH / 2;
+            ppos.y += Player.HEIGHT / 2;
+
+            Vector2 direction = gpos.cpy().sub(ppos).nor();
+            Vector2 base = ppos.cpy().add(
+                    direction.cpy().mul(Player.HEIGHT + 20));
+
+            shotManager.addShot(base, direction);
         }
     }
 
@@ -119,11 +168,13 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        gun = true;
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        gun = false;
         return true;
     }
 
