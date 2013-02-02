@@ -5,16 +5,15 @@ Future Milestones
 1.0 Proper Images
 ...
 Multiplayer
-Gun Effect
+Gun -Effect
     -Guy Collision
     -Terrain Collision
-Guy Jump
-Guy LR Movement
 
 
 ==================
 Complete Milestones
 ==================
 
-0.2 Guy Draw Placeholder
+0.3 Player Movement
+0.2 Player Draw Placeholder
 0.1 Render Mountains

@@ -1,7 +1,15 @@
+0.3 Player Movement | 02-02-13:
+    -Tweaked mountain generation
+    -Added walking and jump
+    -Added check against walking up slopes
+    -Added sliding down slopes
+
+
 0.2.1 | 31-01-13:
     -Basic Physics
         -Player -> Terrain Collision
         -Player Gravity
+
 
 0.2 Render Players | 31-01-13:
     -Discovered Negative Wastelands
