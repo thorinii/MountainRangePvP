@@ -5,14 +5,14 @@ Future Milestones
 1.0 Proper Images
 ...
 Multiplayer
-Gun Player Collision
 
 
 ==================
 Complete Milestones
 ==================
 
-0.5 Terrain Collision
+0.6 Gun Player Collision
+0.5 Gun Terrain Collision
 0.4 Gun Effect
 0.3 Player Movement
 0.2 Player Draw Placeholder

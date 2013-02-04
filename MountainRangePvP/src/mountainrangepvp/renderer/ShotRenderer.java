@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.shot.ShotManager;
-import mountainrangepvp.shot.ShotManager.Shot;
+import mountainrangepvp.shot.Shot;
 
 /**
  *
@@ -17,7 +17,7 @@ import mountainrangepvp.shot.ShotManager.Shot;
 public class ShotRenderer implements Renderer {
 
     private static final int SHOT_RADIUS = 3;
-    private static final Color SHOT_COLOUR = new Color(1, 1, 1, 1);
+    private static final Color SHOT_COLOUR = new Color(0, 0, 0, 1);
 //
     private final ShotManager shotManager;
     private final ShapeRenderer shapeRenderer;

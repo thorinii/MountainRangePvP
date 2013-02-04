@@ -40,6 +40,14 @@ public class InputHandler implements InputProcessor {
 
     public void update(float dt) {
         Player local = playerManager.getLocalPlayer();
+        if (!local.isAlive()) {
+            up = left = right = false;
+            gun = false;
+            doubleJumpTimer = 0;
+            gunTimer = 0;
+            return;
+        }
+
         Vector2 vel = local.getVelocity();
 
         doPlayerWalking(local, vel, dt);
@@ -124,9 +132,9 @@ public class InputHandler implements InputProcessor {
 
             Vector2 direction = gpos.cpy().sub(ppos).nor();
             Vector2 base = ppos.cpy().add(
-                    direction.cpy().mul(Player.HEIGHT / 2));
+                    direction.cpy().mul(Player.HEIGHT / 2 + 10));
 
-            shotManager.addShot(base, direction);
+            shotManager.addShot(base, direction, player);
         }
     }
 

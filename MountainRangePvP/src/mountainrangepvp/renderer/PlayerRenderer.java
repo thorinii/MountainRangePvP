@@ -38,7 +38,9 @@ public class PlayerRenderer implements Renderer {
     public void render(int scrollx, int scrolly) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.FilledRectangle);
         for (Player player : playerManager.getPlayers()) {
-            drawPlayer(player, scrollx, scrolly);
+            if (player.isAlive()) {
+                drawPlayer(player, scrollx, scrolly);
+            }
         }
         shapeRenderer.end();
 

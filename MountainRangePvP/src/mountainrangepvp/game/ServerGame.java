@@ -6,6 +6,7 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import java.nio.IntBuffer;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
@@ -13,6 +14,10 @@ import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.ShotManager;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Cursor;
+import org.lwjgl.input.Mouse;
 
 /**
  *
@@ -20,6 +25,7 @@ import mountainrangepvp.shot.ShotManager;
  */
 public class ServerGame extends Game {
 
+    //
     private final HeightMap heightMap;
     private final ServerPlayerManager playerManager;
     private final ShotManager shotManager;
@@ -31,7 +37,7 @@ public class ServerGame extends Game {
         heightMap = new MountainHeightMap(seed);
 
         playerManager = new ServerPlayerManager(playerName);
-        shotManager = new ShotManager(heightMap);
+        shotManager = new ShotManager(heightMap, playerManager);
         physicsSystem = new PhysicsSystem(heightMap, playerManager);
         inputHandler = new InputHandler(playerManager, shotManager);
     }
