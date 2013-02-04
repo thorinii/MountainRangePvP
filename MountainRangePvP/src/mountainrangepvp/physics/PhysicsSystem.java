@@ -32,21 +32,34 @@ public class PhysicsSystem {
         }
     }
 
+    /**
+     * Updates the player's velocity and position, with collision detection.
+     * A bit of fun when the player dies: turn off collision detection.
+     * <p/>
+     * @param player
+     * @param dt
+     */
     private void updatePlayer(Player player, float dt) {
         Vector2 pos = player.getPosition();
         Vector2 vel = player.getVelocity();
 
         dampenVelocity(vel, dt);
 
+
         checkWalkUpSlope(vel, pos, dt);
         slideDownSlope(player, pos, vel, dt);
+
 
         vel.y += GRAVITY * dt;
 
         pos.x += vel.x * dt;
         pos.y += vel.y * dt;
 
+
         checkGroundIntersection(player, pos, vel);
+
+
+        player.updateRespawnTimer(dt);
     }
 
     private void checkWalkUpSlope(Vector2 vel, Vector2 pos, float dt) {
