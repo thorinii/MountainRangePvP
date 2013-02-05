@@ -6,18 +6,15 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import java.nio.IntBuffer;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
+import mountainrangepvp.mp.Server;
 import mountainrangepvp.physics.PhysicsSystem;
-import mountainrangepvp.player.Player;
 import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.ShotManager;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Mouse;
 
 /**
  *
@@ -27,6 +24,7 @@ public class ServerGame extends Game {
 
     //
     private final HeightMap heightMap;
+    private final Server server;
     private final ServerPlayerManager playerManager;
     private final ShotManager shotManager;
     private final PhysicsSystem physicsSystem;
@@ -35,6 +33,7 @@ public class ServerGame extends Game {
 
     public ServerGame(String playerName, int seed) {
         heightMap = new MountainHeightMap(seed);
+        server = new Server(seed);
 
         playerManager = new ServerPlayerManager(playerName);
         shotManager = new ShotManager(heightMap, playerManager);
@@ -44,6 +43,15 @@ public class ServerGame extends Game {
 
     @Override
     public void create() {
+        try {
+            server.start();
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null, "Error starting server",
+                                          "Mountain Range PvP",
+                                          JOptionPane.ERROR_MESSAGE);
+            Gdx.app.exit();
+        }
+
         inputHandler.register();
 
         gameScreen = new GameScreen(heightMap, playerManager, shotManager);

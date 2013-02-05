@@ -5,6 +5,17 @@
 package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import mountainrangepvp.generator.HeightMap;
+import mountainrangepvp.generator.MountainHeightMap;
+import mountainrangepvp.input.InputHandler;
+import mountainrangepvp.mp.Client;
+import mountainrangepvp.mp.MultiplayerConstants;
+import mountainrangepvp.physics.PhysicsSystem;
+import mountainrangepvp.player.ServerPlayerManager;
+import mountainrangepvp.shot.ShotManager;
 
 /**
  *
@@ -12,14 +23,42 @@ import com.badlogic.gdx.Game;
  */
 public class ClientGame extends Game {
 
-    private final int seed;
+    private HeightMap heightMap;
+    private Client client;
+    private final String playerName;
+    private final String serverIP;
+    private ServerPlayerManager playerManager;
+    private ShotManager shotManager;
+    private PhysicsSystem physicsSystem;
+    private InputHandler inputHandler;
+    private GameScreen gameScreen;
 
-    public ClientGame(String playerName, int seed, String serverIP) {
-        this.seed = seed;
+    public ClientGame(String playerName, String serverIP) {
+        this.playerName = playerName;
+        this.serverIP = serverIP;
     }
 
     @Override
     public void create() {
-        //setScreen(new GameScreen(seed, null));
+        try {
+            client = new Client(serverIP, MultiplayerConstants.STD_PORT);
+            client.start();
+        } catch (IOException ioe) {
+            JOptionPane.showMessageDialog(null, "Error starting server",
+                                          "Mountain Range PvP",
+                                          JOptionPane.ERROR_MESSAGE);
+            Gdx.app.exit();
+        }
+
+        heightMap = new MountainHeightMap(client.getSeed());
+        playerManager = new ServerPlayerManager(playerName);
+        shotManager = new ShotManager(heightMap, playerManager);
+        physicsSystem = new PhysicsSystem(heightMap, playerManager);
+        inputHandler = new InputHandler(playerManager, shotManager);
+
+        inputHandler.register();
+
+        gameScreen = new GameScreen(heightMap, playerManager, shotManager);
+        setScreen(gameScreen);
     }
 }
