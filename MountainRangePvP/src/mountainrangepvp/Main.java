@@ -57,7 +57,7 @@ public class Main {
                                                       "Mountain Range PvP",
                                                       JOptionPane.QUESTION_MESSAGE);
 
-        startGame(new ClientGame(playerName, 100, serverIP));
+        startGame(new ClientGame(playerName, serverIP));
     }
 
     private static void startGame(Game game) {

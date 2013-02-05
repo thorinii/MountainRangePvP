@@ -6,10 +6,8 @@ package mountainrangepvp.shot;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.player.Player;
@@ -29,7 +27,7 @@ public class ShotManager {
     private final PlayerManager playerManager;
 
     public ShotManager(HeightMap heightMap, PlayerManager playerManager) {
-        shots = new ArrayList<>();
+        shots = new LinkedList<>();
         this.heightMap = heightMap;
         this.playerManager = playerManager;
     }
