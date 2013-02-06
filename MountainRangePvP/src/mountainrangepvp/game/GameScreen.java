@@ -67,7 +67,7 @@ public class GameScreen implements Screen {
 
                 Mouse.setNativeCursor(emptyCursor);
             } catch (LWJGLException ex) {
-                System.out.println("Not Very Happy At All");
+                ex.printStackTrace();
             }
         }
     }
@@ -78,9 +78,12 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         Vector2 pos = playerManager.getLocalPlayer().getPosition().cpy();
+
+        System.out.println("Rendering: " + playerManager.getLocalPlayer().
+                getName() + " " + pos);
+
         pos.x = pos.x - width / 2 + Player.WIDTH / 2;
         pos.y = pos.y - height / 2 + Player.HEIGHT / 2;
-
 
         shotRenderer.render((int) pos.x, (int) pos.y);
         heightMapRenderer.render((int) pos.x, (int) pos.y);

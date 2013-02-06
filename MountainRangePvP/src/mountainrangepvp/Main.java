@@ -44,7 +44,7 @@ public class Main {
                                                         "Mountain Range PvP",
                                                         JOptionPane.QUESTION_MESSAGE);
 
-        startGame(new ServerGame(playerName, 100));
+        startGame(new ServerGame(playerName, 99));
     }
 
     private static void startClient() {
@@ -64,8 +64,8 @@ public class Main {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
         config.title = "Mountain Range PvP";
-        config.width = 1000;
-        config.height = 800;
+        config.width = 800;
+        config.height = 600;
         config.useGL20 = true;
         config.forceExit = false;
 

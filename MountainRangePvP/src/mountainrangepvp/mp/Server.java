@@ -4,8 +4,6 @@
  */
 package mountainrangepvp.mp;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mountainrangepvp.mp.message.*;
 
 /**
  *
@@ -27,6 +26,8 @@ public class Server {
     private Thread acceptThread;
     //
     private final List<ClientProxy> clients;
+    //
+    private final MessageQueue messageQueue;
 
     public Server(int seed) {
         this(MultiplayerConstants.STD_PORT, seed);
@@ -36,6 +37,8 @@ public class Server {
         this.port = port;
         this.seed = seed;
         clients = new LinkedList<>();
+
+        this.messageQueue = new MessageQueue();
     }
 
     public void start() throws IOException {
@@ -45,7 +48,29 @@ public class Server {
         acceptThread.start();
     }
 
+    public void stop() {
+        try {
+            acceptThread.interrupt();
+            serverSocket.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        for (ClientProxy client : clients) {
+            try {
+                client.kill();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        }
+    }
+
     public void update() {
+        messageQueue.update();
+    }
+
+    public MessageQueue getMessageQueue() {
+        return messageQueue;
     }
 
     private class AcceptRunnable implements Runnable {
@@ -62,7 +87,7 @@ public class Server {
                 while (!Thread.currentThread().isInterrupted()) {
                     Socket socket = serverSocket.accept();
 
-                    ClientProxy crr = new ClientProxy(socket, seed);
+                    ClientProxy crr = new ClientProxy(socket, messageQueue);
                     clients.add(crr);
                     new Thread(crr).start();
                 }
@@ -72,80 +97,37 @@ public class Server {
         }
     }
 
-    private class ClientProxy implements Runnable {
+    private class ClientProxy extends Proxy {
 
-        private final Socket socket;
-        private final int seed;
-        private final DataOutputStream dos;
-        private final DataInputStream dis;
-
-        public ClientProxy(Socket socket, int seed) throws IOException {
-            this.socket = socket;
-            this.seed = seed;
-            dos = new DataOutputStream(socket.getOutputStream());
-            dis = new DataInputStream(socket.getInputStream());
+        public ClientProxy(Socket socket, MessageQueue messageQueue) throws
+                IOException {
+            super(socket, messageQueue);
         }
 
         @Override
-        public void run() {
-            try {
-                doNetworking();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-
-        private void doNetworking() throws IOException {
-            System.out.println("sending hello");
-            sendHello();
-            System.out.println("waiting hello");
+        protected void setupConnection() throws IOException {
+            messageIO.sendMessage(new HelloMessage());
             getHello();
-            System.out.println("get hello");
 
-            sendSeed();
-
-            while (!Thread.currentThread().isInterrupted()) {
-                dis.readByte();
-            }
-        }
-
-        private void sendHello() throws IOException {
-            dos.writeInt(MultiplayerConstants.CHECK_CODE);
-            dos.writeInt(MultiplayerConstants.VERSION);
-            dos.writeInt(MultiplayerConstants.MESSAGE_HELLO);
-            dos.flush();
+            messageIO.sendMessage(new SeedMessage(seed));
         }
 
         private void getHello() throws IOException {
-            int checkCode = dis.readInt();
-            if (checkCode != MultiplayerConstants.CHECK_CODE) {
-                throw new IOException("Invalid Check Code");
-            }
+            Message m = messageIO.readMessage();
 
-            int version = dis.readInt();
-            if (version != MultiplayerConstants.VERSION) {
-                throw new IOException("Incompatible protocol version");
-            }
+            if (m instanceof HelloMessage) {
+                HelloMessage hello = (HelloMessage) m;
 
-            int message = dis.readInt();
-            if (message != MultiplayerConstants.MESSAGE_HELLO) {
-                throw new IOException("Expected Hello Message");
+                if (!hello.isValid()) {
+                    throw new IOException("Invalid Hello Message");
+                }
+            } else {
+                throw new IOException("Invalid Message: " + m.getClass());
             }
         }
 
-        private void sendSeed() throws IOException {
-            dos.writeInt(MultiplayerConstants.MESSAGE_SEED);
-            dos.writeInt(seed);
-            dos.flush();
-        }
-
-        public boolean isValid() {
-            return !socket.isClosed();
-        }
-
-        public void kill() throws IOException {
-            // TODO: send close message
-            // TODO: kill socket
+        @Override
+        protected void disposeConnection() throws IOException {
         }
     }
 

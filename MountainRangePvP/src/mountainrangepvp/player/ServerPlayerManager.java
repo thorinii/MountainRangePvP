@@ -23,7 +23,7 @@ public class ServerPlayerManager implements PlayerManager {
         localPlayer = new Player(localName);
         players.add(localPlayer);
 
-        Player remotePlayer = new Player("R");
+        Player remotePlayer = new Player("Remote Test");
         players.add(remotePlayer);
     }
 

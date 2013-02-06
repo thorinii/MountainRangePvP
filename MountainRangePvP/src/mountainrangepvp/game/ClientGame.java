@@ -13,6 +13,9 @@ import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.Client;
 import mountainrangepvp.mp.MultiplayerConstants;
+import mountainrangepvp.mp.message.Message;
+import mountainrangepvp.mp.message.MessageListener;
+import mountainrangepvp.mp.message.SeedMessage;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.ShotManager;
@@ -24,13 +27,16 @@ import mountainrangepvp.shot.ShotManager;
 public class ClientGame extends Game {
 
     private HeightMap heightMap;
-    private Client client;
+    //
     private final String playerName;
     private final String serverIP;
+    private Client client;
+    //
     private ServerPlayerManager playerManager;
     private ShotManager shotManager;
     private PhysicsSystem physicsSystem;
     private InputHandler inputHandler;
+    //
     private GameScreen gameScreen;
 
     public ClientGame(String playerName, String serverIP) {
@@ -42,23 +48,56 @@ public class ClientGame extends Game {
     public void create() {
         try {
             client = new Client(serverIP, MultiplayerConstants.STD_PORT);
+            client.getMessageQueue().addListener(new SeedMessageListener());
             client.start();
         } catch (IOException ioe) {
-            JOptionPane.showMessageDialog(null, "Error starting server",
+            JOptionPane.showMessageDialog(null, "Error starting client " + ioe,
                                           "Mountain Range PvP",
                                           JOptionPane.ERROR_MESSAGE);
             Gdx.app.exit();
         }
+    }
 
-        heightMap = new MountainHeightMap(client.getSeed());
-        playerManager = new ServerPlayerManager(playerName);
-        shotManager = new ShotManager(heightMap, playerManager);
-        physicsSystem = new PhysicsSystem(heightMap, playerManager);
-        inputHandler = new InputHandler(playerManager, shotManager);
+    @Override
+    public void render() {
+        float dt = Gdx.graphics.getDeltaTime();
 
-        inputHandler.register();
+        client.update();
 
-        gameScreen = new GameScreen(heightMap, playerManager, shotManager);
-        setScreen(gameScreen);
+        if (gameScreen != null) {
+            inputHandler.update(dt);
+            shotManager.update(dt);
+            physicsSystem.update(dt);
+            gameScreen.render(dt);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        client.stop();
+    }
+
+    private class SeedMessageListener implements MessageListener {
+
+        @Override
+        public void accept(Message message) {
+            if (message instanceof SeedMessage) {
+                SeedMessage seedMessage = (SeedMessage) message;
+
+                heightMap = new MountainHeightMap(seedMessage.getSeed());
+                playerManager = new ServerPlayerManager(playerName);
+                shotManager = new ShotManager(heightMap, playerManager);
+                physicsSystem = new PhysicsSystem(heightMap, playerManager);
+
+                inputHandler = new InputHandler(playerManager, shotManager);
+                inputHandler.register();
+
+                gameScreen = new GameScreen(heightMap, playerManager,
+                                            shotManager);
+                setScreen(gameScreen);
+            }
+        }
     }
 }
