@@ -36,4 +36,8 @@ public class ServerPlayerManager implements PlayerManager {
     public Player getLocalPlayer() {
         return localPlayer;
     }
+
+    public void addPlayer(String playerName) {
+        players.add(new Player(playerName));
+    }
 }

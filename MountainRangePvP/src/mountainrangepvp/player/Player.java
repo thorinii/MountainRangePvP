@@ -93,8 +93,8 @@ public class Player {
     private void respawn() {
         position.x = (float) (Math.random() * 2 * RESPAWN_RANGE_X - RESPAWN_RANGE_X);
         position.y = 1000;
-        //vel.x = 0;
-        //vel.y = 0;
+        velocity.x = 0;
+        velocity.y = 0;
 
         alive = true;
 

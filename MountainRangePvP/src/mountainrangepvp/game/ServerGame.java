@@ -11,7 +11,9 @@ import javax.swing.JOptionPane;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
+import mountainrangepvp.mp.Proxy;
 import mountainrangepvp.mp.Server;
+import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.ShotManager;
@@ -24,6 +26,7 @@ public class ServerGame extends Game {
 
     private final HeightMap heightMap;
     //
+    private final String playerName;
     private final Server server;
     //
     private final ServerPlayerManager playerManager;
@@ -34,6 +37,8 @@ public class ServerGame extends Game {
     private GameScreen gameScreen;
 
     public ServerGame(String playerName, int seed) {
+        this.playerName = playerName;
+
         heightMap = new MountainHeightMap(seed);
         server = new Server(seed);
 
@@ -77,5 +82,18 @@ public class ServerGame extends Game {
         super.dispose();
 
         server.stop();
+    }
+
+    private class ServerMessageListener implements MessageListener {
+
+        @Override
+        public void accept(Message message, Proxy proxy) throws IOException {
+            if (message instanceof HelloMessage) {
+                server.sendPlayerConnect(playerName, proxy);
+            } else if (message instanceof PlayerConnectMessage) {
+                PlayerConnectMessage pcm = (PlayerConnectMessage) message;
+                playerManager.addPlayer(pcm.getPlayerName());
+            }
+        }
     }
 }
