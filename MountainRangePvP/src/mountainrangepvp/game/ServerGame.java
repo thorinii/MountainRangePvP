@@ -22,13 +22,15 @@ import mountainrangepvp.shot.ShotManager;
  */
 public class ServerGame extends Game {
 
-    //
     private final HeightMap heightMap;
+    //
     private final Server server;
+    //
     private final ServerPlayerManager playerManager;
     private final ShotManager shotManager;
     private final PhysicsSystem physicsSystem;
     private final InputHandler inputHandler;
+    //
     private GameScreen gameScreen;
 
     public ServerGame(String playerName, int seed) {
@@ -62,9 +64,18 @@ public class ServerGame extends Game {
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
 
+        server.update();
+
         inputHandler.update(dt);
         shotManager.update(dt);
         physicsSystem.update(dt);
         gameScreen.render(dt);
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        server.stop();
     }
 }
