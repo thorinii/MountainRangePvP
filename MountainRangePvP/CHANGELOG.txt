@@ -1,3 +1,8 @@
+0.7 Multiplayer | 06-02-13:
+    -Added Multiplayer Client and Server
+    -Added Message Handling
+    -Added Hello and Seed Messages
+
 0.6 Gun Player Collision | 04-02-13:
     -Added Collision with Player
     -Added death and respawning

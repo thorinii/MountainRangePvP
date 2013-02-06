@@ -40,7 +40,7 @@ public abstract class Proxy implements Runnable {
         try {
             while (!Thread.currentThread().isInterrupted() && isValid()) {
                 Message message = messageIO.readMessage();
-                messageQueue.pushMessage(message);
+                messageQueue.pushMessage(message, this);
             }
         } catch (EOFException eofe) {
         }

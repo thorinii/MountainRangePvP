@@ -13,9 +13,8 @@ import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.Client;
 import mountainrangepvp.mp.MultiplayerConstants;
-import mountainrangepvp.mp.message.Message;
-import mountainrangepvp.mp.message.MessageListener;
-import mountainrangepvp.mp.message.SeedMessage;
+import mountainrangepvp.mp.Proxy;
+import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.ShotManager;
@@ -48,7 +47,7 @@ public class ClientGame extends Game {
     public void create() {
         try {
             client = new Client(serverIP, MultiplayerConstants.STD_PORT);
-            client.getMessageQueue().addListener(new SeedMessageListener());
+            client.getMessageQueue().addListener(new ServerMessageListener());
             client.start();
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, "Error starting client " + ioe,
@@ -79,10 +78,10 @@ public class ClientGame extends Game {
         client.stop();
     }
 
-    private class SeedMessageListener implements MessageListener {
+    private class ServerMessageListener implements MessageListener {
 
         @Override
-        public void accept(Message message) {
+        public void accept(Message message, Proxy proxy) throws IOException {
             if (message instanceof SeedMessage) {
                 SeedMessage seedMessage = (SeedMessage) message;
 
@@ -97,6 +96,11 @@ public class ClientGame extends Game {
                 gameScreen = new GameScreen(heightMap, playerManager,
                                             shotManager);
                 setScreen(gameScreen);
+            } else if (message instanceof HelloMessage) {
+                client.sendPlayerConnect(playerName);
+            } else if (message instanceof PlayerConnectMessage) {
+                PlayerConnectMessage pcm = (PlayerConnectMessage) message;
+                playerManager.addPlayer(pcm.getPlayerName());
             }
         }
     }

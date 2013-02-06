@@ -9,10 +9,7 @@ import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mountainrangepvp.mp.message.HelloMessage;
-import mountainrangepvp.mp.message.Message;
-import mountainrangepvp.mp.message.MessageIO;
-import mountainrangepvp.mp.message.MessageQueue;
+import mountainrangepvp.mp.message.*;
 
 /**
  *
@@ -48,11 +45,25 @@ public class Client {
     }
 
     public void update() {
-        messageQueue.update();
+        try {
+            messageQueue.update();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+
+            try {
+                proxy.kill();
+            } catch (IOException ex1) {
+                ex1.printStackTrace();
+            }
+        }
     }
 
     public MessageQueue getMessageQueue() {
         return messageQueue;
+    }
+
+    public void sendPlayerConnect(String playerName) throws IOException {
+        proxy.messageIO.sendMessage(new PlayerConnectMessage(playerName));
     }
 
     private class ServerProxy extends Proxy {
@@ -70,6 +81,7 @@ public class Client {
 
         private void getHello() throws IOException {
             Message m = messageIO.readMessage();
+            messageQueue.pushMessage(m, this);
 
             if (m instanceof HelloMessage) {
                 HelloMessage hello = (HelloMessage) m;

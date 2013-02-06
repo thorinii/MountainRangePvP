@@ -79,9 +79,6 @@ public class GameScreen implements Screen {
 
         Vector2 pos = playerManager.getLocalPlayer().getPosition().cpy();
 
-        System.out.println("Rendering: " + playerManager.getLocalPlayer().
-                getName() + " " + pos);
-
         pos.x = pos.x - width / 2 + Player.WIDTH / 2;
         pos.y = pos.y - height / 2 + Player.HEIGHT / 2;
 

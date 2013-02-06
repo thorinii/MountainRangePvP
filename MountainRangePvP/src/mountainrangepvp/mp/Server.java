@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mountainrangepvp.mp.message.*;
+import mountainrangepvp.player.PlayerManager;
 
 /**
  *
@@ -65,8 +66,24 @@ public class Server {
         }
     }
 
+    public void sendPlayerConnect(String playerName) throws IOException {
+        for (ClientProxy proxy : clients) {
+            sendPlayerConnect(playerName, proxy);
+        }
+    }
+
+    public void sendPlayerConnect(String playerName, Proxy proxy) throws
+            IOException {
+        proxy.messageIO.sendMessage(new PlayerConnectMessage(playerName));
+    }
+
     public void update() {
-        messageQueue.update();
+        try {
+            messageQueue.update();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            stop();
+        }
     }
 
     public MessageQueue getMessageQueue() {
@@ -114,6 +131,7 @@ public class Server {
 
         private void getHello() throws IOException {
             Message m = messageIO.readMessage();
+            messageQueue.pushMessage(m, this);
 
             if (m instanceof HelloMessage) {
                 HelloMessage hello = (HelloMessage) m;
