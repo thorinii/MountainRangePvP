@@ -66,15 +66,22 @@ public class Server {
         }
     }
 
-    public void sendPlayerConnect(String playerName) throws IOException {
+    public void send(Message message, Proxy proxy) throws IOException {
+        proxy.messageIO.sendMessage(message);
+    }
+
+    public void broadcast(Message message) throws IOException {
         for (ClientProxy proxy : clients) {
-            sendPlayerConnect(playerName, proxy);
+            proxy.messageIO.sendMessage(message);
         }
     }
 
-    public void sendPlayerConnect(String playerName, Proxy proxy) throws
-            IOException {
-        proxy.messageIO.sendMessage(new PlayerConnectMessage(playerName));
+    public void broadcastExcept(Message message, Proxy not) throws IOException {
+        for (ClientProxy proxy : clients) {
+            if (proxy != not) {
+                proxy.messageIO.sendMessage(message);
+            }
+        }
     }
 
     public void update() {

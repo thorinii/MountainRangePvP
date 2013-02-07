@@ -4,15 +4,35 @@
  */
 package mountainrangepvp.player;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  *
  * @author lachlan
  */
-public interface PlayerManager {
+public class PlayerManager {
 
-    public List<Player> getPlayers();
+    private final List<Player> players;
+    private final Player localPlayer;
 
-    public Player getLocalPlayer();
+    public PlayerManager(String localName) {
+        players = new ArrayList<>();
+
+        localPlayer = new Player(localName);
+        players.add(localPlayer);
+    }
+
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
+    }
+
+    public Player getLocalPlayer() {
+        return localPlayer;
+    }
+
+    public void addPlayer(String playerName) {
+        players.add(new Player(playerName));
+    }
 }

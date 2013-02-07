@@ -1,0 +1,10 @@
+Feb 07, 2013 8:02:30 PM mountainrangepvp.Log info
+INFO: Startup 
+Feb 07, 2013 8:02:32 PM mountainrangepvp.Log info
+INFO: Starting Server 
+Feb 07, 2013 8:02:34 PM mountainrangepvp.Log info
+INFO: Starting Server... 
+Feb 07, 2013 8:02:53 PM mountainrangepvp.Log info
+INFO:   connected 
+Feb 07, 2013 8:04:02 PM mountainrangepvp.Log info
+INFO:   connected 

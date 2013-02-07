@@ -7,6 +7,9 @@ package mountainrangepvp;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.ServerGame;
@@ -18,6 +21,9 @@ import mountainrangepvp.game.ServerGame;
 public class Main {
 
     public static void main(String[] args) {
+        Log.setupLog();
+        Log.info("Startup");
+
         int option = JOptionPane.showOptionDialog(null,
                                                   "Start a server or connect to one?",
                                                   "Mountain Range PvP",
@@ -30,9 +36,11 @@ public class Main {
 
         switch (option) {
             case 0:
+                Log.info("Starting Server");
                 startServer();
                 break;
             case 1:
+                Log.info("Starting Client");
                 startClient();
                 break;
         }
