@@ -16,6 +16,7 @@ import mountainrangepvp.mp.Proxy;
 import mountainrangepvp.mp.Server;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
+import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
 
@@ -101,6 +102,12 @@ public class ServerGame extends Game {
                 playerManager.addPlayer(pcm.getPlayerName());
 
                 server.broadcastExcept(pcm, proxy);
+
+                for (Player p : playerManager.getPlayers()) {
+                    if (!p.getName().equals(pcm.getPlayerName())) {
+                        server.send(new PlayerConnectMessage(p.getName()), proxy);
+                    }
+                }
 
                 Log.info(pcm.getPlayerName(), " connected");
             }
