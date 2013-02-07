@@ -54,8 +54,6 @@ public class ShotManager {
                 shot.time += dt;
             }
         }
-
-        addShot(new Vector2(300, 600), new Vector2(0.1f, -1).nor(), null);
     }
 
     private boolean testLife(Shot shot) {

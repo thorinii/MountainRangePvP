@@ -8,6 +8,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import mountainrangepvp.Log;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
@@ -15,7 +16,7 @@ import mountainrangepvp.mp.Proxy;
 import mountainrangepvp.mp.Server;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
-import mountainrangepvp.player.ServerPlayerManager;
+import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
 
 /**
@@ -29,7 +30,7 @@ public class ServerGame extends Game {
     private final String playerName;
     private final Server server;
     //
-    private final ServerPlayerManager playerManager;
+    private final PlayerManager playerManager;
     private final ShotManager shotManager;
     private final PhysicsSystem physicsSystem;
     private final InputHandler inputHandler;
@@ -42,7 +43,7 @@ public class ServerGame extends Game {
         heightMap = new MountainHeightMap(seed);
         server = new Server(seed);
 
-        playerManager = new ServerPlayerManager(playerName);
+        playerManager = new PlayerManager(playerName);
         shotManager = new ShotManager(heightMap, playerManager);
         physicsSystem = new PhysicsSystem(heightMap, playerManager);
         inputHandler = new InputHandler(playerManager, shotManager);
@@ -51,6 +52,9 @@ public class ServerGame extends Game {
     @Override
     public void create() {
         try {
+            Log.info("Starting Server...");
+
+            server.getMessageQueue().addListener(new ClientMessageListener());
             server.start();
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, "Error starting server",
@@ -84,15 +88,21 @@ public class ServerGame extends Game {
         server.stop();
     }
 
-    private class ServerMessageListener implements MessageListener {
+    private class ClientMessageListener implements MessageListener {
 
         @Override
         public void accept(Message message, Proxy proxy) throws IOException {
             if (message instanceof HelloMessage) {
-                server.sendPlayerConnect(playerName, proxy);
+                server.send(new PlayerConnectMessage(playerName), proxy);
+
+                Log.fine("Got Hello, Sending player connect");
             } else if (message instanceof PlayerConnectMessage) {
                 PlayerConnectMessage pcm = (PlayerConnectMessage) message;
                 playerManager.addPlayer(pcm.getPlayerName());
+
+                server.broadcastExcept(pcm, proxy);
+
+                Log.info(pcm.getPlayerName(), " connected");
             }
         }
     }

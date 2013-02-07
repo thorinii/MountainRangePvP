@@ -8,6 +8,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import mountainrangepvp.Log;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
@@ -16,7 +17,7 @@ import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.mp.Proxy;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
-import mountainrangepvp.player.ServerPlayerManager;
+import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
 
 /**
@@ -31,7 +32,7 @@ public class ClientGame extends Game {
     private final String serverIP;
     private Client client;
     //
-    private ServerPlayerManager playerManager;
+    private PlayerManager playerManager;
     private ShotManager shotManager;
     private PhysicsSystem physicsSystem;
     private InputHandler inputHandler;
@@ -46,6 +47,8 @@ public class ClientGame extends Game {
     @Override
     public void create() {
         try {
+            Log.info("Connecting to", serverIP);
+
             client = new Client(serverIP, MultiplayerConstants.STD_PORT);
             client.getMessageQueue().addListener(new ServerMessageListener());
             client.start();
@@ -85,8 +88,10 @@ public class ClientGame extends Game {
             if (message instanceof SeedMessage) {
                 SeedMessage seedMessage = (SeedMessage) message;
 
+                Log.info("Received Seed", seedMessage.getSeed(), "Changing Map");
+
                 heightMap = new MountainHeightMap(seedMessage.getSeed());
-                playerManager = new ServerPlayerManager(playerName);
+                playerManager = new PlayerManager(playerName);
                 shotManager = new ShotManager(heightMap, playerManager);
                 physicsSystem = new PhysicsSystem(heightMap, playerManager);
 
@@ -97,10 +102,14 @@ public class ClientGame extends Game {
                                             shotManager);
                 setScreen(gameScreen);
             } else if (message instanceof HelloMessage) {
-                client.sendPlayerConnect(playerName);
+                client.send(new PlayerConnectMessage(playerName));
+
+                Log.fine("Got Hello, Sending player connect");
             } else if (message instanceof PlayerConnectMessage) {
                 PlayerConnectMessage pcm = (PlayerConnectMessage) message;
                 playerManager.addPlayer(pcm.getPlayerName());
+
+                Log.info(pcm.getPlayerName(), " connected");
             }
         }
     }

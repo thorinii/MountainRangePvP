@@ -62,8 +62,8 @@ public class Client {
         return messageQueue;
     }
 
-    public void sendPlayerConnect(String playerName) throws IOException {
-        proxy.messageIO.sendMessage(new PlayerConnectMessage(playerName));
+    public void send(Message message) throws IOException {
+        proxy.messageIO.sendMessage(message);
     }
 
     private class ServerProxy extends Proxy {

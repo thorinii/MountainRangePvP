@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import mountainrangepvp.Log;
 import mountainrangepvp.mp.MultiplayerConstants;
 
 /**
@@ -41,7 +42,7 @@ public class MessageIO {
         message.writeOut(dos);
         dos.flush();
 
-        System.out.println("Sending Message " + message.getClass());
+        Log.fine("Sent Message ", message.getClass());
     }
 
     /**
@@ -56,7 +57,7 @@ public class MessageIO {
         Message message = getMessageByCode(messageCode);
         message.readIn(dis);
 
-        System.out.println("Reading Message " + message.getClass());
+        Log.fine("Read Message ", message.getClass());
 
         return message;
     }
