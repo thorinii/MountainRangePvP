@@ -46,7 +46,7 @@ public class Client {
 
     public void update() {
         try {
-            messageQueue.update();
+            proxy.update();
         } catch (IOException ex) {
             Log.warn("Error processing messages:", ex);
             stop();
@@ -57,8 +57,8 @@ public class Client {
         return messageQueue;
     }
 
-    public void send(Message message) throws IOException {
-        proxy.messageIO.sendMessage(message);
+    public void send(Message message) {
+        proxy.sendMessage(message);
     }
 
     private class ServerProxy extends Proxy {
@@ -76,7 +76,7 @@ public class Client {
 
         private void getHello() throws IOException {
             Message m = messageIO.readMessage();
-            messageQueue.pushMessage(m, this);
+            receiveQueue.pushMessage(m, this);
 
             if (m instanceof HelloMessage) {
                 HelloMessage hello = (HelloMessage) m;
@@ -91,7 +91,7 @@ public class Client {
 
         @Override
         protected void disposeConnection() throws IOException {
-            messageQueue.pushMessage(new PlayerDisconnectMessage(), this);
+            receiveQueue.pushMessage(new PlayerDisconnectMessage(), this);
         }
     }
 

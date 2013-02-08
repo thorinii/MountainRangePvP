@@ -18,12 +18,16 @@ public abstract class Proxy implements Runnable {
 
     protected final Socket socket;
     protected final MessageIO messageIO;
-    protected final MessageQueue messageQueue;
+    protected final MessageQueue receiveQueue;
+    protected final MessageQueue sendQueue;
 
-    public Proxy(Socket socket, MessageQueue messageQueue) throws IOException {
+    public Proxy(Socket socket, MessageQueue receiveQueue) throws IOException {
         this.socket = socket;
         this.messageIO = new MessageIO(socket);
-        this.messageQueue = messageQueue;
+        this.receiveQueue = receiveQueue;
+        this.sendQueue = new MessageQueue();
+
+        sendQueue.addListener(new SendMessageListener());
     }
 
     @Override
@@ -35,13 +39,26 @@ public abstract class Proxy implements Runnable {
         }
     }
 
+    public void update() throws IOException {
+        if (socket.isClosed()) {
+            return;
+        }
+
+        receiveQueue.update();
+        sendQueue.update();
+    }
+
+    public void sendMessage(Message m) {
+        sendQueue.pushMessage(m, this);
+    }
+
     private void doNetworking() throws IOException {
         setupConnection();
 
         try {
             while (!Thread.currentThread().isInterrupted() && isValid()) {
                 Message message = messageIO.readMessage();
-                messageQueue.pushMessage(message, this);
+                receiveQueue.pushMessage(message, this);
                 onMessage(message);
             }
         } catch (EOFException eofe) {
@@ -66,5 +83,13 @@ public abstract class Proxy implements Runnable {
         // TODO: send close message
         // TODO: socket.shutdownOutput();
         socket.close();
+    }
+
+    private class SendMessageListener implements MessageListener {
+
+        @Override
+        public void accept(Message message, Proxy proxy) throws IOException {
+            messageIO.sendMessage(message);
+        }
     }
 }

@@ -17,7 +17,6 @@ import mountainrangepvp.mp.Proxy;
  */
 public class MessageQueue {
 
-    private final Object lock = new Object();
     private final Queue<MessageHolder> messages;
     private final List<MessageListener> listeners;
 
@@ -35,21 +34,14 @@ public class MessageQueue {
     }
 
     public void pushMessage(Message m, Proxy proxy) {
-        synchronized (lock) {
-            messages.add(new MessageHolder(m, proxy));
-        }
+        messages.add(new MessageHolder(m, proxy));
     }
 
     public void update() throws IOException {
         List<MessageListener> listeners = new ArrayList<>(this.listeners);
-        List<MessageHolder> messages;
 
-        synchronized (lock) {
-            messages = new ArrayList(this.messages);
-            this.messages.clear();
-        }
-
-        for (MessageHolder m : messages) {
+        while (!messages.isEmpty()) {
+            MessageHolder m = messages.poll();
             for (MessageListener listener : listeners) {
                 listener.accept(m.message, m.proxy);
             }

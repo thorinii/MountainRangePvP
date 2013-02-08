@@ -1,8 +1,0 @@
-Feb 08, 2013 2:22:21 PM mountainrangepvp.Log info
-INFO: Startup 
-Feb 08, 2013 2:22:22 PM mountainrangepvp.Log info
-INFO: Starting Server 
-Feb 08, 2013 2:22:23 PM mountainrangepvp.Log info
-INFO: Starting Server... 
-Feb 08, 2013 2:23:38 PM mountainrangepvp.Log warn
-WARNING: Error accepting clients: class java.net.SocketExceptionSocket closed 

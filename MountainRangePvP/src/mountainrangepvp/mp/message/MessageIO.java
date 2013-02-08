@@ -4,14 +4,13 @@
  */
 package mountainrangepvp.mp.message;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.lang.Class;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import mountainrangepvp.Log;
-import mountainrangepvp.mp.MultiplayerConstants;
+import mountainrangepvp.mp.message.Message;
 
 /**
  *
@@ -21,14 +20,17 @@ public class MessageIO {
 
     private final DataInputStream dis;
     private final DataOutputStream dos;
+    private final Map<String, Class<Message>> messageClasses;
 
     public MessageIO(Socket socket) throws IOException {
         this(socket.getInputStream(), socket.getOutputStream());
     }
 
     public MessageIO(InputStream in, OutputStream out) {
-        dis = new DataInputStream(in);
-        dos = new DataOutputStream(out);
+        dis = new DataInputStream(new BufferedInputStream(in));
+        dos = new DataOutputStream(new BufferedOutputStream(out));
+
+        messageClasses = new HashMap<>();
     }
 
     /**
@@ -38,11 +40,11 @@ public class MessageIO {
      * @throws IOException
      */
     public void sendMessage(Message message) throws IOException {
-        dos.writeInt(message.getCode());
+        dos.writeUTF(message.getClass().getName());
         message.writeOut(dos);
         dos.flush();
 
-        Log.fine("Sent Message ", message.getClass());
+        Log.fine("Sent Message ", message);
     }
 
     /**
@@ -52,29 +54,29 @@ public class MessageIO {
      * @throws IOException
      */
     public Message readMessage() throws IOException {
-        int messageCode = dis.readInt();
+        String messageClass = dis.readUTF();
 
-        Message message = getMessageByCode(messageCode);
+        Message message = getMessageByClass(messageClass);
         message.readIn(dis);
 
-        Log.fine("Read Message ", message.getClass());
+        Log.fine("Read Message ", message);
 
         return message;
     }
 
-    private Message getMessageByCode(int code) {
-        switch (code) {
-            case MultiplayerConstants.MESSAGE_HELLO:
-                return new HelloMessage();
-            case MultiplayerConstants.MESSAGE_SEED:
-                return new SeedMessage();
-            case MultiplayerConstants.MESSAGE_PLAYER_CONNECT:
-                return new PlayerConnectMessage();
-            case MultiplayerConstants.MESSAGE_PLAYER_DISCONNECT:
-                return new PlayerDisconnectMessage();
-        }
+    private Message getMessageByClass(String messageClass) {
+        try {
+            Class<Message> klass = messageClasses.get(messageClass);;
 
-        throw new IllegalArgumentException(
-                "Could not find message for code: " + code);
+            if (klass == null) {
+                klass = (Class<Message>) Class.forName(messageClass);
+                messageClasses.put(messageClass, klass);
+            }
+
+            return (Message) klass.newInstance();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            throw new IllegalArgumentException(
+                    "Could not find message for code: " + messageClass);
+        }
     }
 }

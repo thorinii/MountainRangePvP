@@ -66,30 +66,41 @@ public class Server {
         }
     }
 
-    public void send(Message message, Proxy proxy) throws IOException {
-        proxy.messageIO.sendMessage(message);
+    public void send(Message message, Proxy proxy) {
+        proxy.sendMessage(message);
     }
 
-    public void broadcast(Message message) throws IOException {
+    public void broadcast(Message message) {
         for (ClientProxy proxy : clients) {
-            proxy.messageIO.sendMessage(message);
+            proxy.sendMessage(message);
         }
     }
 
-    public void broadcastExcept(Message message, Proxy not) throws IOException {
+    public void broadcastExcept(Message message, Proxy not) {
         for (ClientProxy proxy : clients) {
             if (proxy != not) {
-                proxy.messageIO.sendMessage(message);
+                proxy.sendMessage(message);
             }
         }
     }
 
     public void update() {
-        try {
-            messageQueue.update();
-        } catch (IOException ex) {
-            Log.warn("Error processing messages:", ex);
-            stop();
+        if (serverSocket.isClosed()) {
+            return;
+        }
+
+        for (ClientProxy proxy : clients) {
+            try {
+                proxy.update();
+            } catch (IOException ex) {
+                Log.warn("Error processing client:", ex);
+                
+                try {
+                    proxy.kill();
+                } catch (IOException ioe) {
+                    Log.warn("Error killing client connection", ioe);
+                }
+            }
         }
     }
 
@@ -140,7 +151,7 @@ public class Server {
 
         private void getHello() throws IOException {
             Message m = messageIO.readMessage();
-            messageQueue.pushMessage(m, this);
+            receiveQueue.pushMessage(m, this);
 
             if (m instanceof HelloMessage) {
                 HelloMessage hello = (HelloMessage) m;
@@ -155,7 +166,7 @@ public class Server {
 
         @Override
         protected void disposeConnection() throws IOException {
-            messageQueue.pushMessage(new PlayerDisconnectMessage(), this);
+            receiveQueue.pushMessage(new PlayerDisconnectMessage(), this);
         }
 
         @Override
@@ -169,6 +180,13 @@ public class Server {
 
         public String getPlayerName() {
             return playerName;
+        }
+
+        @Override
+        public void kill() throws IOException {
+            super.kill();
+
+            clients.remove(this);
         }
     }
 

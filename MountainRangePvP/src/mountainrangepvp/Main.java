@@ -21,7 +21,6 @@ import mountainrangepvp.game.ServerGame;
 public class Main {
 
     public static void main(String[] args) {
-        Log.setupLog();
         Log.info("Startup");
 
         int option = JOptionPane.showOptionDialog(null,
