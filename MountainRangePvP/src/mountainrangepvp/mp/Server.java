@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mountainrangepvp.Log;
+import mountainrangepvp.mp.lanping.PingServer;
 import mountainrangepvp.mp.message.*;
 
 /**
@@ -25,6 +26,7 @@ public class Server {
     //
     private ServerSocket serverSocket;
     private Thread acceptThread;
+    private PingServer pingServer;
     //
     private final List<ClientProxy> clients;
     //
@@ -47,6 +49,9 @@ public class Server {
 
         acceptThread = new Thread(new AcceptRunnable(serverSocket));
         acceptThread.start();
+
+        pingServer = new PingServer();
+        pingServer.start();
     }
 
     public void stop() {
@@ -94,7 +99,7 @@ public class Server {
                 proxy.update();
             } catch (IOException ex) {
                 Log.warn("Error processing client:", ex);
-                
+
                 try {
                     proxy.kill();
                 } catch (IOException ioe) {
@@ -167,6 +172,7 @@ public class Server {
         @Override
         protected void disposeConnection() throws IOException {
             receiveQueue.pushMessage(new PlayerDisconnectMessage(), this);
+            clients.remove(this);
         }
 
         @Override
@@ -185,8 +191,6 @@ public class Server {
         @Override
         public void kill() throws IOException {
             super.kill();
-
-            clients.remove(this);
         }
     }
 

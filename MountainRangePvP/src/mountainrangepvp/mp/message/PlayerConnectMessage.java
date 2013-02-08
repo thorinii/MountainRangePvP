@@ -29,11 +29,6 @@ public class PlayerConnectMessage implements Message {
     }
 
     @Override
-    public int getCode() {
-        return MultiplayerConstants.MESSAGE_PLAYER_CONNECT;
-    }
-
-    @Override
     public void writeOut(DataOutputStream dos) throws IOException {
         dos.writeUTF(playerName);
     }

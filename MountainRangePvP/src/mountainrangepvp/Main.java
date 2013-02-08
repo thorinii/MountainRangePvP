@@ -22,48 +22,17 @@ public class Main {
 
     public static void main(String[] args) {
         Log.info("Startup");
+        LauncherGUI.laf();
 
-        int option = JOptionPane.showOptionDialog(null,
-                                                  "Start a server or connect to one?",
-                                                  "Mountain Range PvP",
-                                                  JOptionPane.OK_CANCEL_OPTION,
-                                                  JOptionPane.QUESTION_MESSAGE,
-                                                  null,
-                                                  new String[]{
-                    "Server",
-                    "Client"}, "Client");
-
-        switch (option) {
-            case 0:
-                Log.info("Starting Server");
-                startServer();
-                break;
-            case 1:
-                Log.info("Starting Client");
-                startClient();
-                break;
-        }
+        LauncherGUI launcher = new LauncherGUI();
+        launcher.setVisible(true);
     }
 
-    private static void startServer() {
-        String playerName = JOptionPane.showInputDialog(null,
-                                                        "What will you call yourself?",
-                                                        "Mountain Range PvP",
-                                                        JOptionPane.QUESTION_MESSAGE);
-
-        startGame(new ServerGame(playerName, (int) (Math.random() * 100)));
+    public static void startServer(String playerName) {
+        startGame(new ServerGame(playerName, (int) (Math.random() * 100) + 1));
     }
 
-    private static void startClient() {
-        String playerName = JOptionPane.showInputDialog(null,
-                                                        "What will you call yourself?",
-                                                        "Mountain Range PvP",
-                                                        JOptionPane.QUESTION_MESSAGE);
-        String serverIP = JOptionPane.showInputDialog(null,
-                                                      "What's the server IP address?",
-                                                      "Mountain Range PvP",
-                                                      JOptionPane.QUESTION_MESSAGE);
-
+    public static void startClient(String playerName, String serverIP) {
         startGame(new ClientGame(playerName, serverIP));
     }
 
