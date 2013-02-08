@@ -19,7 +19,7 @@ public class MountainHeightMap extends AbstractHeightMap {
         this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
         this.noise = new Noise();
 
-        makeWalls = false;
+        makeWalls = true;
         origin = true;
     }
 

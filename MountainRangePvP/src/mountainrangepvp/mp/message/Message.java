@@ -14,8 +14,6 @@ import java.io.IOException;
  */
 public interface Message {
 
-    public int getCode();
-
     public void writeOut(DataOutputStream dos) throws IOException;
 
     public void readIn(DataInputStream dis) throws IOException;

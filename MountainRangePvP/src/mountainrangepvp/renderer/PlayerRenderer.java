@@ -20,7 +20,7 @@ public class PlayerRenderer implements Renderer {
 
     private static final Color LOCAL_PLAYER_COLOUR = new Color(0, 1, 1, 1);
     private static final Color REMOTE_PLAYER_COLOUR = new Color(1, 1, 0, 1);
-    private static final int CROSSHAIR = 20;
+    private static final int CROSSHAIR = 40;
     //
     private final PlayerManager playerManager;
     private final int width, height;
@@ -44,9 +44,7 @@ public class PlayerRenderer implements Renderer {
         }
         shapeRenderer.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         drawGun(playerManager.getLocalPlayer(), scrollx, scrolly);
-        shapeRenderer.end();
     }
 
     private void drawPlayer(Player player, int scrollx, int scrolly) {
@@ -77,11 +75,19 @@ public class PlayerRenderer implements Renderer {
         gun.y -= scrolly;
 
         shapeRenderer.setColor(LOCAL_PLAYER_COLOUR);
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.line(
                 gun.x - CROSSHAIR, gun.y,
                 gun.x + CROSSHAIR, gun.y);
         shapeRenderer.line(
                 gun.x, gun.y - CROSSHAIR,
                 gun.x, gun.y + CROSSHAIR);
+        shapeRenderer.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Circle);
+        shapeRenderer.circle(gun.x, gun.y, CROSSHAIR * 3 / 4);
+        shapeRenderer.circle(gun.x, gun.y, CROSSHAIR * 1 / 4);
+        shapeRenderer.end();
     }
 }

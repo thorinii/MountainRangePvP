@@ -24,11 +24,6 @@ public class SeedMessage implements Message {
         this.seed = seed;
     }
 
-    @Override
-    public int getCode() {
-        return MultiplayerConstants.MESSAGE_SEED;
-    }
-
     public int getSeed() {
         return seed;
     }

@@ -37,11 +37,6 @@ public class PlayerUpdateMessage implements Message {
         this.alive = alive;
     }
 
-    @Override
-    public int getCode() {
-        return MultiplayerConstants.MESSAGE_PLAYER_UPDATE;
-    }
-
     public String getPlayer() {
         return player;
     }
