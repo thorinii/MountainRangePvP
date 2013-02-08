@@ -6,6 +6,7 @@ package mountainrangepvp.player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,5 +35,16 @@ public class PlayerManager {
 
     public void addPlayer(String playerName) {
         players.add(new Player(playerName));
+    }
+
+    public void removePlayer(String playerName) {
+        Iterator<Player> itr = players.iterator();
+        while (itr.hasNext()) {
+            Player p = itr.next();
+
+            if (p.getName().equals(playerName)) {
+                itr.remove();
+            }
+        }
     }
 }

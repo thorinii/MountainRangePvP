@@ -53,6 +53,7 @@ public class ClientGame extends Game {
             client.getMessageQueue().addListener(new ServerMessageListener());
             client.start();
         } catch (IOException ioe) {
+            Log.warn("Error starting server connection:", ioe);
             JOptionPane.showMessageDialog(null, "Error starting client " + ioe,
                                           "Mountain Range PvP",
                                           JOptionPane.ERROR_MESSAGE);
@@ -109,7 +110,15 @@ public class ClientGame extends Game {
                 PlayerConnectMessage pcm = (PlayerConnectMessage) message;
                 playerManager.addPlayer(pcm.getPlayerName());
 
-                Log.info(pcm.getPlayerName(), " connected");
+                Log.info(pcm.getPlayerName(), "connected");
+            } else if (message instanceof PlayerDisconnectMessage) {
+                PlayerDisconnectMessage pdm = (PlayerDisconnectMessage) message;
+                if (pdm.getPlayerName().isEmpty()) {
+                    Gdx.app.exit();
+                }
+
+                playerManager.removePlayer(pdm.getPlayerName());
+                Log.info(pdm.getPlayerName(), "disconnected");
             }
         }
     }

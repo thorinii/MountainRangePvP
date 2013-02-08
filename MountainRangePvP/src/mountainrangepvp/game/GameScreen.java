@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.nio.IntBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mountainrangepvp.Log;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
@@ -67,7 +68,7 @@ public class GameScreen implements Screen {
 
                 Mouse.setNativeCursor(emptyCursor);
             } catch (LWJGLException ex) {
-                ex.printStackTrace();
+                Log.warn("Error hiding mouse:", ex);
             }
         }
     }

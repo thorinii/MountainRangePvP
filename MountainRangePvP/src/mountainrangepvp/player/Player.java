@@ -16,7 +16,7 @@ public class Player {
     public static final int HEIGHT = 60;
     public static final float WALK_SPEED = 300;
     public static final float AIR_SPEED = 200;
-    public static final float FRICTION = 0.3f;
+    public static final float FRICTION = 0.85f;
     public static final int MAX_WALK_SLOPE = 3;
     public static final int MIN_SLIDE_SLOPE = 1;
     public static final int MAX_SLIDE_SLOPE = 30;

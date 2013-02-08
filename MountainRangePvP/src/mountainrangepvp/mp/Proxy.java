@@ -7,6 +7,7 @@ package mountainrangepvp.mp;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
+import mountainrangepvp.Log;
 import mountainrangepvp.mp.message.*;
 
 /**
@@ -30,7 +31,7 @@ public abstract class Proxy implements Runnable {
         try {
             doNetworking();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            Log.warn("Error reading messages:", ioe);
         }
     }
 
@@ -41,8 +42,10 @@ public abstract class Proxy implements Runnable {
             while (!Thread.currentThread().isInterrupted() && isValid()) {
                 Message message = messageIO.readMessage();
                 messageQueue.pushMessage(message, this);
+                onMessage(message);
             }
         } catch (EOFException eofe) {
+            Log.info("Abnormal disconnect:", eofe);
         }
 
         disposeConnection();
@@ -51,6 +54,9 @@ public abstract class Proxy implements Runnable {
     protected abstract void setupConnection() throws IOException;
 
     protected abstract void disposeConnection() throws IOException;
+
+    protected void onMessage(Message m) throws IOException {
+    }
 
     public boolean isValid() {
         return !socket.isClosed();

@@ -52,7 +52,7 @@ public class Main {
                                                         "Mountain Range PvP",
                                                         JOptionPane.QUESTION_MESSAGE);
 
-        startGame(new ServerGame(playerName, 99));
+        startGame(new ServerGame(playerName, (int) (Math.random() * 100)));
     }
 
     private static void startClient() {

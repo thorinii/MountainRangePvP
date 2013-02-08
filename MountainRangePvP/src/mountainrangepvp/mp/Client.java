@@ -6,9 +6,9 @@ package mountainrangepvp.mp;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mountainrangepvp.Log;
 import mountainrangepvp.mp.message.*;
 
 /**
@@ -40,7 +40,7 @@ public class Client {
         try {
             proxy.kill();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Log.warn("Could not kill server connection:", ex);
         }
     }
 
@@ -48,13 +48,8 @@ public class Client {
         try {
             messageQueue.update();
         } catch (IOException ex) {
-            ex.printStackTrace();
-
-            try {
-                proxy.kill();
-            } catch (IOException ex1) {
-                ex1.printStackTrace();
-            }
+            Log.warn("Error processing messages:", ex);
+            stop();
         }
     }
 
@@ -96,6 +91,7 @@ public class Client {
 
         @Override
         protected void disposeConnection() throws IOException {
+            messageQueue.pushMessage(new PlayerDisconnectMessage(), this);
         }
     }
 

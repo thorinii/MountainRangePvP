@@ -16,4 +16,5 @@ public class MultiplayerConstants {
     public static final int MESSAGE_HELLO = 1;
     public static final int MESSAGE_SEED = 2;
     public static final int MESSAGE_PLAYER_CONNECT = 3;
+    public static final int MESSAGE_PLAYER_DISCONNECT = 4;
 }

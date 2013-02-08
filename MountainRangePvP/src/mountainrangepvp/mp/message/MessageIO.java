@@ -70,6 +70,8 @@ public class MessageIO {
                 return new SeedMessage();
             case MultiplayerConstants.MESSAGE_PLAYER_CONNECT:
                 return new PlayerConnectMessage();
+            case MultiplayerConstants.MESSAGE_PLAYER_DISCONNECT:
+                return new PlayerDisconnectMessage();
         }
 
         throw new IllegalArgumentException(
