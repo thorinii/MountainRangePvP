@@ -5,6 +5,12 @@
 package mountainrangepvp;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.logging.*;
 
 /**
@@ -14,6 +20,10 @@ import java.util.logging.*;
 public class Log {
 
     private static final Logger LOG = Logger.getLogger("mountainrangepvp");
+
+    static {
+        setupLog();
+    }
 
     public static void setupLog() {
         LOG.setLevel(Level.FINE);
@@ -41,7 +51,8 @@ public class Log {
             if (d instanceof String) {
                 builder.append((String) d);
             } else if (d instanceof Exception) {
-                builder.append(d.getClass());
+                builder.append(d.getClass().getName());
+                builder.append(' ');
                 builder.append(((Exception) d).getMessage());
             } else {
                 builder.append(d);
@@ -61,8 +72,10 @@ public class Log {
 
     private static FileHandler makeFileHandler() {
         try {
+            String ip = getIP();
+
             FileHandler handler = new FileHandler(
-                    "./mountainrangepvp-log-%u.txt");
+                    "./log-" + ip + "-%u.txt");
             handler.setLevel(Level.FINE);
             handler.setFormatter(new SimpleFormatter());
             return handler;
@@ -70,5 +83,26 @@ public class Log {
             ioe.printStackTrace();
             return null;
         }
+    }
+
+    private static String getIP() {
+        try {
+            Enumeration<NetworkInterface> nics = NetworkInterface.
+                    getNetworkInterfaces();
+            for (NetworkInterface nic : Collections.list(nics)) {
+                Enumeration<InetAddress> addresses = nic.getInetAddresses();
+                for (InetAddress address : Collections.list(addresses)) {
+                    if (address instanceof Inet4Address) {
+                        if (!address.isLoopbackAddress()) {
+                            return address.getHostAddress();
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+
+        return "localhost";
     }
 }

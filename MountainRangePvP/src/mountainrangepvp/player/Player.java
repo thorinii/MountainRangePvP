@@ -68,8 +68,10 @@ public class Player {
     }
 
     public void kill() {
-        alive = false;
-        respawnTimer = 0;
+        if (alive) {
+            alive = false;
+            respawnTimer = 0;
+        }
     }
 
     public boolean isAlive() {

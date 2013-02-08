@@ -6,12 +6,14 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import mountainrangepvp.Log;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
+import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.mp.Proxy;
 import mountainrangepvp.mp.Server;
 import mountainrangepvp.mp.message.*;
@@ -37,6 +39,8 @@ public class ServerGame extends Game {
     private final InputHandler inputHandler;
     //
     private GameScreen gameScreen;
+    //
+    private int playerUpdateTimer;
 
     public ServerGame(String playerName, int seed) {
         this.playerName = playerName;
@@ -81,6 +85,13 @@ public class ServerGame extends Game {
         shotManager.update(dt);
         physicsSystem.update(dt);
         gameScreen.render(dt);
+
+        playerUpdateTimer += (int) (1000 * dt);
+        if (playerUpdateTimer > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
+            server.broadcast(new PlayerUpdateMessage(playerManager.
+                    getLocalPlayer()));
+            playerUpdateTimer = 0;
+        }
     }
 
     @Override
@@ -121,6 +132,14 @@ public class ServerGame extends Game {
                 server.broadcastExcept(new PlayerDisconnectMessage(name), proxy);
 
                 Log.info(name, "disconnected");
+            } else if (message instanceof PlayerUpdateMessage) {
+                PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
+
+                Player p = playerManager.getPlayer(pum.getPlayer());
+                p.getPosition().set(pum.getPos());
+                p.getVelocity().set(pum.getVel());
+
+                server.broadcastExcept(message, proxy);
             }
         }
     }

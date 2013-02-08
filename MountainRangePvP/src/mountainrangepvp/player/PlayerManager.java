@@ -47,4 +47,14 @@ public class PlayerManager {
             }
         }
     }
+
+    public Player getPlayer(String playerName) {
+        for (Player p : players) {
+            if (p.getName().equals(playerName)) {
+                return p;
+            }
+        }
+
+        return null;
+    }
 }
