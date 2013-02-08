@@ -1,12 +1,8 @@
-Feb 07, 2013 8:11:20 PM mountainrangepvp.Log info
+Feb 08, 2013 2:22:21 PM mountainrangepvp.Log info
 INFO: Startup 
-Feb 07, 2013 8:11:22 PM mountainrangepvp.Log info
+Feb 08, 2013 2:22:22 PM mountainrangepvp.Log info
 INFO: Starting Server 
-Feb 07, 2013 8:11:24 PM mountainrangepvp.Log info
+Feb 08, 2013 2:22:23 PM mountainrangepvp.Log info
 INFO: Starting Server... 
-Feb 07, 2013 8:11:33 PM mountainrangepvp.Log info
-INFO: Tim  connected 
-Feb 07, 2013 8:11:43 PM mountainrangepvp.Log info
-INFO: Atlas  connected 
-Feb 07, 2013 8:12:14 PM mountainrangepvp.Log info
-INFO: Tim  connected 
+Feb 08, 2013 2:23:38 PM mountainrangepvp.Log warn
+WARNING: Error accepting clients: class java.net.SocketExceptionSocket closed 

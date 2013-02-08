@@ -12,38 +12,49 @@ public class MountainHeightMap extends AbstractHeightMap {
 
     private final int seed;
     private final Noise noise;
+    private boolean makeWalls;
+    private boolean origin;
 
     public MountainHeightMap(int seed) {
         this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
         this.noise = new Noise();
+
+        makeWalls = false;
+        origin = true;
     }
 
     @Override
     public int getSample(int x) {
-        if (x > 300 && x < 350) {
-            // Hole Generator
-            return -100000;
-        } else if (Math.abs(x % 500) < 10) {
+        if (origin && x == 0) {
+            return -10000;
+        }
+
+        if (makeWalls && Math.abs(x % 1500) < 10) {
             // Wall Generator
             return (int) sample(x / 500 * 500) + 100;
-        } else {
-            // Regular terrain
-            return (int) (0.2f * sample(x)
-                    + 0.8f * (sample(x - 1) + sample(x - 2) + sample(x - 3)
-                    + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6);
         }
+
+
+        // Regular terrain
+        return (int) (0.2f * sample(x)
+                + 0.8f * (sample(x - 1) + sample(x - 2) + sample(x - 3)
+                + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6);
+
     }
 
     private float sample(float x) {
         float noise = 50;
 
-        noise += InterpolatedNoise1(x / 300f) * 4000;
-        noise += InterpolatedNoise1(x / 70f) * 3000;
-        noise += InterpolatedNoise1(x / 50f) * 2000;
-        noise += InterpolatedNoise1(x / 30f) * 700;
-        noise += InterpolatedNoise1(x / 5f) * 300;
-        noise += InterpolatedNoise1(x / 2f) * 100;
-        noise += InterpolatedNoise1(x / 1f) * 50;
+        noise += InterpolatedNoise1(x / 1000f + 100) * 10000;
+        noise += InterpolatedNoise1(x / 300f + 234) * 5000;
+        noise += InterpolatedNoise1(x / 70f + 12) * 1000;
+        noise += InterpolatedNoise1(x / 50f + 5) * 700;
+        noise += InterpolatedNoise1(x / 30f + 32) * 300;
+        noise += InterpolatedNoise1(x / 5f + 13) * 100;
+        /*
+         * noise += InterpolatedNoise1(x / 2f) * 100;
+         * noise += InterpolatedNoise1(x / 1f) * 50;
+         */
 
         return noise;
     }

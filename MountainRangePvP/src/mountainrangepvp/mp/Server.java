@@ -11,8 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mountainrangepvp.Log;
 import mountainrangepvp.mp.message.*;
-import mountainrangepvp.player.PlayerManager;
 
 /**
  *
@@ -54,14 +54,14 @@ public class Server {
             acceptThread.interrupt();
             serverSocket.close();
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+            Log.warn("Error stopping server", ioe);
         }
 
         for (ClientProxy client : clients) {
             try {
                 client.kill();
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                Log.warn("Error stopping client connection", ioe);
             }
         }
     }
@@ -88,7 +88,7 @@ public class Server {
         try {
             messageQueue.update();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            Log.warn("Error processing messages:", ex);
             stop();
         }
     }
@@ -116,12 +116,14 @@ public class Server {
                     new Thread(crr).start();
                 }
             } catch (IOException ioe) {
-                ioe.printStackTrace();
+                Log.warn("Error accepting clients:", ioe);
             }
         }
     }
 
-    private class ClientProxy extends Proxy {
+    public class ClientProxy extends Proxy {
+
+        private String playerName;
 
         public ClientProxy(Socket socket, MessageQueue messageQueue) throws
                 IOException {
@@ -153,6 +155,20 @@ public class Server {
 
         @Override
         protected void disposeConnection() throws IOException {
+            messageQueue.pushMessage(new PlayerDisconnectMessage(), this);
+        }
+
+        @Override
+        protected void onMessage(Message m) throws IOException {
+            if (m instanceof PlayerConnectMessage) {
+                PlayerConnectMessage pcm = (PlayerConnectMessage) m;
+
+                playerName = pcm.getPlayerName();
+            }
+        }
+
+        public String getPlayerName() {
+            return playerName;
         }
     }
 

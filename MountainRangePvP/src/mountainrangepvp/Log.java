@@ -24,45 +24,24 @@ public class Log {
     }
 
     public static void info(Object... data) {
-        StringBuilder builder = new StringBuilder();
-        for (Object d : data) {
-            if (d instanceof String) {
-                builder.append((String) d);
-            } else if (d instanceof Exception) {
-                builder.append(((Exception) d).getMessage());
-            } else {
-                builder.append(d);
-            }
-
-            builder.append(' ');
-        }
-
-        LOG.info(builder.toString());
+        LOG.info(concat(data));
     }
 
     public static void fine(Object... data) {
-        StringBuilder builder = new StringBuilder();
-        for (Object d : data) {
-            if (d instanceof String) {
-                builder.append((String) d);
-            } else if (d instanceof Exception) {
-                builder.append(((Exception) d).getMessage());
-            } else {
-                builder.append(d);
-            }
-
-            builder.append(' ');
-        }
-
-        LOG.fine(builder.toString());
+        LOG.fine(concat(data));
     }
 
     public static void warn(Object... data) {
+        LOG.warning(concat(data));
+    }
+
+    private static String concat(Object... data) {
         StringBuilder builder = new StringBuilder();
         for (Object d : data) {
             if (d instanceof String) {
                 builder.append((String) d);
             } else if (d instanceof Exception) {
+                builder.append(d.getClass());
                 builder.append(((Exception) d).getMessage());
             } else {
                 builder.append(d);
@@ -71,12 +50,12 @@ public class Log {
             builder.append(' ');
         }
 
-        LOG.warning(builder.toString());
+        return builder.toString();
     }
 
     private static ConsoleHandler makeConsoleHandler() {
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.WARNING);
+        handler.setLevel(Level.INFO);
         return handler;
     }
 
@@ -84,10 +63,11 @@ public class Log {
         try {
             FileHandler handler = new FileHandler(
                     "./mountainrangepvp-log-%u.txt");
-            handler.setLevel(Level.INFO);
+            handler.setLevel(Level.FINE);
             handler.setFormatter(new SimpleFormatter());
             return handler;
         } catch (IOException ioe) {
+            ioe.printStackTrace();
             return null;
         }
     }
