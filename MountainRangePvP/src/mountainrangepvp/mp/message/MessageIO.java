@@ -66,7 +66,7 @@ public class MessageIO {
 
     private Message getMessageByClass(String messageClass) {
         try {
-            Class<Message> klass = messageClasses.get(messageClass);;
+            Class<Message> klass = messageClasses.get(messageClass);
 
             if (klass == null) {
                 klass = (Class<Message>) Class.forName(messageClass);
@@ -75,8 +75,8 @@ public class MessageIO {
 
             return (Message) klass.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            throw new IllegalArgumentException(
-                    "Could not find message for code: " + messageClass);
+            Log.warn("Could not find message for class: ", messageClass, e);
+            return null;
         }
     }
 }

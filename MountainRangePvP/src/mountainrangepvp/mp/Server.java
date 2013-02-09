@@ -47,7 +47,7 @@ public class Server {
     public void start() throws IOException {
         serverSocket = new ServerSocket(port);
 
-        acceptThread = new Thread(new AcceptRunnable(serverSocket));
+        acceptThread = new Thread(new AcceptRunnable(serverSocket), "Game Server");
         acceptThread.start();
 
         pingServer = new PingServer();
@@ -58,6 +58,8 @@ public class Server {
         try {
             acceptThread.interrupt();
             serverSocket.close();
+
+            pingServer.stop();
         } catch (IOException ioe) {
             Log.warn("Error stopping server", ioe);
         }

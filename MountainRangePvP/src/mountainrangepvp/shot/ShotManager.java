@@ -6,6 +6,7 @@ package mountainrangepvp.shot;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,20 +22,38 @@ public class ShotManager {
 
     public static final int GUN_RATE = 100;
     public static final int MAX_SHOT_LIFE = 10;
-//
+    //
     private final List<Shot> shots;
     private final HeightMap heightMap;
     private final PlayerManager playerManager;
+    private final List<ShotListener> listeners;
 
     public ShotManager(HeightMap heightMap, PlayerManager playerManager) {
         shots = new LinkedList<>();
         this.heightMap = heightMap;
         this.playerManager = playerManager;
+        listeners = new ArrayList<>();
+    }
+
+    public void addShotListener(ShotListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeShotListener(ShotListener listener) {
+        listeners.remove(listener);
     }
 
     public void addShot(Vector2 base, Vector2 direction, Player player) {
         Shot shot = new Shot(base, direction, player);
+        addShot(shot);
+    }
+
+    public void addShot(Shot shot) {
         shots.add(shot);
+
+        for (ShotListener listener : listeners) {
+            listener.shotAdd(shot);
+        }
     }
 
     public void update(float dt) {
@@ -48,11 +67,23 @@ public class ShotManager {
                 itr.remove();
             } else if (testTerrain(shot, pos, npos)) {
                 itr.remove();
-            } else if (testPlayers(shot, pos, npos)) {
-                itr.remove();
+
+                for (ShotListener listener : listeners) {
+                    listener.shotTerrainCollision(shot);
+                }
             } else {
-                shot.time += dt;
+                Player hit = testPlayers(shot, pos, npos);
+                if (hit != null) {
+                    itr.remove();
+                    hit.kill();
+
+                    for (ShotListener listener : listeners) {
+                        listener.shotPlayerCollision(shot, hit);
+                    }
+                }
             }
+
+            shot.time += dt;
         }
     }
 
@@ -86,7 +117,7 @@ public class ShotManager {
         return false;
     }
 
-    private boolean testPlayers(Shot shot, Vector2 pos, Vector2 npos) {
+    private Player testPlayers(Shot shot, Vector2 pos, Vector2 npos) {
         Vector2 shot1 = pos;
         Vector2 shot2 = npos;
 
@@ -99,32 +130,28 @@ public class ShotManager {
             p1 = player.getPosition().cpy();
             p2 = p1.cpy().add(0, Player.HEIGHT);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
-                player.kill();
-                return true;
+                return player;
             }
 
             p2 = p1.cpy().add(Player.WIDTH, 0);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
-                player.kill();
-                return true;
+                return player;
             }
 
             p1 = p1.add(Player.WIDTH, 0);
             p2 = p1.cpy().add(0, Player.HEIGHT);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
-                player.kill();
-                return true;
+                return player;
             }
 
             p1 = player.getPosition().cpy().add(0, Player.HEIGHT);
             p2 = p1.cpy().add(Player.WIDTH, 0);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
-                player.kill();
-                return true;
+                return player;
             }
         }
 
-        return false;
+        return null;
     }
 
     public List<Shot> getShots() {
