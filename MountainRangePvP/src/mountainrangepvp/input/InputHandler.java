@@ -128,11 +128,11 @@ public class InputHandler implements InputProcessor {
             Vector2 gpos = player.getGunPosition();
 
             ppos.x += Player.WIDTH / 2;
-            ppos.y += Player.HEIGHT / 2;
+            ppos.y += 60;
 
             Vector2 direction = gpos.cpy().sub(ppos).nor();
             Vector2 base = ppos.cpy().add(
-                    direction.cpy().mul(Player.HEIGHT / 2 + 10));
+                    direction.cpy().mul(1));
 
             shotManager.addShot(base, direction, player);
         }

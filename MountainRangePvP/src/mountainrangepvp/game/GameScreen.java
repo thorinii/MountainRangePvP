@@ -20,6 +20,7 @@ import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.renderer.HeightMapRenderer;
 import mountainrangepvp.renderer.PlayerRenderer;
 import mountainrangepvp.renderer.ShotRenderer;
+import mountainrangepvp.renderer.WorldRenderer;
 import mountainrangepvp.shot.ShotManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -37,21 +38,18 @@ public class GameScreen implements Screen {
     private Cursor emptyCursor = null;
     //
     private final PlayerManager playerManager;
-    private final HeightMap heightMap;
-    private final HeightMapRenderer heightMapRenderer;
-    private final PlayerRenderer playerRenderer;
-    private final ShotRenderer shotRenderer;
+    private final WorldRenderer renderer;
     private final int width, height;
 
     public GameScreen(HeightMap heightMap,
             PlayerManager playerManager,
             ShotManager shotManager) {
         this.playerManager = playerManager;
-        this.heightMap = heightMap;
 
-        heightMapRenderer = new HeightMapRenderer(heightMap);
-        playerRenderer = new PlayerRenderer(playerManager);
-        shotRenderer = new ShotRenderer(shotManager);
+        renderer = new WorldRenderer();
+        renderer.setHeightMap(heightMap);
+        renderer.setPlayerManager(playerManager);
+        renderer.setShotManager(shotManager);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -83,9 +81,7 @@ public class GameScreen implements Screen {
         pos.x = pos.x - width / 2 + Player.WIDTH / 2;
         pos.y = pos.y - height / 2 + Player.HEIGHT / 2;
 
-        shotRenderer.render((int) pos.x, (int) pos.y);
-        heightMapRenderer.render((int) pos.x, (int) pos.y);
-        playerRenderer.render((int) pos.x, (int) pos.y);
+        renderer.render(pos);
     }
 
     @Override

@@ -1,3 +1,9 @@
+0.8 Images | 09-02-13:
+    -Added Player Image
+    -Added Shot Image
+    -Added Terrain Slice Image
+
+
 0.7 Multiplayer | 09-02-13:
     -Added LAN Ping Server/Client
     -Player Connect/Disconnect
