@@ -40,8 +40,8 @@ public class Main {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
         config.title = "Mountain Range PvP";
-        config.width = 800;
-        config.height = 600;
+        config.width = 1224;
+        config.height = 700;
         config.useGL20 = true;
         config.forceExit = false;
 

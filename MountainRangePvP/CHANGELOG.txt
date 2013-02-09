@@ -1,7 +1,15 @@
+0.7 Multiplayer | 09-02-13:
+    -Added LAN Ping Server/Client
+    -Player Connect/Disconnect
+    -Player Update
+    -Shot Transmission
+
+
 0.7 Multiplayer | 06-02-13:
     -Added Multiplayer Client and Server
     -Added Message Handling
     -Added Hello and Seed Messages
+
 
 0.6 Gun Player Collision | 04-02-13:
     -Added Collision with Player

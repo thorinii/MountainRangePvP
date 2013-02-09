@@ -20,6 +20,8 @@ import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.shot.Shot;
+import mountainrangepvp.shot.ShotListener;
 import mountainrangepvp.shot.ShotManager;
 
 /**
@@ -91,6 +93,8 @@ public class ClientGame extends Game {
         super.dispose();
 
         client.stop();
+
+        System.exit(0);
     }
 
     private class ServerMessageListener implements MessageListener {
@@ -106,6 +110,8 @@ public class ClientGame extends Game {
                 playerManager = new PlayerManager(playerName);
                 shotManager = new ShotManager(heightMap, playerManager);
                 physicsSystem = new PhysicsSystem(heightMap, playerManager);
+
+                shotManager.addShotListener(new AddShotListener());
 
                 inputHandler = new InputHandler(playerManager, shotManager);
                 inputHandler.register();
@@ -140,7 +146,29 @@ public class ClientGame extends Game {
                 if (!pum.isAlive()) {
                     p.kill();
                 }
+            } else if (message instanceof NewShotMessage) {
+                NewShotMessage nsm = (NewShotMessage) message;
+
+                shotManager.addShot(nsm.getShot(playerManager));
             }
+        }
+    }
+
+    private class AddShotListener implements ShotListener {
+
+        @Override
+        public void shotAdd(Shot shot) {
+            if (shot.player == playerManager.getLocalPlayer()) {
+                client.send(new NewShotMessage(shot));
+            }
+        }
+
+        @Override
+        public void shotTerrainCollision(Shot shot) {
+        }
+
+        @Override
+        public void shotPlayerCollision(Shot shot, Player player) {
         }
     }
 }

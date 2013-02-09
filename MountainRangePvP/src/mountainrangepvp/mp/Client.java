@@ -33,7 +33,7 @@ public class Client {
         Socket socket = new Socket(host, port);
 
         proxy = new ServerProxy(socket, messageQueue);
-        new Thread(proxy).start();
+        new Thread(proxy, "Game Client").start();
     }
 
     public void stop() {

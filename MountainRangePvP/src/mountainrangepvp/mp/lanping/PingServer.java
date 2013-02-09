@@ -39,9 +39,14 @@ public class PingServer {
                     Log.info("Ping Server shutting down", ex);
                 }
             }
-        });
+        }, "Ping Server");
         pingThread.setDaemon(true);
         pingThread.start();
+    }
+
+    public void stop() {
+        pingThread.interrupt();
+        socket.close();
     }
 
     private DatagramPacket makePacket() {

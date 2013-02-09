@@ -47,7 +47,7 @@ public class PingClient {
                     Log.info("Ping Server shutting down", ex);
                 }
             }
-        });
+        }, "Ping Client");
         listenThread.setDaemon(true);
         listenThread.start();
     }
