@@ -239,9 +239,8 @@ public class LauncherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_serversListValueChanged
 
     private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        setVisible(false);
         dispose();
-        
+
         pingClient.stop();
 
         if (gameTypeClientBtn.isSelected()) {

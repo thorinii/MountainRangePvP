@@ -44,7 +44,7 @@ public class PingClient {
                         Thread.sleep(1000 / MultiplayerConstants.PING_RATE);
                     }
                 } catch (InterruptedException ex) {
-                    Log.info("Ping Server shutting down", ex);
+                    Log.info("Ping Client shutting down", ex);
                 }
             }
         }, "Ping Client");

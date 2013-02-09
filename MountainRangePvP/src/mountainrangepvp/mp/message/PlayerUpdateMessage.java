@@ -80,4 +80,9 @@ public class PlayerUpdateMessage implements Message {
 
         alive = dis.readBoolean();
     }
+
+    @Override
+    public String toString() {
+        return "PlayerUpdate[" + player + "]";
+    }
 }

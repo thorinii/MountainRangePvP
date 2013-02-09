@@ -145,11 +145,15 @@ public class ClientGame extends Game {
                 PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
 
                 Player p = playerManager.getPlayer(pum.getPlayer());
-                p.getPosition().set(pum.getPos());
-                p.getVelocity().set(pum.getVel());
+                if (p == null) {
+                    Log.warn("Player Not Found:", pum.getPlayer());
+                } else {
+                    p.getPosition().set(pum.getPos());
+                    p.getVelocity().set(pum.getVel());
 
-                if (!pum.isAlive()) {
-                    p.kill();
+                    if (!pum.isAlive()) {
+                        p.kill();
+                    }
                 }
             } else if (message instanceof NewShotMessage) {
                 NewShotMessage nsm = (NewShotMessage) message;
