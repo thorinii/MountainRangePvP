@@ -4,8 +4,9 @@
  */
 package mountainrangepvp.renderer;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.shot.ShotManager;
 import mountainrangepvp.shot.Shot;
@@ -15,31 +16,41 @@ import mountainrangepvp.shot.Shot;
  * @author lachlan
  */
 public class ShotRenderer implements Renderer {
-
-    private static final int SHOT_RADIUS = 3;
-    private static final Color SHOT_COLOUR = new Color(0, 0, 0, 1);
 //
-    private final ShotManager shotManager;
-    private final ShapeRenderer shapeRenderer;
 
-    public ShotRenderer(ShotManager shotManager) {
+    private final ShotManager shotManager;
+    private final SpriteBatch batch;
+    private final Texture shotTexture;
+
+    public ShotRenderer(SpriteBatch batch, ShotManager shotManager) {
+        this.batch = batch;
         this.shotManager = shotManager;
-        shapeRenderer = new ShapeRenderer();
+
+        shotTexture = new Texture(Gdx.files.internal("shot/shot2.png"));
     }
 
-    public void render(int scrollx, int scrolly) {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
-        shapeRenderer.setColor(SHOT_COLOUR);
+    @Override
+    public void render(Vector2 scroll) {
+        batch.begin();
 
         for (Shot shot : shotManager.getShots()) {
             Vector2 shotPos = shot.position();
+            shotPos.sub(scroll);
 
-            shotPos.x -= scrollx;
-            shotPos.y -= scrolly;
+            Vector2 dir = shot.direction;
+            dir.angle();
 
-            shapeRenderer.filledCircle(shotPos.x, shotPos.y, SHOT_RADIUS);
+            batch.draw(shotTexture,
+                       shotPos.x, shotPos.y, // Position
+                       0, 0, // Origin
+                       shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
+                       1, 1, // Scale
+                       dir.angle(), // Rotation
+                       0, 0, // Src XY
+                       shotTexture.getWidth(), shotTexture.getHeight(), // Src WH
+                       false, false); // Flip
         }
 
-        shapeRenderer.end();
+        batch.end();
     }
 }

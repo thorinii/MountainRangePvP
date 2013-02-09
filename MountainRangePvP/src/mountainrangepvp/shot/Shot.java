@@ -13,7 +13,7 @@ import mountainrangepvp.player.Player;
  */
 public class Shot {
 
-    public static final int SHOT_SPEED = 1000;
+    public static final int SHOT_SPEED = 2000;
     public final Vector2 base;
     public final Vector2 direction;
     public final Player player;

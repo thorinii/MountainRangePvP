@@ -11,6 +11,7 @@ Multiplayer
 Complete Milestones
 ==================
 
+0.8 Images
 0.7 Multiplayer
 0.6 Gun Player Collision
 0.5 Gun Terrain Collision
