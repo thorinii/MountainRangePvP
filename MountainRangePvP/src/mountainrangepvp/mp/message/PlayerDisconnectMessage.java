@@ -37,4 +37,9 @@ public class PlayerDisconnectMessage implements Message {
     public void readIn(DataInputStream dis) throws IOException {
         playerName = dis.readUTF();
     }
+
+    @Override
+    public String toString() {
+        return "PlayerDisconnect[" + playerName + "]";
+    }
 }

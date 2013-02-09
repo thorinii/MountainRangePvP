@@ -20,6 +20,7 @@ public class PlayerRenderer implements Renderer {
 
     private static final Color LOCAL_PLAYER_COLOUR = new Color(0, 1, 1, 1);
     private static final Color REMOTE_PLAYER_COLOUR = new Color(1, 1, 0, 1);
+    private static final Color CROSSHAIR_COLOUR = new Color(1, 0, 0, 1);
     private static final int CROSSHAIR = 40;
     //
     private final PlayerManager playerManager;
@@ -74,7 +75,7 @@ public class PlayerRenderer implements Renderer {
         gun.x -= scrollx;
         gun.y -= scrolly;
 
-        shapeRenderer.setColor(LOCAL_PLAYER_COLOUR);
+        shapeRenderer.setColor(CROSSHAIR_COLOUR);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.line(

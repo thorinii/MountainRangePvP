@@ -29,7 +29,7 @@ public class Main {
     }
 
     public static void startServer(String playerName) {
-        startGame(new ServerGame(playerName, (int) (Math.random() * 100) + 1));
+        startGame(new ServerGame(playerName, 11));
     }
 
     public static void startClient(String playerName, String serverIP) {

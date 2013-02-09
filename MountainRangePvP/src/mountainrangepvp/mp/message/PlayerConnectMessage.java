@@ -37,4 +37,9 @@ public class PlayerConnectMessage implements Message {
     public void readIn(DataInputStream dis) throws IOException {
         playerName = dis.readUTF();
     }
+
+    @Override
+    public String toString() {
+        return "PlayerConnect[" + playerName + "]";
+    }
 }

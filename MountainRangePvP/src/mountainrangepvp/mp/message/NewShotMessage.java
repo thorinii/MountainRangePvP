@@ -54,4 +54,9 @@ public class NewShotMessage implements Message {
     public Shot getShot(PlayerManager playerManager) {
         return new Shot(base, direction, playerManager.getPlayer(player));
     }
+
+    @Override
+    public String toString() {
+        return "NewShot[" + player + "]";
+    }
 }
