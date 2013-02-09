@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import mountainrangepvp.Log;
+import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.generator.HeightMap;
 import mountainrangepvp.generator.MountainHeightMap;
 import mountainrangepvp.input.InputHandler;
@@ -40,6 +41,7 @@ public class ClientGame extends Game {
     private ShotManager shotManager;
     private PhysicsSystem physicsSystem;
     private InputHandler inputHandler;
+    private AudioManager audioManager;
     //
     private GameScreen gameScreen;
     //
@@ -115,6 +117,9 @@ public class ClientGame extends Game {
 
                 inputHandler = new InputHandler(playerManager, shotManager);
                 inputHandler.register();
+
+                audioManager = new AudioManager(playerManager, shotManager);
+                audioManager.loadAudio();
 
                 gameScreen = new GameScreen(heightMap, playerManager,
                                             shotManager);
