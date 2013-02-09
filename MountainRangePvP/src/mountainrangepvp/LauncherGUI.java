@@ -4,12 +4,16 @@
  */
 package mountainrangepvp;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -32,21 +36,39 @@ public class LauncherGUI extends javax.swing.JFrame {
     public LauncherGUI() {
         initComponents();
 
-        serversListModel = new DefaultListModel<>();
-        serversList.setModel(serversListModel);
-        serverIPTxt.setText("");
-
-        pingClient = new PingClient();
-
         try {
+            pingClient = new PingClient();
             pingClient.start();
         } catch (IOException ioe) {
             Log.warn("Could not start PingClient", ioe);
         }
 
+        serversListModel = new DefaultListModel<>();
+        serversList.setModel(serversListModel);
+        serverIPTxt.setText("");
+
         pingReadTimer = new Timer(1000, new PingReader());
         pingReadTimer.setRepeats(true);
         pingReadTimer.start();
+
+
+        DefaultComboBoxModel<String> displayModesModel = new DefaultComboBoxModel<>();
+        screenResBox.setModel(displayModesModel);
+
+        setupResolutions(displayModesModel);
+    }
+
+    private void setupResolutions(DefaultComboBoxModel<String> displayModesModel) {
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.
+                getLocalGraphicsEnvironment().
+                getDefaultScreenDevice();
+
+        DisplayMode[] modes = graphicsDevice.getDisplayModes();
+        for (DisplayMode mode : modes) {
+            displayModesModel.addElement(
+                    mode.getWidth() + "x" + mode.getHeight() + " (" + mode.
+                    getRefreshRate() + "Hz)" + " (" + mode.getBitDepth() + "bits)");
+        }
     }
 
     /**
@@ -73,6 +95,10 @@ public class LauncherGUI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         playerNameTxt = new javax.swing.JTextField();
         startBtn = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel5 = new javax.swing.JLabel();
+        fullscreenBtn = new javax.swing.JCheckBox();
+        screenResBox = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mountain Range PvP Launcher");
@@ -151,7 +177,7 @@ public class LauncherGUI extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(serverIPTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2)))
@@ -192,6 +218,48 @@ public class LauncherGUI extends javax.swing.JFrame {
             }
         });
 
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true), "Settings"));
+
+        jLabel5.setText("Screen Resolution:");
+
+        fullscreenBtn.setText("Fullscreen");
+        fullscreenBtn.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                fullscreenBtnItemStateChanged(evt);
+            }
+        });
+
+        screenResBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1000x800" }));
+        screenResBox.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(fullscreenBtn)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(screenResBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(fullscreenBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(screenResBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -199,19 +267,22 @@ public class LauncherGUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(startBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(startBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(startBtn)
                 .addContainerGap())
         );
@@ -239,16 +310,28 @@ public class LauncherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_serversListValueChanged
 
     private void startBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startBtnActionPerformed
-        dispose();
+        if (playerNameTxt.getText().isEmpty()) {
+            return;
+        }
 
+        dispose();
         pingClient.stop();
 
         if (gameTypeClientBtn.isSelected()) {
-            Main.startClient(playerNameTxt.getText(), serverIPTxt.getText());
+            Main.startClient(fullscreenBtn.isSelected(),
+                             (String) screenResBox.getSelectedItem(),
+                             playerNameTxt.getText(),
+                             serverIPTxt.getText());
         } else {
-            Main.startServer(playerNameTxt.getText());
+            Main.startServer(fullscreenBtn.isSelected(),
+                             (String) screenResBox.getSelectedItem(),
+                             playerNameTxt.getText());
         }
     }//GEN-LAST:event_startBtnActionPerformed
+
+    private void fullscreenBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fullscreenBtnItemStateChanged
+        screenResBox.setEnabled(fullscreenBtn.isSelected());
+    }//GEN-LAST:event_fullscreenBtnItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -279,6 +362,7 @@ public class LauncherGUI extends javax.swing.JFrame {
         //</editor-fold>
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox fullscreenBtn;
     private javax.swing.ButtonGroup gameTypeBtnGrp;
     private javax.swing.JRadioButton gameTypeClientBtn;
     private javax.swing.JRadioButton gameTypeServerBtn;
@@ -286,10 +370,13 @@ public class LauncherGUI extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField playerNameTxt;
+    private javax.swing.JComboBox screenResBox;
     private javax.swing.JTextField serverIPTxt;
     private javax.swing.JList serversList;
     private javax.swing.JButton startBtn;
