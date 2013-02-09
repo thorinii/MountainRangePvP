@@ -150,6 +150,10 @@ public class InputHandler implements InputProcessor {
             case Keys.D:
                 right = true;
                 break;
+            case Keys.ESCAPE:
+                System.out.println("Exit");
+                Gdx.app.exit();
+                break;
         }
         return true;
     }

@@ -28,22 +28,34 @@ public class Main {
         launcher.setVisible(true);
     }
 
-    public static void startServer(String playerName) {
-        startGame(new ServerGame(playerName, 11));
+    public static void startServer(boolean fullscreen, String resolution,
+            String playerName) {
+        startGame(fullscreen, resolution, new ServerGame(playerName, 11));
     }
 
-    public static void startClient(String playerName, String serverIP) {
-        startGame(new ClientGame(playerName, serverIP));
+    public static void startClient(boolean fullscreen, String resolution,
+            String playerName, String serverIP) {
+        startGame(fullscreen, resolution, new ClientGame(playerName, serverIP));
     }
 
-    private static void startGame(Game game) {
+    private static void startGame(boolean fullscreen, String resolution,
+            Game game) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
+        String[] res = resolution.split("x");
+
         config.title = "Mountain Range PvP";
-        config.width = 1224;
-        config.height = 700;
         config.useGL20 = true;
         config.forceExit = false;
+        config.fullscreen = fullscreen;
+
+        if (fullscreen) {
+            config.width = Integer.parseInt(res[0]);
+            config.height = Integer.parseInt(res[1].split(" ")[0]);
+        } else {
+            config.width = 1000;
+            config.height = 800;
+        }
 
         LwjglApplication app = new LwjglApplication(game, config);
     }
