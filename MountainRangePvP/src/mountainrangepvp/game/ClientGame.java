@@ -149,6 +149,7 @@ public class ClientGame extends Game {
                 } else {
                     p.getPosition().set(pum.getPos());
                     p.getVelocity().set(pum.getVel());
+                    p.getGunDirection().set(pum.getGun());
 
                     if (!pum.isAlive()) {
                         p.kill();
