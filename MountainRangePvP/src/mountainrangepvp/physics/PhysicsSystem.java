@@ -59,7 +59,9 @@ public class PhysicsSystem {
         checkGroundIntersection(player, pos, vel);
 
 
-        player.updateRespawnTimer(dt);
+        if (playerManager.getLocalPlayer() == player) {
+            player.updateRespawnTimer(dt);
+        }
     }
 
     private void checkWalkUpSlope(Vector2 vel, Vector2 pos, float dt) {

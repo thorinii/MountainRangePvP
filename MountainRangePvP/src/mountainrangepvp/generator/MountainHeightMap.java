@@ -31,7 +31,7 @@ public class MountainHeightMap extends AbstractHeightMap {
 
         if (makeWalls && Math.abs(x % 1500) < 50) {
             // Wall Generator
-            return (int) sample(x / 500 * 500) + 100;
+            return (int) sample(x / 500 * 500) + 160;
         }
 
 

@@ -30,6 +30,8 @@ public class WorldRenderer {
     private HeightMapRenderer heightMapRenderer;
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
+    //
+    private TextRenderer textRenderer;
     //    
     private final Texture crossHairTexture;
 
@@ -44,10 +46,12 @@ public class WorldRenderer {
         camera.update();
 
         crossHairTexture = new Texture(Gdx.files.internal("crosshair.png"));
+
+        textRenderer = new TextRenderer();
     }
 
     public void setPlayerManager(PlayerManager playerManager) {
-        playerRenderer = new PlayerRenderer(batch, playerManager);
+        playerRenderer = new PlayerRenderer(batch, textRenderer, playerManager);
     }
 
     public void setShotManager(ShotManager shotManager) {
