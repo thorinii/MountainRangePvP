@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.sun.java.swing.plaf.windows.resources.windows;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
@@ -107,34 +108,26 @@ public class InputHandler implements InputProcessor {
     }
 
     private void doGunControl(Player player) {
-        Vector2 pos = player.getPosition();
-
         int x = Gdx.input.getX();
         int y = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-        Vector2 mouse = new Vector2(x, y);
+        Vector2 dir = new Vector2(x, y);
+        dir.x -= Gdx.graphics.getWidth() / 2;
+        dir.y -= Gdx.graphics.getHeight() / 2 + 20;
+        dir.nor();
 
-        mouse.x = mouse.x + pos.x - Gdx.graphics.getWidth() / 2 + Player.WIDTH / 2;
-        mouse.y = mouse.y + pos.y - Gdx.graphics.getHeight() / 2 + Player.HEIGHT / 2;
-
-        player.getGunPosition().set(mouse);
+        player.getGunDirection().set(dir);
     }
 
     private void doShooting(Player player) {
         if (gunTimer > ShotManager.GUN_RATE) {
             gunTimer = 0;
 
-            Vector2 ppos = player.getPosition().cpy();
-            Vector2 gpos = player.getGunPosition();
-
-            ppos.x += Player.WIDTH / 2;
-            ppos.y += 60;
-
-            Vector2 direction = gpos.cpy().sub(ppos).nor();
-            Vector2 base = ppos.cpy().add(
-                    direction.cpy().mul(1));
-
-            shotManager.addShot(base, direction, player);
+            Vector2 pos = player.getCentralPosition();
+            pos.y += 20;
+            shotManager.addShot(pos,
+                                player.getGunDirection().cpy(),
+                                player);
         }
     }
 
