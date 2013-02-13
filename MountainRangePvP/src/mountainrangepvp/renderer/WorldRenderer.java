@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.generator.HeightMap;
@@ -29,6 +30,8 @@ public class WorldRenderer {
     private HeightMapRenderer heightMapRenderer;
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
+    //    
+    private final Texture crossHairTexture;
 
     public WorldRenderer() {
         screen = new Vector2(Gdx.graphics.getWidth() + 1,
@@ -39,6 +42,8 @@ public class WorldRenderer {
         camera = new OrthographicCamera(screen.x, screen.y);
         camera.position.set(screen.x / 2, screen.y / 2, 0);
         camera.update();
+
+        crossHairTexture = new Texture(Gdx.files.internal("crosshair.png"));
     }
 
     public void setPlayerManager(PlayerManager playerManager) {
@@ -68,5 +73,22 @@ public class WorldRenderer {
         if (playerRenderer != null) {
             playerRenderer.render(scroll);
         }
+
+        drawCrosshair();
+
+    }
+
+    private void drawCrosshair() {
+        int x = Gdx.input.getX();
+        int y = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+        Vector2 mouse = new Vector2(x, y);
+
+        mouse.x -= crossHairTexture.getWidth() / 2;
+        mouse.y -= crossHairTexture.getHeight() / 2;
+
+        batch.begin();
+        batch.draw(crossHairTexture, mouse.x, mouse.y);
+        batch.end();
     }
 }

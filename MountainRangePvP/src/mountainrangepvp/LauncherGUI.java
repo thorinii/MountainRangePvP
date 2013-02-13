@@ -7,12 +7,14 @@ package mountainrangepvp;
 import java.awt.DisplayMode;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.prefs.Preferences;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Timer;
@@ -26,6 +28,8 @@ import mountainrangepvp.mp.lanping.PingClient.ServerData;
  */
 public class LauncherGUI extends javax.swing.JFrame {
 
+    private final Preferences prefs = Preferences.userNodeForPackage(
+            LauncherGUI.class);
     private DefaultListModel<String> serversListModel;
     private PingClient pingClient;
     private Timer pingReadTimer;
@@ -56,6 +60,16 @@ public class LauncherGUI extends javax.swing.JFrame {
         screenResBox.setModel(displayModesModel);
 
         setupResolutions(displayModesModel);
+
+
+        playerNameTxt.setText(prefs.get("player-name", ""));
+
+
+        // Center the window
+        Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().
+                getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+        setLocation(screen.width / 2 - getWidth() / 2,
+                    screen.height / 2 - getHeight() / 2);
     }
 
     private void setupResolutions(DefaultComboBoxModel<String> displayModesModel) {
@@ -102,7 +116,6 @@ public class LauncherGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mountain Range PvP Launcher");
-        setLocationByPlatform(true);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(1, 1, 1), 1, true), "Multiplayer"));
 
@@ -257,7 +270,7 @@ public class LauncherGUI extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(screenResBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -316,6 +329,8 @@ public class LauncherGUI extends javax.swing.JFrame {
 
         dispose();
         pingClient.stop();
+
+        prefs.put("player-name", playerNameTxt.getText());
 
         if (gameTypeClientBtn.isSelected()) {
             Main.startClient(fullscreenBtn.isSelected(),

@@ -26,7 +26,7 @@ public class Player {
     private final String name;
     private final Vector2 position;
     private final Vector2 velocity;
-    private final Vector2 gunPosition;
+    private final Vector2 gunDirection;
     private boolean onGround;
     //
     private boolean alive;
@@ -37,7 +37,7 @@ public class Player {
 
         this.position = new Vector2();
         this.velocity = new Vector2();
-        this.gunPosition = new Vector2();
+        this.gunDirection = new Vector2();
 
         this.onGround = false;
         respawn();
@@ -51,12 +51,16 @@ public class Player {
         return position;
     }
 
+    public Vector2 getCentralPosition() {
+        return new Vector2(position.x + WIDTH / 2, position.y + HEIGHT / 2);
+    }
+
     public Vector2 getVelocity() {
         return velocity;
     }
 
-    public Vector2 getGunPosition() {
-        return gunPosition;
+    public Vector2 getGunDirection() {
+        return gunDirection;
     }
 
     public void setOnGround(boolean onGround) {

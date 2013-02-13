@@ -20,7 +20,7 @@ import mountainrangepvp.player.PlayerManager;
  */
 public class ShotManager {
 
-    public static final int GUN_RATE = 100;
+    public static final int GUN_RATE = 300;
     public static final int MAX_SHOT_LIFE = 10;
     //
     private final List<Shot> shots;
