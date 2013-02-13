@@ -12,14 +12,14 @@ import com.badlogic.gdx.math.Vector2;
  */
 public class Player {
 
-    public static final int WIDTH = 30;
-    public static final int HEIGHT = 60;
-    public static final float WALK_SPEED = 300;
-    public static final float AIR_SPEED = 200;
+    public static final int WIDTH = 40;
+    public static final int HEIGHT = 100;
+    public static final float WALK_SPEED = 1000;
+    public static final float AIR_SPEED = 500;
     public static final float FRICTION = 0.85f;
-    public static final int MAX_WALK_SLOPE = 3;
-    public static final int MIN_SLIDE_SLOPE = 1;
-    public static final int MAX_SLIDE_SLOPE = 30;
+    public static final int MAX_WALK_SLOPE = 10;
+    public static final int MIN_SLIDE_SLOPE = 30;
+    public static final int MAX_SLIDE_SLOPE = 80;
     public static final int RESPAWN_TIMEOUT = 2000;
     public static final int RESPAWN_RANGE_X = 1000;
     //
@@ -82,6 +82,10 @@ public class Player {
         return alive;
     }
 
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+
     public int getRespawnTimer() {
         return respawnTimer;
     }
@@ -97,13 +101,13 @@ public class Player {
     }
 
     private void respawn() {
-        position.x = (float) (Math.random() * 2 * RESPAWN_RANGE_X - RESPAWN_RANGE_X);
+        position.x = (float) (Math.random() * 2 * RESPAWN_RANGE_X - RESPAWN_RANGE_X) + 10000;
         position.y = 1000;
         velocity.x = 0;
         velocity.y = 0;
 
         alive = true;
 
-        System.out.println(position.x);
+        onGround = false;
     }
 }

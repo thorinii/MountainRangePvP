@@ -20,18 +20,29 @@ public class PlayerRenderer implements Renderer {
     private final PlayerManager playerManager;
     private final int width, height;
     private final SpriteBatch batch;
-    private final Texture bodyOrangeTexture;
+    private final TextRenderer textRenderer;
+    private final Texture[] bodyTextures;
     private final Texture armsTexture;
 
-    public PlayerRenderer(SpriteBatch batch, PlayerManager playerManager) {
+    public PlayerRenderer(SpriteBatch batch, TextRenderer textRenderer,
+            PlayerManager playerManager) {
         this.batch = batch;
+        this.textRenderer = textRenderer;
         this.playerManager = playerManager;
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
 
-        bodyOrangeTexture = new Texture(Gdx.files.internal(
+        bodyTextures = new Texture[4];
+        bodyTextures[0] = new Texture(Gdx.files.internal(
                 "player/body-orange.png"));
+        bodyTextures[1] = new Texture(Gdx.files.internal(
+                "player/body-red.png"));
+        bodyTextures[2] = new Texture(Gdx.files.internal(
+                "player/body-green.png"));
+        bodyTextures[3] = new Texture(Gdx.files.internal(
+                "player/body-blue.png"));
+
         armsTexture = new Texture(Gdx.files.internal("player/arms.png"));
     }
 
@@ -49,6 +60,9 @@ public class PlayerRenderer implements Renderer {
     }
 
     private void drawPlayer(Player player, Vector2 scroll) {
+        Texture tex = bodyTextures[Math.max(0,
+                                            player.getName().hashCode() % bodyTextures.length)];
+
         Vector2 pos = player.getPosition().cpy();
         pos.sub(scroll);
 
@@ -64,16 +78,6 @@ public class PlayerRenderer implements Renderer {
         ppos.y += 60;
         Vector2 dir = player.getGunDirection();
 
-        batch.draw(bodyOrangeTexture,
-                   pos.x, pos.y, // Position
-                   0, 0, // Origin
-                   bodyOrangeTexture.getWidth(), bodyOrangeTexture.getHeight(), // Dst WH
-                   1, 1, // Scale
-                   0, // Rotation
-                   0, 0, // Src XY
-                   bodyOrangeTexture.getWidth(), bodyOrangeTexture.getHeight(), // Src WH
-                   dir.x > 0, false);
-
         batch.draw(armsTexture,
                    pos.x - 24, pos.y + 40, // Position
                    43, 17, // Origin
@@ -82,6 +86,20 @@ public class PlayerRenderer implements Renderer {
                    dir.angle() + 180 % 360, // Rotation
                    0, 0, // Src XY
                    armsTexture.getWidth(), armsTexture.getHeight(), // Src WH
-                   false, false); // Flip
+                   false, dir.x > 0); // Flip
+
+        batch.draw(tex,
+                   pos.x, pos.y, // Position
+                   0, 0, // Origin
+                   tex.getWidth(), tex.getHeight(), // Dst WH
+                   1, 1, // Scale
+                   0, // Rotation
+                   0, 0, // Src XY
+                   tex.getWidth(), tex.getHeight(), // Src WH
+                   dir.x > 0, false);
+
+        textRenderer.drawString(player.getName(), batch,
+                                (int) pos.x,
+                                (int) pos.y + Player.HEIGHT + 20);
     }
 }

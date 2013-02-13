@@ -23,6 +23,7 @@ public class InputHandler implements InputProcessor {
     private final ShotManager shotManager;
     private final int DOUBLE_JUMP_MIN = 50;
     private final int DOUBLE_JUMP_MAX = 500;
+    private final int GUN_RATE = 100;
     //
     private boolean up, left, right;
     private int doubleJumpTimer;
@@ -42,6 +43,7 @@ public class InputHandler implements InputProcessor {
     public void update(float dt) {
         Player local = playerManager.getLocalPlayer();
         if (!local.isAlive()) {
+            //&& !playerManager.getLocalPlayer().getName().equals(                "Lachlan")) {
             up = left = right = false;
             gun = false;
             doubleJumpTimer = 0;
@@ -56,7 +58,10 @@ public class InputHandler implements InputProcessor {
 
         if (gun) {
             doShooting(local);
+
+            //if (!playerManager.getLocalPlayer().getName().equals("Lachlan")) {
             gun = false;
+            //}
         }
 
         gunTimer += (int) (1000 * dt);
@@ -65,9 +70,9 @@ public class InputHandler implements InputProcessor {
     private void doPlayerWalking(Player local, Vector2 vel, float dt) {
         if (local.isOnGround()) {
             if (left) {
-                vel.x = accelerate(vel.x, -5, -Player.WALK_SPEED);
+                vel.x = accelerate(vel.x, -15, -Player.WALK_SPEED);
             } else if (right) {
-                vel.x = accelerate(vel.x, 5, Player.WALK_SPEED);
+                vel.x = accelerate(vel.x, 15, Player.WALK_SPEED);
             } else {
                 vel.x *= Player.FRICTION;
             }
@@ -113,18 +118,17 @@ public class InputHandler implements InputProcessor {
 
         Vector2 dir = new Vector2(x, y);
         dir.x -= Gdx.graphics.getWidth() / 2;
-        dir.y -= Gdx.graphics.getHeight() / 2 + 20;
+        dir.y -= Gdx.graphics.getHeight() / 2;
         dir.nor();
 
         player.getGunDirection().set(dir);
     }
 
     private void doShooting(Player player) {
-        if (gunTimer > ShotManager.GUN_RATE) {
+        if (gunTimer > GUN_RATE) {
             gunTimer = 0;
 
             Vector2 pos = player.getCentralPosition();
-            pos.y += 20;
             shotManager.addShot(pos,
                                 player.getGunDirection().cpy(),
                                 player);

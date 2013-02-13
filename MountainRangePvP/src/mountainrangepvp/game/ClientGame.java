@@ -151,9 +151,7 @@ public class ClientGame extends Game {
                     p.getVelocity().set(pum.getVel());
                     p.getGunDirection().set(pum.getGun());
 
-                    if (!pum.isAlive()) {
-                        p.kill();
-                    }
+                    p.setAlive(pum.isAlive());
                 }
             } else if (message instanceof NewShotMessage) {
                 NewShotMessage nsm = (NewShotMessage) message;

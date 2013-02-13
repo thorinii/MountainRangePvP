@@ -63,6 +63,7 @@ public class LauncherGUI extends javax.swing.JFrame {
 
 
         playerNameTxt.setText(prefs.get("player-name", ""));
+        screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
 
 
         // Center the window
@@ -331,6 +332,7 @@ public class LauncherGUI extends javax.swing.JFrame {
         pingClient.stop();
 
         prefs.put("player-name", playerNameTxt.getText());
+        prefs.putInt("screen-resolution", screenResBox.getSelectedIndex());
 
         if (gameTypeClientBtn.isSelected()) {
             Main.startClient(fullscreenBtn.isSelected(),

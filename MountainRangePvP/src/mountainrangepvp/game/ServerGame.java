@@ -147,6 +147,7 @@ public class ServerGame extends Game {
                 p.getPosition().set(pum.getPos());
                 p.getVelocity().set(pum.getVel());
                 p.getGunDirection().set(pum.getGun());
+                p.setAlive(pum.isAlive());
 
                 server.broadcastExcept(message, proxy);
             } else if (message instanceof NewShotMessage) {
