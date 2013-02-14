@@ -6,7 +6,6 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.Vector2;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import mountainrangepvp.Log;

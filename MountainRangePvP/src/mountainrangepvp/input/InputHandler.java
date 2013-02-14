@@ -8,7 +8,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
-import com.sun.java.swing.plaf.windows.resources.windows;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
