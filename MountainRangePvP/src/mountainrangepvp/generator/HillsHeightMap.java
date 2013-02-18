@@ -13,7 +13,7 @@ public class HillsHeightMap extends AbstractHeightMap {
     private static final int SCALE = 5;
     private static final int WALL_WIDTH = 50;
     private static final int WALL_DISTANCE = 3000;
-    private static final int WALL_HEIGHT = 160;
+    private static final int WALL_HEIGHT = 110;
     private final int seed;
     private final Noise noise;
     private boolean makeWalls;
@@ -54,6 +54,7 @@ public class HillsHeightMap extends AbstractHeightMap {
     private float sample(float x) {
         float noise = 50;
 
+        noise += InterpolatedNoise1(x / 70f + 230) * 6000;
         noise += InterpolatedNoise1(x / 1000f + 100) * 10000;
         noise += InterpolatedNoise1(x / 300f + 234) * 5000;
         noise += InterpolatedNoise1(x / 70f + 12) * 1000;

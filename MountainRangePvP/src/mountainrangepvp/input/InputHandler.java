@@ -78,7 +78,7 @@ public class InputHandler implements InputProcessor {
             }
 
             if (up) {
-                vel.y = 500;
+                vel.y = Player.JUMP_SPEED;
                 doubleJumpTimer = 0;
             }
         } else {
@@ -94,7 +94,7 @@ public class InputHandler implements InputProcessor {
                 doubleJumpTimer += (int) (dt * 1000);
             } else {
                 if (doubleJumpTimer > DOUBLE_JUMP_MIN && doubleJumpTimer < DOUBLE_JUMP_MAX) {
-                    vel.y = 500;
+                    vel.y = Player.JUMP_SPEED;
                     doubleJumpTimer = DOUBLE_JUMP_MAX;
                 }
             }
@@ -140,6 +140,7 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         switch (keycode) {
+            case Keys.SPACE:
             case Keys.W:
                 up = true;
                 break;
@@ -160,6 +161,7 @@ public class InputHandler implements InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         switch (keycode) {
+            case Keys.SPACE:
             case Keys.W:
                 up = false;
                 break;
