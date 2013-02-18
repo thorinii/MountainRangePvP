@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.generator.HeightMap;
-import mountainrangepvp.generator.MountainHeightMap;
+import mountainrangepvp.generator.HillsHeightMap;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.mp.Proxy;
@@ -48,7 +48,7 @@ public class ServerGame extends Game {
     public ServerGame(String playerName, int seed) {
         this.playerName = playerName;
 
-        heightMap = new MountainHeightMap(seed);
+        heightMap = new HillsHeightMap(seed);
         server = new Server(seed);
 
         playerManager = new PlayerManager(playerName);

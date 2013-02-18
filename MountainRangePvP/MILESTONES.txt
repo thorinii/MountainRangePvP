@@ -2,9 +2,6 @@
 Future Milestones
 ==================
 
-1.0 Proper Images
-...
-Multiplayer
 
 
 ==================

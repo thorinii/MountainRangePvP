@@ -63,6 +63,11 @@ public class GameScreen implements Screen {
                 Log.warn("Error hiding mouse:", ex);
             }
         }
+        
+        /*
+         * Ensure the game exits when the window is closed
+         */
+        
     }
 
     @Override

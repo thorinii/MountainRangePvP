@@ -8,9 +8,9 @@ package mountainrangepvp.generator;
  *
  * @author lachlan
  */
-public class MountainHeightMap extends AbstractHeightMap {
+public class HillsHeightMap extends AbstractHeightMap {
 
-    private static final int SCALE = 2;
+    private static final int SCALE = 5;
     private static final int WALL_WIDTH = 50;
     private static final int WALL_DISTANCE = 3000;
     private static final int WALL_HEIGHT = 160;
@@ -19,11 +19,11 @@ public class MountainHeightMap extends AbstractHeightMap {
     private boolean makeWalls;
     private boolean origin;
 
-    public MountainHeightMap(int seed) {
+    public HillsHeightMap(int seed) {
         this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
         this.noise = new Noise();
 
-        makeWalls = false;
+        makeWalls = true;
         origin = true;
     }
 
@@ -54,7 +54,6 @@ public class MountainHeightMap extends AbstractHeightMap {
     private float sample(float x) {
         float noise = 50;
 
-        noise += InterpolatedNoise1(x / 6000f + 20) * 600000;
         noise += InterpolatedNoise1(x / 1000f + 100) * 10000;
         noise += InterpolatedNoise1(x / 300f + 234) * 5000;
         noise += InterpolatedNoise1(x / 70f + 12) * 1000;
