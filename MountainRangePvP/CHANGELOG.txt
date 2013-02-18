@@ -1,3 +1,16 @@
+0.8 Images | 15-02-13:
+    -Minor tweaks
+    -Background Sun and Clouds
+
+
+0.8 Images | 14-02-13:
+    -Terrain mirrors around origin
+    -Fixed Timer thread issue
+    -Reworked Launcher config system
+    -Fixed Player Arms rotation
+    -Tweaked Player Acceleration
+
+
 0.8 Images | 09-02-13:
     -Added Player Image
     -Added Shot Image

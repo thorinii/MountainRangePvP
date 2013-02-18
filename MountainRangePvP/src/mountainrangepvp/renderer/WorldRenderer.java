@@ -27,6 +27,7 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     //
+    private BackgroundRenderer backgroundRenderer;
     private HeightMapRenderer heightMapRenderer;
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
@@ -47,6 +48,7 @@ public class WorldRenderer {
 
         crossHairTexture = new Texture(Gdx.files.internal("crosshair.png"));
 
+        backgroundRenderer = new BackgroundRenderer(batch);
         textRenderer = new TextRenderer();
     }
 
@@ -65,6 +67,8 @@ public class WorldRenderer {
     public void render(Vector2 scroll) {
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        backgroundRenderer.render(scroll);
 
         if (shotRenderer != null) {
             shotRenderer.render(scroll);

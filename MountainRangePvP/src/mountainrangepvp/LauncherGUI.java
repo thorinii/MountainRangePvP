@@ -61,10 +61,7 @@ public class LauncherGUI extends javax.swing.JFrame {
 
         setupResolutions(displayModesModel);
 
-
-        playerNameTxt.setText(prefs.get("player-name", ""));
-        screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
-
+        loadPrefs();
 
         // Center the window
         Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().
@@ -329,22 +326,48 @@ public class LauncherGUI extends javax.swing.JFrame {
         }
 
         dispose();
+        pingReadTimer.stop();
         pingClient.stop();
 
-        prefs.put("player-name", playerNameTxt.getText());
-        prefs.putInt("screen-resolution", screenResBox.getSelectedIndex());
-
-        if (gameTypeClientBtn.isSelected()) {
-            Main.startClient(fullscreenBtn.isSelected(),
-                             (String) screenResBox.getSelectedItem(),
-                             playerNameTxt.getText(),
-                             serverIPTxt.getText());
-        } else {
-            Main.startServer(fullscreenBtn.isSelected(),
-                             (String) screenResBox.getSelectedItem(),
-                             playerNameTxt.getText());
-        }
+        savePrefs();
+        makeGame();
     }//GEN-LAST:event_startBtnActionPerformed
+
+    private void savePrefs() {
+        prefs.putBoolean("game-type-client", gameTypeClientBtn.isSelected());
+        prefs.put("player-name", playerNameTxt.getText());
+        prefs.putBoolean("fullscreen", fullscreenBtn.isSelected());
+        prefs.putInt("screen-resolution", screenResBox.getSelectedIndex());
+    }
+
+    private void loadPrefs() {
+        gameTypeClientBtn.setSelected(
+                prefs.getBoolean("game-type-client", false));
+        playerNameTxt.setText(prefs.get("player-name", ""));
+        fullscreenBtn.setSelected(prefs.getBoolean("fullscreen", false));
+        screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
+    }
+
+    private void makeGame() {
+        GameConfig config = new GameConfig();
+        config.fullscreen = fullscreenBtn.isSelected();
+
+        if (fullscreenBtn.isSelected()) {
+            String displayMode = (String) screenResBox.getSelectedItem();
+            String resolution = displayMode.split(" ")[0];
+            String[] resSplit = resolution.split("x");
+
+            config.resolutionWidth = Integer.parseInt(resSplit[0]);
+            config.resolutionHeight = Integer.parseInt(resSplit[1]);
+        }
+
+        config.playerName = playerNameTxt.getText();
+
+        config.server = gameTypeServerBtn.isSelected();
+        config.serverIP = serverIPTxt.getText();
+
+        Main.startGame(config);
+    }
 
     private void fullscreenBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fullscreenBtnItemStateChanged
         screenResBox.setEnabled(fullscreenBtn.isSelected());

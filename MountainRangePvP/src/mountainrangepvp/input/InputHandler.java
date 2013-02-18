@@ -42,8 +42,7 @@ public class InputHandler implements InputProcessor {
     public void update(float dt) {
         Player local = playerManager.getLocalPlayer();
         if (!local.isAlive()) {
-            //&& !playerManager.getLocalPlayer().getName().equals(                "Lachlan")) {
-            up = left = right = false;
+            //&& !playerManager.getLocalPlayer().getName().equals("Lachlan")) {
             gun = false;
             doubleJumpTimer = 0;
             gunTimer = 0;
@@ -69,9 +68,11 @@ public class InputHandler implements InputProcessor {
     private void doPlayerWalking(Player local, Vector2 vel, float dt) {
         if (local.isOnGround()) {
             if (left) {
-                vel.x = accelerate(vel.x, -15, -Player.WALK_SPEED);
+                vel.x = accelerate(vel.x, -Player.WALK_ACCELERATION,
+                                   -Player.WALK_SPEED);
             } else if (right) {
-                vel.x = accelerate(vel.x, 15, Player.WALK_SPEED);
+                vel.x = accelerate(vel.x, Player.WALK_ACCELERATION,
+                                   Player.WALK_SPEED);
             } else {
                 vel.x *= Player.FRICTION;
             }
@@ -82,9 +83,11 @@ public class InputHandler implements InputProcessor {
             }
         } else {
             if (left) {
-                vel.x = accelerate(vel.x, -5, -Player.AIR_SPEED);
+                vel.x = accelerate(vel.x, -Player.AIR_ACCELERATION,
+                                   -Player.AIR_SPEED);
             } else if (right) {
-                vel.x = accelerate(vel.x, 5, Player.AIR_SPEED);
+                vel.x = accelerate(vel.x, Player.AIR_ACCELERATION,
+                                   Player.AIR_SPEED);
             }
 
             if (!up) {

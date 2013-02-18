@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.generator.HeightMap;
-import mountainrangepvp.generator.MountainHeightMap;
+import mountainrangepvp.generator.HillsHeightMap;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.Client;
 import mountainrangepvp.mp.MultiplayerConstants;
@@ -107,7 +107,7 @@ public class ClientGame extends Game {
 
                 Log.info("Received Seed", seedMessage.getSeed(), "Changing Map");
 
-                heightMap = new MountainHeightMap(seedMessage.getSeed());
+                heightMap = new HillsHeightMap(seedMessage.getSeed());
                 playerManager = new PlayerManager(playerName);
                 shotManager = new ShotManager(heightMap, playerManager);
                 physicsSystem = new PhysicsSystem(heightMap, playerManager);

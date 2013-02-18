@@ -78,15 +78,27 @@ public class PlayerRenderer implements Renderer {
         ppos.y += 60;
         Vector2 dir = player.getGunDirection();
 
-        batch.draw(armsTexture,
-                   pos.x - 24, pos.y + 40, // Position
-                   43, 17, // Origin
-                   armsTexture.getWidth(), armsTexture.getHeight(), // Dst WH
-                   1, 1, // Scale
-                   dir.angle() + 180 % 360, // Rotation
-                   0, 0, // Src XY
-                   armsTexture.getWidth(), armsTexture.getHeight(), // Src WH
-                   false, dir.x > 0); // Flip
+        if (dir.x < 0) {
+            batch.draw(armsTexture,
+                       pos.x - 24, pos.y + 38, // Position
+                       43, 17, // Origin
+                       armsTexture.getWidth(), armsTexture.getHeight(), // Dst WH
+                       1, 1, // Scale
+                       dir.angle() + 180 % 360, // Rotation
+                       0, 0, // Src XY
+                       armsTexture.getWidth(), armsTexture.getHeight(), // Src WH
+                       false, false); // Flip
+        } else {
+            batch.draw(armsTexture,
+                       pos.x - 24, pos.y + 57, // Position
+                       43, 2, // Origin
+                       armsTexture.getWidth(), armsTexture.getHeight(), // Dst WH
+                       1, 1, // Scale
+                       dir.angle() + 180 % 360, // Rotation
+                       0, 0, // Src XY
+                       armsTexture.getWidth(), armsTexture.getHeight(), // Src WH
+                       false, true); // Flip
+        }
 
         batch.draw(tex,
                    pos.x, pos.y, // Position
