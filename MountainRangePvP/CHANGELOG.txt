@@ -1,3 +1,7 @@
+0.9 Tweaks | 20-02-13:
+    -Added Spawn Bubble
+    -Made running up hills easier
+
 0.8 Images | 15-02-13:
     -Minor tweaks
     -Background Sun and Clouds
