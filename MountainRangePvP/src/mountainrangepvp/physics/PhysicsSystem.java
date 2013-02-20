@@ -74,7 +74,7 @@ public class PhysicsSystem {
                     vel.x = 0;
                     break;
                 } else if (slope > 0) {
-                    vel.y += 3f;
+                    vel.y += slope * 2 / 3;
                 }
             }
         } else {
@@ -89,7 +89,7 @@ public class PhysicsSystem {
                     vel.x = 0;
                     break;
                 } else if (slope > 0) {
-                    vel.y += 3f;
+                    vel.y += slope * 2 / 3;
                 }
             }
         }
