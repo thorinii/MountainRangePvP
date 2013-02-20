@@ -36,6 +36,7 @@ public class WorldRenderer {
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
     private MiniMapRenderer miniMapRenderer;
+    private LeaderboardRenderer leaderboardRenderer;
     //
     private TextRenderer textRenderer;
     //    
@@ -61,6 +62,9 @@ public class WorldRenderer {
         this.playerManager = playerManager;
         playerRenderer = new PlayerRenderer(batch, textRenderer, playerManager);
 
+        leaderboardRenderer = new LeaderboardRenderer(batch, playerManager,
+                                                      textRenderer);
+
         if (terrain != null)
             miniMapRenderer = new MiniMapRenderer(batch, terrain,
                                                   playerManager);
@@ -85,21 +89,20 @@ public class WorldRenderer {
 
         backgroundRenderer.render(scroll);
 
-        if (shotRenderer != null) {
+        if (shotRenderer != null)
             shotRenderer.render(scroll);
-        }
 
-        if (heightMapRenderer != null) {
+        if (heightMapRenderer != null)
             heightMapRenderer.render(scroll);
-        }
 
-        if (playerRenderer != null) {
+        if (playerRenderer != null)
             playerRenderer.render(scroll);
-        }
 
-        if (miniMapRenderer != null) {
+        if (leaderboardRenderer != null)
+            leaderboardRenderer.render(scroll);
+
+        if (miniMapRenderer != null)
             miniMapRenderer.render(scroll);
-        }
 
         drawCrosshair();
 

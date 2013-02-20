@@ -77,6 +77,7 @@ public class ShotManager {
 
                     if (!hit.isSpawnBubbleOn()) {
                         hit.kill();
+                        shot.player.addHit();
 
                         for (ShotListener listener : listeners) {
                             listener.shotPlayerCollision(shot, hit);

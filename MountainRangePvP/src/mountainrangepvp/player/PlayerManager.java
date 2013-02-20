@@ -6,6 +6,7 @@ package mountainrangepvp.player;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -56,5 +57,19 @@ public class PlayerManager {
         }
 
         return null;
+    }
+
+    public List<Player> getPlayersByHits(int count) {
+        List<Player> tmp = new ArrayList<>(players);
+
+        Collections.sort(tmp, new Comparator<Player>() {
+
+            @Override
+            public int compare(Player o1, Player o2) {
+                return o2.getHits() - o1.getHits();
+            }
+        });
+
+        return tmp.subList(0, Math.min(tmp.size(), count));
     }
 }

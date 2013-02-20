@@ -54,8 +54,8 @@ public class HillsHeightMap extends AbstractHeightMap {
     private float sample(float x) {
         float noise = 50;
 
+        noise += InterpolatedNoise1(x / 800f + 100) * 100000;
         noise += InterpolatedNoise1(x / 70f + 230) * 6000;
-        noise += InterpolatedNoise1(x / 1000f + 100) * 10000;
         noise += InterpolatedNoise1(x / 300f + 234) * 5000;
         noise += InterpolatedNoise1(x / 70f + 12) * 1000;
         noise += InterpolatedNoise1(x / 50f + 5) * 700;

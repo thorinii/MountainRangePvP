@@ -38,6 +38,8 @@ public class Player {
     //
     private boolean alive;
     private Timer timer;
+    //
+    private int hits;
 
     public Player(String name) {
         this.name = name;
@@ -107,6 +109,14 @@ public class Player {
 
     public Timer getRespawnTimer() {
         return timer;
+    }
+
+    public int getHits() {
+        return hits;
+    }
+
+    public void addHit() {
+        hits++;
     }
 
     public void update() {
