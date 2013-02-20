@@ -74,10 +74,15 @@ public class ShotManager {
                 Player hit = testPlayers(shot, pos, npos);
                 if (hit != null) {
                     itr.remove();
-                    hit.kill();
 
-                    for (ShotListener listener : listeners) {
-                        listener.shotPlayerCollision(shot, hit);
+                    if (!hit.isSpawnBubbleOn()) {
+                        hit.kill();
+
+                        for (ShotListener listener : listeners) {
+                            listener.shotPlayerCollision(shot, hit);
+                        }
+                    } else {
+                        // TODO: make ricochet
                     }
                 }
             }

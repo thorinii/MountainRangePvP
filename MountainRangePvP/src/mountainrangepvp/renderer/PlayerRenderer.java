@@ -23,6 +23,7 @@ public class PlayerRenderer implements Renderer {
     private final TextRenderer textRenderer;
     private final Texture[] bodyTextures;
     private final Texture armsTexture;
+    private final Texture spawnBubbleTexture;
 
     public PlayerRenderer(SpriteBatch batch, TextRenderer textRenderer,
             PlayerManager playerManager) {
@@ -44,6 +45,9 @@ public class PlayerRenderer implements Renderer {
                 "player/body-blue.png"));
 
         armsTexture = new Texture(Gdx.files.internal("player/arms.png"));
+
+        spawnBubbleTexture = new Texture(Gdx.files.internal(
+                "player/spawn-bubble.png"));
     }
 
     @Override
@@ -109,6 +113,12 @@ public class PlayerRenderer implements Renderer {
                    0, 0, // Src XY
                    tex.getWidth(), tex.getHeight(), // Src WH
                    dir.x > 0, false);
+
+        if (player.isSpawnBubbleOn()) {
+            batch.draw(spawnBubbleTexture,
+                       pos.x + Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
+                       pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.getHeight() / 2);
+        }
 
         textRenderer.drawString(player.getName(), batch,
                                 (int) pos.x,

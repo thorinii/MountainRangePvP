@@ -42,7 +42,6 @@ public class InputHandler implements InputProcessor {
     public void update(float dt) {
         Player local = playerManager.getLocalPlayer();
         if (!local.isAlive()) {
-            //&& !playerManager.getLocalPlayer().getName().equals("Lachlan")) {
             gun = false;
             doubleJumpTimer = 0;
             gunTimer = 0;
@@ -57,9 +56,7 @@ public class InputHandler implements InputProcessor {
         if (gun) {
             doShooting(local);
 
-            //if (!playerManager.getLocalPlayer().getName().equals("Lachlan")) {
             gun = false;
-            //}
         }
 
         gunTimer += (int) (1000 * dt);
@@ -151,7 +148,6 @@ public class InputHandler implements InputProcessor {
                 right = true;
                 break;
             case Keys.ESCAPE:
-                System.out.println("Exit");
                 Gdx.app.exit();
                 break;
         }
