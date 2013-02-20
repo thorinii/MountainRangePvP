@@ -27,10 +27,14 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     //
+    private HeightMap heightMap;
+    private PlayerManager playerManager;
+    //
     private BackgroundRenderer backgroundRenderer;
     private HeightMapRenderer heightMapRenderer;
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
+    private MiniMapRenderer miniMapRenderer;
     //
     private TextRenderer textRenderer;
     //    
@@ -53,7 +57,12 @@ public class WorldRenderer {
     }
 
     public void setPlayerManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
         playerRenderer = new PlayerRenderer(batch, textRenderer, playerManager);
+
+        if (heightMap != null)
+            miniMapRenderer = new MiniMapRenderer(batch, heightMap,
+                                                  playerManager);
     }
 
     public void setShotManager(ShotManager shotManager) {
@@ -61,7 +70,12 @@ public class WorldRenderer {
     }
 
     public void setHeightMap(HeightMap heightMap) {
+        this.heightMap = heightMap;
         heightMapRenderer = new HeightMapRenderer(batch, heightMap);
+
+        if (playerManager != null)
+            miniMapRenderer = new MiniMapRenderer(batch, heightMap,
+                                                  playerManager);
     }
 
     public void render(Vector2 scroll) {
@@ -80,6 +94,10 @@ public class WorldRenderer {
 
         if (playerRenderer != null) {
             playerRenderer.render(scroll);
+        }
+
+        if (miniMapRenderer != null) {
+            miniMapRenderer.render(scroll);
         }
 
         drawCrosshair();

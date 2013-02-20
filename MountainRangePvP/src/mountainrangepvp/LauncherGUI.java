@@ -341,11 +341,15 @@ public class LauncherGUI extends javax.swing.JFrame {
     }
 
     private void loadPrefs() {
-        gameTypeClientBtn.setSelected(
-                prefs.getBoolean("game-type-client", false));
-        playerNameTxt.setText(prefs.get("player-name", ""));
-        fullscreenBtn.setSelected(prefs.getBoolean("fullscreen", false));
-        screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
+        try {
+            gameTypeClientBtn.setSelected(
+                    prefs.getBoolean("game-type-client", false));
+            playerNameTxt.setText(prefs.get("player-name", ""));
+            fullscreenBtn.setSelected(prefs.getBoolean("fullscreen", false));
+            screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
+        } catch (Exception e) {
+            Log.warn("Could not load prefs", e);
+        }
     }
 
     private void makeGame() {
