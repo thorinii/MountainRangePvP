@@ -30,8 +30,8 @@ public class HeightMapRenderer implements Renderer {
     private final SpriteBatch batch;
     private final Texture worldSliceTexture;
 
-    public HeightMapRenderer(SpriteBatch batch, HeightMap map) {
-        this.map = new Terrain(map);
+    public HeightMapRenderer(SpriteBatch batch, Terrain map) {
+        this.map = map;
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();

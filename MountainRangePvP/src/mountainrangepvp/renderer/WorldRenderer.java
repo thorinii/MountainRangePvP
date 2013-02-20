@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.generator.HeightMap;
+import mountainrangepvp.generator.Terrain;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
 
@@ -27,7 +28,7 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     //
-    private HeightMap heightMap;
+    private Terrain terrain;
     private PlayerManager playerManager;
     //
     private BackgroundRenderer backgroundRenderer;
@@ -60,8 +61,8 @@ public class WorldRenderer {
         this.playerManager = playerManager;
         playerRenderer = new PlayerRenderer(batch, textRenderer, playerManager);
 
-        if (heightMap != null)
-            miniMapRenderer = new MiniMapRenderer(batch, heightMap,
+        if (terrain != null)
+            miniMapRenderer = new MiniMapRenderer(batch, terrain,
                                                   playerManager);
     }
 
@@ -70,11 +71,11 @@ public class WorldRenderer {
     }
 
     public void setHeightMap(HeightMap heightMap) {
-        this.heightMap = heightMap;
-        heightMapRenderer = new HeightMapRenderer(batch, heightMap);
+        this.terrain = new Terrain(heightMap);
+        heightMapRenderer = new HeightMapRenderer(batch, terrain);
 
         if (playerManager != null)
-            miniMapRenderer = new MiniMapRenderer(batch, heightMap,
+            miniMapRenderer = new MiniMapRenderer(batch, terrain,
                                                   playerManager);
     }
 

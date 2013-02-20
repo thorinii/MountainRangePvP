@@ -23,8 +23,8 @@ public class HillsHeightMap extends AbstractHeightMap {
         this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
         this.noise = new Noise();
 
-        makeWalls = true;
-        origin = true;
+        makeWalls = false;
+        origin = false;
     }
 
     @Override
