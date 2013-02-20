@@ -55,13 +55,9 @@ public class PhysicsSystem {
         pos.x += vel.x * dt;
         pos.y += vel.y * dt;
 
-
         checkGroundIntersection(player, pos, vel);
 
-
-        if (playerManager.getLocalPlayer() == player) {
-            player.updateRespawnTimer(dt);
-        }
+        player.update();
     }
 
     private void checkWalkUpSlope(Vector2 vel, Vector2 pos, float dt) {
@@ -77,6 +73,8 @@ public class PhysicsSystem {
                 if (slope > Player.MAX_WALK_SLOPE) {
                     vel.x = 0;
                     break;
+                } else if (slope > 0) {
+                    vel.y += 3f;
                 }
             }
         } else {
@@ -90,6 +88,8 @@ public class PhysicsSystem {
                 if (slope > Player.MAX_WALK_SLOPE) {
                     vel.x = 0;
                     break;
+                } else if (slope > 0) {
+                    vel.y += 3f;
                 }
             }
         }
@@ -133,17 +133,22 @@ public class PhysicsSystem {
     }
 
     private void checkGroundIntersection(Player player, Vector2 pos, Vector2 vel) {
-        player.setOnGround(false);
-
         int[] block = heightMap.getBlock((int) pos.x, Player.WIDTH);
+        boolean onGround = false;
         for (int i = 0; i < block.length; i++) {
             if (pos.y < block[i]) {
                 pos.y = block[i];
-                vel.y = 0;
 
-                player.setOnGround(true);
+                if (vel.y < 0) {
+                    vel.y = -0.2f * vel.y;
+                }
+
+                if (player.isAlive())
+                    onGround = true;
             }
         }
+
+        player.setOnGround(onGround);
     }
 
     private void dampenVelocity(Vector2 vel, float dt) {
