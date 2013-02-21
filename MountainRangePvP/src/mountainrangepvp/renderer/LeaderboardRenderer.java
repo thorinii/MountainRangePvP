@@ -59,7 +59,7 @@ public class LeaderboardRenderer implements Renderer {
                     Math.max(0, p.getName().hashCode()
                     % bodyTextures.length)];
 
-            String text = p.getName() + " @ " + p.getHits();
+            String text = p.getName() + " " + p.getHits();
             textRenderer.drawString(text, batch, x + tex.getWidth() + 20, y);
 
 
