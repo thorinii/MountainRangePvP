@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mountainrangepvp.mp;
+package mountainrangepvp.mp.message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,17 +12,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mountainrangepvp.Log;
+import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.mp.lanping.PingServer;
-import mountainrangepvp.mp.message.*;
 
 /**
  *
  * @author lachlan
  */
-public class Server {
+public class MessageServer {
 
     private final int port;
-    private final int seed;
     //
     private ServerSocket serverSocket;
     private Thread acceptThread;
@@ -31,23 +30,27 @@ public class Server {
     private final List<ClientProxy> clients;
     //
     private final MessageQueue messageQueue;
+    //
+    private int currentID;
 
-    public Server(int seed) {
-        this(MultiplayerConstants.STD_PORT, seed);
+    public MessageServer() {
+        this(MultiplayerConstants.STD_PORT);
     }
 
-    public Server(int port, int seed) {
+    public MessageServer(int port) {
         this.port = port;
-        this.seed = seed;
         clients = new LinkedList<>();
 
-        this.messageQueue = new MessageQueue();
+        messageQueue = new MessageQueue();
+
+        currentID = 2;
     }
 
     public void start() throws IOException {
         serverSocket = new ServerSocket(port);
 
-        acceptThread = new Thread(new AcceptRunnable(serverSocket), "Game Server");
+        acceptThread = new Thread(new AcceptRunnable(serverSocket),
+                                  "Game Server");
         acceptThread.start();
 
         pingServer = new PingServer();
@@ -73,8 +76,20 @@ public class Server {
         }
     }
 
-    public void send(Message message, Proxy proxy) {
-        proxy.sendMessage(message);
+    public void addMessageListener(MessageListener messageListener) {
+        messageQueue.addListener(messageListener);
+    }
+
+    public void removeMessageListener(MessageListener listener) {
+        messageQueue.removeListener(listener);
+    }
+
+    public void send(Message message, int id) {
+        for (ClientProxy proxy : clients) {
+            if (proxy.id == id) {
+                proxy.sendMessage(message);
+            }
+        }
     }
 
     public void broadcast(Message message) {
@@ -83,9 +98,9 @@ public class Server {
         }
     }
 
-    public void broadcastExcept(Message message, Proxy not) {
+    public void broadcastExcept(Message message, int notID) {
         for (ClientProxy proxy : clients) {
-            if (proxy != not) {
+            if (proxy.id != notID) {
                 proxy.sendMessage(message);
             }
         }
@@ -141,66 +156,75 @@ public class Server {
 
     public class ClientProxy extends Proxy {
 
-        private String playerName;
-
         public ClientProxy(Socket socket, MessageQueue messageQueue) throws
                 IOException {
-            super(socket, messageQueue);
+            super(currentID++, socket, messageQueue);
         }
 
         @Override
         protected void setupConnection() throws IOException {
-            messageIO.sendMessage(new HelloMessage());
             getHello();
-
-            messageIO.sendMessage(new SeedMessage(seed));
+            messageIO.sendMessage(new ServerHelloMessage(id));
         }
 
         private void getHello() throws IOException {
             Message m = messageIO.readMessage();
-            receiveQueue.pushMessage(m, this);
 
-            if (m instanceof HelloMessage) {
-                HelloMessage hello = (HelloMessage) m;
+            if (m instanceof ClientHelloMessage) {
+                ClientHelloMessage hello = (ClientHelloMessage) m;
 
                 if (!hello.isValid()) {
+                    KillConnectionMessage kill = new KillConnectionMessage(
+                            KillConnectionMessage.Reason.NetworkError);
+
+                    messageIO.sendMessage(kill);
+                    receiveQueue.pushMessage(kill);
                     throw new IOException("Invalid Hello Message");
+                } else {
+                    receiveQueue.pushMessage(m);
                 }
             } else {
-                throw new IOException("Invalid Message: " + m.getClass());
+                KillConnectionMessage kill = new KillConnectionMessage(
+                        KillConnectionMessage.Reason.NetworkError);
+
+                messageIO.sendMessage(kill);
+                receiveQueue.pushMessage(kill);
+                throw new IOException("Invalid Hello Message");
             }
         }
 
         @Override
         protected void disposeConnection() throws IOException {
-            receiveQueue.pushMessage(new PlayerDisconnectMessage(), this);
+            receiveQueue.pushMessage(new KillConnectionMessage(
+                    KillConnectionMessage.Reason.ClientExit), id);
             clients.remove(this);
         }
 
         @Override
         protected void onMessage(Message m) throws IOException {
-            if (m instanceof PlayerConnectMessage) {
-                PlayerConnectMessage pcm = (PlayerConnectMessage) m;
+            if (m instanceof KillConnectionMessage) {
+                KillConnectionMessage kill = (KillConnectionMessage) m;
 
-                playerName = pcm.getPlayerName();
+                Log.info(id + " disconnected: " + kill.getReason());
+
+                kill();
             }
-        }
-
-        public String getPlayerName() {
-            return playerName;
-        }
-
-        @Override
-        public void kill() throws IOException {
-            super.kill();
         }
     }
 
-    public static void main(String[] args) {
-        try {
-            new Server(21342).start();
-        } catch (IOException ex) {
-            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public static void main(String[] args) throws IOException {
+        MessageServer server = new MessageServer();
+        server.messageQueue.setInQueueMode(false);
+        server.messageQueue.addListener(new MessageListener() {
+
+            @Override
+            public void accept(Message message, int id) throws
+                    IOException {
+                System.out.println(id + " sent " + message);
+            }
+        });
+        server.start();
+
+        System.out.println("Test Server started");
     }
 }

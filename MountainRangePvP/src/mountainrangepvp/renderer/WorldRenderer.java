@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.generator.HeightMap;
-import mountainrangepvp.generator.Terrain;
+import mountainrangepvp.terrain.HeightMap;
+import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
 

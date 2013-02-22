@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector2;
 import java.nio.IntBuffer;
 import mountainrangepvp.Log;
-import mountainrangepvp.generator.HeightMap;
+import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.renderer.WorldRenderer;

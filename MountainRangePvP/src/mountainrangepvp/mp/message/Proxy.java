@@ -2,13 +2,12 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mountainrangepvp.mp;
+package mountainrangepvp.mp.message;
 
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
 import mountainrangepvp.Log;
-import mountainrangepvp.mp.message.*;
 
 /**
  *
@@ -16,12 +15,15 @@ import mountainrangepvp.mp.message.*;
  */
 public abstract class Proxy implements Runnable {
 
+    protected final int id;
     protected final Socket socket;
     protected final MessageIO messageIO;
     protected final MessageQueue receiveQueue;
     protected final MessageQueue sendQueue;
 
-    public Proxy(Socket socket, MessageQueue receiveQueue) throws IOException {
+    public Proxy(int id, Socket socket, MessageQueue receiveQueue) throws
+            IOException {
+        this.id = id;
         this.socket = socket;
         this.messageIO = new MessageIO(socket);
         this.receiveQueue = receiveQueue;
@@ -34,22 +36,26 @@ public abstract class Proxy implements Runnable {
     public void run() {
         try {
             doNetworking();
+
+            if (!socket.isClosed())
+                // eg due to exceptions in the message handling
+                socket.close();
         } catch (IOException ioe) {
-            Log.warn("Error reading messages:", ioe);
+            if (!socket.isClosed())
+                Log.warn("Error reading messages:", ioe);
         }
     }
 
     public void update() throws IOException {
-        if (socket.isClosed()) {
-            return;
+        if (!socket.isClosed()) {
+            sendQueue.update();
         }
 
         receiveQueue.update();
-        sendQueue.update();
     }
 
     public void sendMessage(Message m) {
-        sendQueue.pushMessage(m, this);
+        sendQueue.pushMessage(m, 0);
     }
 
     private void doNetworking() throws IOException {
@@ -58,11 +64,11 @@ public abstract class Proxy implements Runnable {
         try {
             while (!Thread.currentThread().isInterrupted() && isValid()) {
                 Message message = messageIO.readMessage();
-                receiveQueue.pushMessage(message, this);
+                receiveQueue.pushMessage(message, id);
                 onMessage(message);
             }
-        } catch (EOFException eofe) {
-            Log.info("Abnormal disconnect:", eofe);
+        } catch (EOFException e) {
+            Log.info("Disconnect");
         }
 
         disposeConnection();
@@ -88,7 +94,7 @@ public abstract class Proxy implements Runnable {
     private class SendMessageListener implements MessageListener {
 
         @Override
-        public void accept(Message message, Proxy proxy) throws IOException {
+        public void accept(Message message, int id) throws IOException {
             messageIO.sendMessage(message);
         }
     }
