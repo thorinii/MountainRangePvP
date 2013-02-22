@@ -5,7 +5,7 @@
 package mountainrangepvp.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.generator.HeightMap;
+import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 

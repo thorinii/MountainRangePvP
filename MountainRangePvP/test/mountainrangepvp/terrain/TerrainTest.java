@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package mountainrangepvp.generator;
+package mountainrangepvp.terrain;
 
-import mountainrangepvp.generator.Terrain.Slice;
+import mountainrangepvp.terrain.AbstractHeightMap;
+import mountainrangepvp.terrain.Terrain.Slice;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

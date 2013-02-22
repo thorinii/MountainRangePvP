@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import mountainrangepvp.generator.HeightMap;
+import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 

@@ -5,7 +5,6 @@
 package mountainrangepvp.mp.message;
 
 import java.io.IOException;
-import mountainrangepvp.mp.Proxy;
 
 /**
  *
@@ -13,5 +12,5 @@ import mountainrangepvp.mp.Proxy;
  */
 public interface MessageListener {
 
-    public void accept(Message message, Proxy proxy) throws IOException;
+    public void accept(Message message, int id) throws IOException;
 }

@@ -61,8 +61,24 @@ public class Log {
                 builder.append((String) d);
             } else if (d instanceof Exception) {
                 builder.append(d.getClass().getName());
-                builder.append(' ');
+                builder.append(": ");
                 builder.append(((Exception) d).getMessage());
+                builder.append("\n");
+
+                StackTraceElement[] traces = ((Exception) d).getStackTrace();
+
+                for (StackTraceElement ste : traces) {
+                    builder.append("\tat ");
+                    builder.append(ste.getClassName());
+                    builder.append(".");
+                    builder.append(ste.getMethodName());
+                    builder.append("(");
+                    builder.append(ste.getFileName());
+                    builder.append(":");
+                    builder.append(ste.getLineNumber());
+                    builder.append(")");
+                    builder.append("\n");
+                }
             } else {
                 builder.append(d);
             }
@@ -75,7 +91,7 @@ public class Log {
 
     private static ConsoleHandler makeConsoleHandler() {
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.INFO);
+        handler.setLevel(Level.FINE);
         return handler;
     }
 
