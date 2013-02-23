@@ -31,6 +31,7 @@ public class Player {
     private static final int ON_GROUND_TIMEOUT = 3;
     //
     private final String name;
+    private final int id;
     private final Vector2 position;
     private final Vector2 velocity;
     private final Vector2 gunDirection;
@@ -41,8 +42,9 @@ public class Player {
     //
     private int hits;
 
-    public Player(String name) {
+    public Player(String name, int id) {
         this.name = name;
+        this.id = id;
 
         this.position = new Vector2();
         this.velocity = new Vector2();
@@ -85,6 +87,10 @@ public class Player {
 
     public boolean isOnGround() {
         return onGround > 0;
+    }
+
+    public int getID() {
+        return id;
     }
 
     public void kill() {

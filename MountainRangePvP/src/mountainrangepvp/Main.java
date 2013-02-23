@@ -39,6 +39,7 @@ public class Main {
         appConfig.fullscreen = gameConfig.fullscreen;
         appConfig.width = gameConfig.resolutionWidth;
         appConfig.height = gameConfig.resolutionHeight;
+        appConfig.resizable = false;
 
         LwjglApplication app = new LwjglApplication(game, appConfig);
     }

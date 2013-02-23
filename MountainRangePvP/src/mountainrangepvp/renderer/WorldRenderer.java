@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.terrain.HeightMap;
+import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
@@ -28,8 +28,7 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
     //
-    private Terrain terrain;
-    private PlayerManager playerManager;
+    private GameWorld world;
     //
     private BackgroundRenderer backgroundRenderer;
     private HeightMapRenderer heightMapRenderer;
@@ -58,29 +57,20 @@ public class WorldRenderer {
         textRenderer = new TextRenderer();
     }
 
-    public void setPlayerManager(PlayerManager playerManager) {
-        this.playerManager = playerManager;
-        playerRenderer = new PlayerRenderer(batch, textRenderer, playerManager);
+    public void setWorld(GameWorld world) {
+        this.world = world;
 
-        leaderboardRenderer = new LeaderboardRenderer(batch, playerManager,
-                                                      textRenderer);
+        heightMapRenderer = new HeightMapRenderer(batch, world.getTerrain());
 
-        if (terrain != null)
-            miniMapRenderer = new MiniMapRenderer(batch, terrain,
-                                                  playerManager);
-    }
+        playerRenderer = new PlayerRenderer(batch, textRenderer, world.
+                getPlayerManager());
+        leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer,
+                                                      world.getPlayerManager());
 
-    public void setShotManager(ShotManager shotManager) {
-        shotRenderer = new ShotRenderer(batch, shotManager);
-    }
+        shotRenderer = new ShotRenderer(batch, world.getShotManager());
 
-    public void setHeightMap(HeightMap heightMap) {
-        this.terrain = new Terrain(heightMap);
-        heightMapRenderer = new HeightMapRenderer(batch, terrain);
-
-        if (playerManager != null)
-            miniMapRenderer = new MiniMapRenderer(batch, terrain,
-                                                  playerManager);
+        miniMapRenderer = new MiniMapRenderer(batch, world.getTerrain(),
+                                              world.getPlayerManager());
     }
 
     public void render(Vector2 scroll) {
@@ -88,24 +78,13 @@ public class WorldRenderer {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
         backgroundRenderer.render(scroll);
-
-        if (shotRenderer != null)
-            shotRenderer.render(scroll);
-
-        if (heightMapRenderer != null)
-            heightMapRenderer.render(scroll);
-
-        if (playerRenderer != null)
-            playerRenderer.render(scroll);
-
-        if (leaderboardRenderer != null)
-            leaderboardRenderer.render(scroll);
-
-        if (miniMapRenderer != null)
-            miniMapRenderer.render(scroll);
+        shotRenderer.render(scroll);
+        heightMapRenderer.render(scroll);
+        playerRenderer.render(scroll);
+        leaderboardRenderer.render(scroll);
+        miniMapRenderer.render(scroll);
 
         drawCrosshair();
-
     }
 
     private void drawCrosshair() {

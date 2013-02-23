@@ -11,11 +11,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.math.Vector2;
 import java.nio.IntBuffer;
 import mountainrangepvp.Log;
-import mountainrangepvp.terrain.HeightMap;
-import mountainrangepvp.player.Player;
-import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.renderer.WorldRenderer;
-import mountainrangepvp.shot.ShotManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -31,19 +27,15 @@ public class GameScreen implements Screen {
     //
     private Cursor emptyCursor = null;
     //
-    private final PlayerManager playerManager;
+    private final GameWorld world;
     private final WorldRenderer renderer;
     private final int width, height;
 
-    public GameScreen(HeightMap heightMap,
-            PlayerManager playerManager,
-            ShotManager shotManager) {
-        this.playerManager = playerManager;
+    public GameScreen(GameWorld world) {
+        this.world = world;
 
         renderer = new WorldRenderer();
-        renderer.setHeightMap(heightMap);
-        renderer.setPlayerManager(playerManager);
-        renderer.setShotManager(shotManager);
+        renderer.setWorld(world);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -63,11 +55,6 @@ public class GameScreen implements Screen {
                 Log.warn("Error hiding mouse:", ex);
             }
         }
-
-        /*
-         * Ensure the game exits when the window is closed
-         */
-
     }
 
     @Override
@@ -78,10 +65,11 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL10.GL_BLEND);
         Gdx.gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
-        Vector2 pos = playerManager.getLocalPlayer().getPosition().cpy();
+        Vector2 pos = world.getPlayerManager().getLocalPlayer().
+                getCentralPosition();
 
-        pos.x = pos.x - width / 2 + Player.WIDTH / 2;
-        pos.y = pos.y - height / 2 + Player.HEIGHT / 2;
+        pos.x = pos.x - width / 2;
+        pos.y = pos.y - height / 2;
 
         renderer.render(pos);
     }

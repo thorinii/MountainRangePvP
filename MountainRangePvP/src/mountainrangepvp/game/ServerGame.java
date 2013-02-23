@@ -10,19 +10,20 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
-import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.MultiplayerConstants;
-import mountainrangepvp.mp.message.Proxy;
 import mountainrangepvp.mp.message.MessageServer;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.Shot;
 import mountainrangepvp.shot.ShotListener;
 import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.terrain.HeightMap;
+import mountainrangepvp.terrain.Terrain;
 
 /**
  *
@@ -30,13 +31,11 @@ import mountainrangepvp.shot.ShotManager;
  */
 public class ServerGame extends Game {
 
-    private final HeightMap heightMap;
+    private final GameWorld world;
     //
     private final String playerName;
     private final MessageServer server;
     //
-    private final PlayerManager playerManager;
-    private final ShotManager shotManager;
     private final PhysicsSystem physicsSystem;
     private final InputHandler inputHandler;
     private final AudioManager audioManager;
@@ -48,16 +47,26 @@ public class ServerGame extends Game {
     public ServerGame(String playerName, int seed) {
         this.playerName = playerName;
 
-        heightMap = new HillsHeightMap(seed);
-        server = new MessageServer();
+        world = new GameWorld();
 
-        playerManager = new PlayerManager(playerName);
-        shotManager = new ShotManager(heightMap, playerManager);
-        physicsSystem = new PhysicsSystem(heightMap, playerManager);
+        HeightMap heightMap = new HillsHeightMap(seed);
+
+        Terrain terrain = new Terrain(heightMap);
+        world.setTerrain(terrain);
+
+        PlayerManager playerManager = new ServerPlayerManager();
+        world.setPlayerManager(playerManager);
+
+        ShotManager shotManager = new ShotManager(world);
+        world.setShotManager(shotManager);
+
+        physicsSystem = new PhysicsSystem(world);
         inputHandler = new InputHandler(playerManager, shotManager);
         audioManager = new AudioManager(playerManager, shotManager);
 
         shotManager.addShotListener(new AddShotListener());
+
+        server = new MessageServer();
     }
 
     @Override
@@ -78,7 +87,7 @@ public class ServerGame extends Game {
         inputHandler.register();
         audioManager.loadAudio();
 
-        gameScreen = new GameScreen(heightMap, playerManager, shotManager);
+        gameScreen = new GameScreen(world);
         setScreen(gameScreen);
     }
 
@@ -89,14 +98,13 @@ public class ServerGame extends Game {
         server.update();
 
         inputHandler.update(dt);
-        shotManager.update(dt);
+        world.update(dt);
         physicsSystem.update(dt);
         gameScreen.render(dt);
 
         playerUpdateTimer += (int) (1000 * dt);
         if (playerUpdateTimer > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-            server.broadcast(new PlayerUpdateMessage(playerManager.
-                    getLocalPlayer()));
+            // TODO: update player
             playerUpdateTimer = 0;
         }
     }
@@ -161,7 +169,7 @@ public class ServerGame extends Game {
 
         @Override
         public void shotAdd(Shot shot) {
-            if (shot.player == playerManager.getLocalPlayer()) {
+            if (shot.player == world.getPlayerManager().getLocalPlayer()) {
                 // TODO: send shot message
 //                server.broadcast(new NewShotMessage(shot));
             }

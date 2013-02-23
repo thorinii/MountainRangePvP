@@ -4,72 +4,28 @@
  */
 package mountainrangepvp.player;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
+import mountainrangepvp.mp.message.MessageListener;
 
 /**
  *
  * @author lachlan
  */
-public class PlayerManager {
+public interface PlayerManager extends MessageListener {
 
-    private final List<Player> players;
-    private final Player localPlayer;
+    public List<Player> getPlayers();
 
-    public PlayerManager(String localName) {
-        players = new ArrayList<>();
+    public Player getLocalPlayer();
 
-        localPlayer = new Player(localName);
-        players.add(localPlayer);
-    }
+    @Deprecated
+    public void addPlayer(String playerName);
 
-    public List<Player> getPlayers() {
-        return Collections.unmodifiableList(players);
-    }
+    @Deprecated
+    public void removePlayer(String playerName);
 
-    public Player getLocalPlayer() {
-        return localPlayer;
-    }
+    public Player getPlayer(String playerName);
 
-    public void addPlayer(String playerName) {
-        players.add(new Player(playerName));
-    }
+    public Player getPlayer(int id);
 
-    public void removePlayer(String playerName) {
-        Iterator<Player> itr = players.iterator();
-        while (itr.hasNext()) {
-            Player p = itr.next();
-
-            if (p.getName().equals(playerName)) {
-                itr.remove();
-            }
-        }
-    }
-
-    public Player getPlayer(String playerName) {
-        for (Player p : players) {
-            if (p.getName().equals(playerName)) {
-                return p;
-            }
-        }
-
-        return null;
-    }
-
-    public List<Player> getPlayersByHits(int count) {
-        List<Player> tmp = new ArrayList<>(players);
-
-        Collections.sort(tmp, new Comparator<Player>() {
-
-            @Override
-            public int compare(Player o1, Player o2) {
-                return o2.getHits() - o1.getHits();
-            }
-        });
-
-        return tmp.subList(0, Math.min(tmp.size(), count));
-    }
+    public List<Player> getPlayersByHits(int count);
 }
