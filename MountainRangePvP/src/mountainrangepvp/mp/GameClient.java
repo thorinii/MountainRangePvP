@@ -10,6 +10,7 @@ import mountainrangepvp.mp.message.*;
 import mountainrangepvp.mp.message.KillConnectionMessage.Reason;
 import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.util.Timer;
 
 /**
  *
@@ -19,6 +20,7 @@ public class GameClient {
 
     private final GameWorld world;
     private final MessageClient messageClient;
+    private final Timer playerUpdateTimer;
 
     public GameClient(GameWorld world, String host) {
         this(world, host, MultiplayerConstants.STD_PORT);
@@ -27,6 +29,7 @@ public class GameClient {
     public GameClient(GameWorld world, String host, int port) {
         this.world = world;
         messageClient = new MessageClient(host, port);
+        playerUpdateTimer = new Timer();
 
         setup();
     }
@@ -49,6 +52,17 @@ public class GameClient {
     }
 
     public void update() {
+        playerUpdateTimer.update();
+        if (playerUpdateTimer.getTime() > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
+            if (world.getPlayerManager().getLocalPlayer() != null) {
+                PlayerUpdateMessage pum = new PlayerUpdateMessage(world.
+                        getPlayerManager().getLocalPlayer());
+                messageClient.send(pum);
+
+                playerUpdateTimer.reset();
+            }
+        }
+
         messageClient.update();
     }
 

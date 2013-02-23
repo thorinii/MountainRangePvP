@@ -105,6 +105,8 @@ public class MessageClient {
                     receiveQueue.pushMessage(kill);
                     throw new IOException("Invalid Hello Message");
                 } else {
+                    ready = true;
+
                     id = hello.getClientID();
                     receiveQueue.pushMessage(m, id);
                 }
@@ -114,7 +116,7 @@ public class MessageClient {
 
                 messageIO.sendMessage(kill);
                 receiveQueue.pushMessage(kill);
-                throw new IOException("Invalid Hello Message");
+                throw new IOException("Server killed in handshake");
             }
 
         }

@@ -101,6 +101,15 @@ public class ServerPlayerManager implements PlayerManager {
         } else if (message instanceof IntroduceMessage) {
             IntroduceMessage introduceMessage = (IntroduceMessage) message;
             players.add(new Player(introduceMessage.getName(), id));
+
+        } else if (message instanceof PlayerUpdateMessage) {
+            PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
+            Player p = getPlayer(pum.getPlayer());
+
+            p.setAlive(pum.isAlive());
+            p.getPosition().set(pum.getPos());
+            p.getVelocity().set(pum.getVel());
+            p.getGunDirection().set(pum.getGun());
         }
     }
 }

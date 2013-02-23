@@ -16,6 +16,7 @@ import mountainrangepvp.Log;
 public abstract class Proxy implements Runnable {
 
     protected int id;
+    protected boolean ready;
     protected final Socket socket;
     protected final MessageIO messageIO;
     protected final MessageQueue receiveQueue;
@@ -35,6 +36,7 @@ public abstract class Proxy implements Runnable {
         this.sendQueue = new MessageQueue();
 
         sendQueue.addListener(new SendMessageListener());
+        ready = false;
     }
 
     @Override
@@ -52,7 +54,7 @@ public abstract class Proxy implements Runnable {
     }
 
     public void update() throws IOException {
-        if (!socket.isClosed()) {
+        if (!socket.isClosed() && ready) {
             sendQueue.update();
         }
 

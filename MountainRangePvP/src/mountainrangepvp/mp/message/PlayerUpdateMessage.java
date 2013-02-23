@@ -17,7 +17,7 @@ import mountainrangepvp.player.Player;
  */
 public class PlayerUpdateMessage implements Message {
 
-    private String player;
+    private int id;
     private Vector2 pos;
     private Vector2 vel;
     private Vector2 gun;
@@ -27,21 +27,21 @@ public class PlayerUpdateMessage implements Message {
     }
 
     public PlayerUpdateMessage(Player p) {
-        this(p.getName(), p.getPosition(), p.getVelocity(), p.getGunDirection(),
+        this(p.getID(), p.getPosition(), p.getVelocity(), p.getGunDirection(),
              p.isAlive());
     }
 
-    public PlayerUpdateMessage(String player, Vector2 pos, Vector2 vel,
+    public PlayerUpdateMessage(int id, Vector2 pos, Vector2 vel,
             Vector2 gun, boolean alive) {
-        this.player = player;
+        this.id = id;
         this.pos = pos;
         this.vel = vel;
         this.gun = gun;
         this.alive = alive;
     }
 
-    public String getPlayer() {
-        return player;
+    public int getPlayer() {
+        return id;
     }
 
     public Vector2 getPos() {
@@ -62,7 +62,7 @@ public class PlayerUpdateMessage implements Message {
 
     @Override
     public void writeOut(DataOutputStream dos) throws IOException {
-        dos.writeUTF(player);
+        dos.writeInt(id);
 
         dos.writeFloat(pos.x);
         dos.writeFloat(pos.y);
@@ -78,7 +78,7 @@ public class PlayerUpdateMessage implements Message {
 
     @Override
     public void readIn(DataInputStream dis) throws IOException {
-        player = dis.readUTF();
+        id = dis.readInt();
 
         pos = new Vector2();
         pos.x = dis.readFloat();
@@ -97,6 +97,6 @@ public class PlayerUpdateMessage implements Message {
 
     @Override
     public String toString() {
-        return "PlayerUpdate[" + player + "]";
+        return "PlayerUpdate[" + id + "]";
     }
 }

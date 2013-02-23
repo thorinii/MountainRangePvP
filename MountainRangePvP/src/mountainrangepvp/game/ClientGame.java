@@ -43,7 +43,6 @@ public class ClientGame extends Game {
     //
     private GameScreen gameScreen;
     //
-    private final Timer playerUpdateTimer;
     private final Timer limitFPSTimer;
 
     public ClientGame(String playerName, String serverIP) {
@@ -59,7 +58,6 @@ public class ClientGame extends Game {
         shotManager.addShotListener(new AddShotListener());
         world.setShotManager(shotManager);
 
-        playerUpdateTimer = new Timer();
         limitFPSTimer = new Timer();
     }
 
@@ -98,12 +96,6 @@ public class ClientGame extends Game {
             world.update(dt);
             physicsSystem.update(dt);
             gameScreen.render(dt);
-
-            playerUpdateTimer.update();
-            if (playerUpdateTimer.getTime() > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-                // TODO: send update
-                playerUpdateTimer.reset();
-            }
         }
     }
 

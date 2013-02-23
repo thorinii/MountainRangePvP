@@ -43,8 +43,6 @@ public class MessageIO {
         dos.writeUTF(message.getClass().getName());
         message.writeOut(dos);
         dos.flush();
-
-        Log.fine("Sent Message ", message);
     }
 
     /**
@@ -58,8 +56,6 @@ public class MessageIO {
 
         Message message = getMessageByClass(messageClass);
         message.readIn(dis);
-
-        Log.fine("Read Message ", message);
 
         return message;
     }
