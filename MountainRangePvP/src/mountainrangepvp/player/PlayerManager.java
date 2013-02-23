@@ -28,4 +28,6 @@ public interface PlayerManager extends MessageListener {
     public Player getPlayer(int id);
 
     public List<Player> getPlayersByHits(int count);
+
+    public void update(float dt);
 }

@@ -125,6 +125,10 @@ public class Player {
         hits++;
     }
 
+    public void setHits(int hits) {
+        this.hits = hits;
+    }
+
     public void update() {
         timer.update();
 

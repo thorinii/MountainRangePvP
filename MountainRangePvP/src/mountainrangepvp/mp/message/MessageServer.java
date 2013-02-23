@@ -110,7 +110,9 @@ public class MessageServer {
             return;
         }
 
-        for (ClientProxy proxy : clients) {
+        List<ClientProxy> tmp = new ArrayList<>(clients);
+
+        for (ClientProxy proxy : tmp) {
             try {
                 proxy.update();
             } catch (IOException ex) {

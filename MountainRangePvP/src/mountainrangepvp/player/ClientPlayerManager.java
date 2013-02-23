@@ -96,6 +96,10 @@ public class ClientPlayerManager implements PlayerManager {
     }
 
     @Override
+    public void update(float dt) {
+    }
+
+    @Override
     public void accept(Message message, int id) throws IOException {
         if (message instanceof ServerHelloMessage) {
             ServerHelloMessage shm = (ServerHelloMessage) message;
@@ -121,6 +125,15 @@ public class ClientPlayerManager implements PlayerManager {
             p.getPosition().set(pum.getPos());
             p.getVelocity().set(pum.getVel());
             p.getGunDirection().set(pum.getGun());
+            p.setHits(pum.getHits());
+        } else if (message instanceof PlayerDeathMessage) {
+            PlayerDeathMessage pdm = (PlayerDeathMessage) message;
+
+            Player hit = getPlayer(pdm.getHitID());
+            Player hitter = getPlayer(pdm.getHitterID());
+
+            hit.kill();
+            hitter.addHit();
         }
     }
 }

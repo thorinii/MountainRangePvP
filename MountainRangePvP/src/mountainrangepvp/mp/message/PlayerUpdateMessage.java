@@ -22,22 +22,24 @@ public class PlayerUpdateMessage implements Message {
     private Vector2 vel;
     private Vector2 gun;
     private boolean alive;
+    private int hits;
 
     public PlayerUpdateMessage() {
     }
 
     public PlayerUpdateMessage(Player p) {
         this(p.getID(), p.getPosition(), p.getVelocity(), p.getGunDirection(),
-             p.isAlive());
+             p.isAlive(), p.getHits());
     }
 
-    public PlayerUpdateMessage(int id, Vector2 pos, Vector2 vel,
-            Vector2 gun, boolean alive) {
+    public PlayerUpdateMessage(int id, Vector2 pos, Vector2 vel, Vector2 gun,
+            boolean alive, int hits) {
         this.id = id;
         this.pos = pos;
         this.vel = vel;
         this.gun = gun;
         this.alive = alive;
+        this.hits = hits;
     }
 
     public int getPlayer() {
@@ -60,6 +62,10 @@ public class PlayerUpdateMessage implements Message {
         return alive;
     }
 
+    public int getHits() {
+        return hits;
+    }
+
     @Override
     public void writeOut(DataOutputStream dos) throws IOException {
         dos.writeInt(id);
@@ -74,6 +80,8 @@ public class PlayerUpdateMessage implements Message {
         dos.writeFloat(gun.y);
 
         dos.writeBoolean(alive);
+
+        dos.writeInt(hits);
     }
 
     @Override
@@ -93,6 +101,8 @@ public class PlayerUpdateMessage implements Message {
         gun.y = dis.readFloat();
 
         alive = dis.readBoolean();
+
+        hits = dis.readInt();
     }
 
     @Override

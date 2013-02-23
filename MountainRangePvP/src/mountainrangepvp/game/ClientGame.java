@@ -20,9 +20,7 @@ import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
-import mountainrangepvp.shot.Shot;
-import mountainrangepvp.shot.ShotListener;
-import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.shot.*;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
@@ -54,7 +52,7 @@ public class ClientGame extends Game {
         PlayerManager playerManager = new ClientPlayerManager(playerName);
         world.setPlayerManager(playerManager);
 
-        ShotManager shotManager = new ShotManager(world);
+        ShotManager shotManager = new ClientShotManager(world);
         shotManager.addShotListener(new AddShotListener());
         world.setShotManager(shotManager);
 
@@ -115,6 +113,8 @@ public class ClientGame extends Game {
             if (message instanceof KillConnectionMessage) {
                 KillConnectionMessage kill = (KillConnectionMessage) message;
 
+                Gdx.app.exit();
+
                 if (kill.getReason() != KillConnectionMessage.Reason.ServerShutdown)
                     JOptionPane.showMessageDialog(null, "Error: " + kill.
                             getReason(),
@@ -124,7 +124,6 @@ public class ClientGame extends Game {
                     JOptionPane.showMessageDialog(null, "Server quit",
                                                   "Mountain Range PvP",
                                                   JOptionPane.ERROR_MESSAGE);
-                Gdx.app.exit();
             } else if (message instanceof NewWorldMessage) {
                 NewWorldMessage newWorldMessage = (NewWorldMessage) message;
 
