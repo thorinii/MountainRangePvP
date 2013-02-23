@@ -10,10 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import mountainrangepvp.mp.message.Message;
-import mountainrangepvp.mp.message.PlayerConnectMessage;
-import mountainrangepvp.mp.message.PlayerDisconnectMessage;
-import mountainrangepvp.mp.message.ServerHelloMessage;
+import mountainrangepvp.mp.message.*;
 
 /**
  *
@@ -112,6 +109,18 @@ public class ClientPlayerManager implements PlayerManager {
         } else if (message instanceof PlayerDisconnectMessage) {
             PlayerDisconnectMessage pdm = (PlayerDisconnectMessage) message;
             players.remove(getPlayer(pdm.getID()));
+
+        } else if (message instanceof PlayerUpdateMessage) {
+            PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
+            Player p = getPlayer(pum.getPlayer());
+
+            if (p == null)
+                return;
+
+            p.setAlive(pum.isAlive());
+            p.getPosition().set(pum.getPos());
+            p.getVelocity().set(pum.getVel());
+            p.getGunDirection().set(pum.getGun());
         }
     }
 }

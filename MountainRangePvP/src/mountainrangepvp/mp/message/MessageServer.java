@@ -190,6 +190,7 @@ public class MessageServer {
                     receiveQueue.pushMessage(kill);
                     throw new IOException("Invalid Hello Message");
                 } else {
+                    ready = true;
                     receiveQueue.pushMessage(m);
                 }
             } else {
