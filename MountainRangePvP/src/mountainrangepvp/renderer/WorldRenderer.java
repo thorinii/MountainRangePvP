@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.player.PlayerManager;
-import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.shot.ClientShotManager;
 
 /**
  *
@@ -69,8 +69,7 @@ public class WorldRenderer {
 
         shotRenderer = new ShotRenderer(batch, world.getShotManager());
 
-        miniMapRenderer = new MiniMapRenderer(batch, world.getTerrain(),
-                                              world.getPlayerManager());
+        miniMapRenderer = new MiniMapRenderer(batch, world);
     }
 
     public void render(Vector2 scroll) {

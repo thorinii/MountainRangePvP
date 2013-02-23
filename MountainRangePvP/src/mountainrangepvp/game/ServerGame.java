@@ -21,6 +21,7 @@ import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.player.ServerPlayerManager;
 import mountainrangepvp.shot.Shot;
 import mountainrangepvp.shot.ShotListener;
+import mountainrangepvp.shot.ClientShotManager;
 import mountainrangepvp.shot.ShotManager;
 import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.terrain.Terrain;
@@ -57,7 +58,7 @@ public class ServerGame extends Game {
         PlayerManager playerManager = new ServerPlayerManager();
         world.setPlayerManager(playerManager);
 
-        ShotManager shotManager = new ShotManager(world);
+        ShotManager shotManager = new ClientShotManager(world);
         world.setShotManager(shotManager);
 
         physicsSystem = new PhysicsSystem(world);

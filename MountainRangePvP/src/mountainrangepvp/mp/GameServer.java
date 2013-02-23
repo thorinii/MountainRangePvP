@@ -5,11 +5,19 @@
 package mountainrangepvp.mp;
 
 import java.io.IOException;
+import mountainrangepvp.Log;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.*;
+import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.player.ServerPlayerManager;
+import mountainrangepvp.shot.ServerShotManager;
+import mountainrangepvp.shot.Shot;
+import mountainrangepvp.shot.ShotListener;
+import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.terrain.HillsHeightMap;
+import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
 /**
@@ -21,6 +29,7 @@ public class GameServer {
     private final GameWorld world;
     private final MessageServer messageServer;
     private final Timer playerUpdateTimer;
+    private int seed;
 
     public GameServer(GameWorld world) {
         this(world, MultiplayerConstants.STD_PORT);
@@ -37,6 +46,9 @@ public class GameServer {
     private void setup() {
         messageServer.addMessageListener(new GameServerMessageListener());
         messageServer.addMessageListener(world.getPlayerManager());
+        messageServer.addMessageListener(world.getShotManager());
+
+        world.getShotManager().addShotListener(new NewShotListener());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -45,6 +57,14 @@ public class GameServer {
 
     public void removeMessageListener(MessageListener listener) {
         messageServer.removeMessageListener(listener);
+    }
+
+    public void setSeed(int seed) {
+        this.seed = seed;
+    }
+
+    public int getSeed() {
+        return seed;
     }
 
     public void start() throws IOException {
@@ -87,7 +107,7 @@ public class GameServer {
                     messageServer.send(kcm, id);
                 } else {
                     NewWorldMessage newWorldMessage = new NewWorldMessage(
-                            NewWorldMessage.WorldType.Hills, 12);
+                            NewWorldMessage.WorldType.Hills, seed);
                     messageServer.send(newWorldMessage, id);
 
 
@@ -105,18 +125,48 @@ public class GameServer {
                 messageServer.broadcastExcept(new PlayerDisconnectMessage(id),
                                               id);
 
+            } else if (message instanceof NewShotMessage) {
+                messageServer.broadcastExcept(message, id);
+
             }
+        }
+    }
+
+    private class NewShotListener implements ShotListener {
+
+        @Override
+        public void shotAdd(Shot shot) {
+        }
+
+        @Override
+        public void shotTerrainCollision(Shot shot) {
+        }
+
+        @Override
+        public void shotPlayerCollision(Shot shot, Player player) {
+            messageServer.broadcast(new PlayerDeathMessage(player, shot.player));
         }
     }
 
     public static void main(String[] args) throws IOException,
             InterruptedException {
-        PlayerManager manager = new ServerPlayerManager();
-
         GameWorld world = new GameWorld();
-        world.setPlayerManager(manager);
+
+        int seed = (int) (Math.random() * 100);
+
+        Terrain terrain = new Terrain(new HillsHeightMap(seed));
+        world.setTerrain(terrain);
+
+        PlayerManager playerManager = new ServerPlayerManager();
+        world.setPlayerManager(playerManager);
+
+        ShotManager shotManager = new ServerShotManager(world);
+        world.setShotManager(shotManager);
+
+        PhysicsSystem physicsSystem = new PhysicsSystem(world);
 
         GameServer server = new GameServer(world);
+        server.setSeed(seed);
         server.start();
 
         System.out.println("Test Server started");
@@ -125,6 +175,7 @@ public class GameServer {
             Thread.sleep(1000 / 60);
 
             server.update();
+            physicsSystem.update(1 / 60f);
             world.update(1 / 60f);
         }
     }

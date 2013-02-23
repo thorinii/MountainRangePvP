@@ -43,8 +43,6 @@ public class GameWorld {
     }
 
     public void update(float dt) {
-        // TODO: remove this
-        if (shotManager != null)
-            shotManager.update(dt);
+        shotManager.update(dt);
     }
 }

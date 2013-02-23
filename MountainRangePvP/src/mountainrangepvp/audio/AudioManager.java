@@ -12,6 +12,7 @@ import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.Shot;
 import mountainrangepvp.shot.ShotListener;
+import mountainrangepvp.shot.ClientShotManager;
 import mountainrangepvp.shot.ShotManager;
 
 /**

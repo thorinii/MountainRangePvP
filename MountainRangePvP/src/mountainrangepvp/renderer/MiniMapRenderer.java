@@ -10,10 +10,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.terrain.Terrain;
+import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.terrain.Terrain.Slice;
 import mountainrangepvp.player.Player;
-import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.shot.Shot;
 
 /**
  *
@@ -21,15 +21,13 @@ import mountainrangepvp.player.PlayerManager;
  */
 public class MiniMapRenderer implements Renderer {
 
-    private static final Color BACKGROUND = new Color(.5f, .5f, .5f, .5f);
     private static final int WIDTH = 400;
     private static final int HEIGHT = 100;
     private static final int SHIFT = 30;
     private static final float H_SCALE = 20;
     private static final float V_SCALE = 20;
     //
-    private final Terrain map;
-    private final PlayerManager playerManager;
+    private final GameWorld world;
     //
     private final int width, height;
     //
@@ -41,11 +39,9 @@ public class MiniMapRenderer implements Renderer {
     private final Texture terrain;
     private final Texture[] headTextures;
 
-    public MiniMapRenderer(SpriteBatch batch, Terrain map,
-            PlayerManager playerManager) {
+    public MiniMapRenderer(SpriteBatch batch, GameWorld world) {
         this.batch = batch;
-        this.map = map;
-        this.playerManager = playerManager;
+        this.world = world;
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -73,16 +69,19 @@ public class MiniMapRenderer implements Renderer {
 
         drawTerrain(scroll);
         drawPlayers(scroll);
+        batch.end();
 
+        drawShots(scroll);
+
+        batch.begin();
         batch.draw(border, width - SHIFT - 20 - WIDTH,
                    height - SHIFT - 20 - HEIGHT,
                    WIDTH + 40, HEIGHT + 40);
-
         batch.end();
     }
 
     private void drawTerrain(Vector2 scroll) {
-        Slice slice = map.getSlice(
+        Slice slice = world.getTerrain().getSlice(
                 (int) scroll.x + width / 2 - (int) (WIDTH * H_SCALE) / 2,
                 (int) (WIDTH * H_SCALE));
 
@@ -111,7 +110,7 @@ public class MiniMapRenderer implements Renderer {
     }
 
     private void drawPlayers(Vector2 scroll) {
-        for (Player player : playerManager.getPlayers()) {
+        for (Player player : world.getPlayerManager().getPlayers()) {
             if (!player.isAlive())
                 continue;
 
@@ -145,5 +144,33 @@ public class MiniMapRenderer implements Renderer {
                        head.getWidth(), head.getHeight(), // Src WH
                        dir.x > 0, false);
         }
+    }
+
+    private void drawShots(Vector2 scroll) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
+        shapeRenderer.setColor(Color.BLACK);
+
+        for (Shot shot : world.getShotManager().getShots()) {
+            Vector2 pos = shot.position();
+            pos.sub(scroll);
+
+            pos.x -= width / 2;
+            pos.y -= height / 2;
+
+            pos.x /= H_SCALE;
+            pos.y /= V_SCALE;
+
+            if (pos.x < -WIDTH / 2 || pos.x > WIDTH / 2)
+                continue;
+            if (pos.y < -HEIGHT / 2 || pos.y > HEIGHT / 2)
+                continue;
+
+            pos.x += width - SHIFT - WIDTH + WIDTH / 2;
+            pos.y += height - SHIFT - HEIGHT + HEIGHT / 2;
+
+            shapeRenderer.filledCircle(pos.x, pos.y, 1);
+        }
+
+        shapeRenderer.end();
     }
 }

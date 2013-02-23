@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import mountainrangepvp.Log;
 import mountainrangepvp.mp.message.*;
 
 /**
@@ -89,24 +90,33 @@ public class ServerPlayerManager implements PlayerManager {
     }
 
     @Override
+    public void update(float dt) {
+    }
+
+    @Override
     public void accept(Message message, int id) throws IOException {
         if (message instanceof KillConnectionMessage) {
             Iterator<Player> itr = players.iterator();
 
             while (itr.hasNext()) {
-                if (itr.next().getID() == id)
+                Player p = itr.next();
+                if (p.getID() == id) {
                     itr.remove();
+
+                    Log.info(p.getName(), "disconnected");
+                }
             }
 
         } else if (message instanceof IntroduceMessage) {
             IntroduceMessage introduceMessage = (IntroduceMessage) message;
             players.add(new Player(introduceMessage.getName(), id));
 
+            Log.info(introduceMessage.getName(), "connected");
+
         } else if (message instanceof PlayerUpdateMessage) {
             PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
             Player p = getPlayer(pum.getPlayer());
 
-            p.setAlive(pum.isAlive());
             p.getPosition().set(pum.getPos());
             p.getVelocity().set(pum.getVel());
             p.getGunDirection().set(pum.getGun());
