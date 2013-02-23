@@ -16,7 +16,7 @@ public class MultiplayerConstants {
     public static final int STD_PORT = 2424;
     //
     public static final int CHECK_CODE = 0x01FA12D33;
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
     //
     public static final int PLAYER_UPDATE_TIMER = 50;
     //

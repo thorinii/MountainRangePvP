@@ -57,6 +57,10 @@ public class MessageClient {
         }
     }
 
+    public boolean isConnected() {
+        return proxy.isValid();
+    }
+
     public void addMessageListener(MessageListener listener) {
         messageQueue.addListener(listener);
     }
@@ -78,7 +82,7 @@ public class MessageClient {
 
         public ServerProxy(Socket socket, MessageQueue messageQueue) throws
                 IOException {
-            super(0, socket, messageQueue);
+            super(socket, messageQueue);
         }
 
         @Override
@@ -101,7 +105,8 @@ public class MessageClient {
                     receiveQueue.pushMessage(kill);
                     throw new IOException("Invalid Hello Message");
                 } else {
-                    receiveQueue.pushMessage(m);
+                    id = hello.getClientID();
+                    receiveQueue.pushMessage(m, id);
                 }
             } else {
                 KillConnectionMessage kill = new KillConnectionMessage(
@@ -115,9 +120,13 @@ public class MessageClient {
         }
 
         @Override
-        protected void disposeConnection() throws IOException {
+        protected void errorInConnection() throws IOException {
             receiveQueue.pushMessage(new KillConnectionMessage(
                     KillConnectionMessage.Reason.ServerShutdown), id);
+        }
+
+        @Override
+        protected void disposeConnection() throws IOException {
         }
 
         @Override

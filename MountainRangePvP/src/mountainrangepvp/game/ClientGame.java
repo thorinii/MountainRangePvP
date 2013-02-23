@@ -15,9 +15,9 @@ import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.GameClient;
 import mountainrangepvp.mp.MultiplayerConstants;
-import mountainrangepvp.mp.message.Proxy;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
+import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.Shot;
@@ -37,8 +37,6 @@ public class ClientGame extends Game {
     private GameClient client;
     //
     private GameWorld world;
-    private PlayerManager playerManager;
-    private ShotManager shotManager;
     private PhysicsSystem physicsSystem;
     private InputHandler inputHandler;
     private AudioManager audioManager;
@@ -46,13 +44,23 @@ public class ClientGame extends Game {
     private GameScreen gameScreen;
     //
     private final Timer playerUpdateTimer;
+    private final Timer limitFPSTimer;
 
     public ClientGame(String playerName, String serverIP) {
         this.playerName = playerName;
         this.serverIP = serverIP;
 
-        this.world = new GameWorld(null, playerManager, shotManager);
-        this.playerUpdateTimer = new Timer();
+        world = new GameWorld();
+
+        PlayerManager playerManager = new ClientPlayerManager(playerName);
+        world.setPlayerManager(playerManager);
+
+        ShotManager shotManager = new ShotManager(world);
+        shotManager.addShotListener(new AddShotListener());
+        world.setShotManager(shotManager);
+
+        playerUpdateTimer = new Timer();
+        limitFPSTimer = new Timer();
     }
 
     @Override
@@ -76,11 +84,18 @@ public class ClientGame extends Game {
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
 
+        limitFPSTimer.update();
+
+        if (limitFPSTimer.getTime() < (1000 / 60)) {
+            return;
+        } else
+            limitFPSTimer.reset();
+
         client.update();
 
         if (gameScreen != null) {
             inputHandler.update(dt);
-            shotManager.update(dt);
+            world.update(dt);
             physicsSystem.update(dt);
             gameScreen.render(dt);
 
@@ -135,20 +150,17 @@ public class ClientGame extends Game {
 
                 world.setTerrain(new Terrain(heightMap));
 
-                playerManager = new PlayerManager(playerName);
-                shotManager = new ShotManager(heightMap, playerManager);
-                physicsSystem = new PhysicsSystem(heightMap, playerManager);
+                physicsSystem = new PhysicsSystem(world);
 
-                shotManager.addShotListener(new AddShotListener());
-
-                inputHandler = new InputHandler(playerManager, shotManager);
+                inputHandler = new InputHandler(world.getPlayerManager(), world.
+                        getShotManager());
                 inputHandler.register();
 
-                audioManager = new AudioManager(playerManager, shotManager);
+                audioManager = new AudioManager(world.getPlayerManager(), world.
+                        getShotManager());
                 audioManager.loadAudio();
 
-                gameScreen = new GameScreen(heightMap, playerManager,
-                                            shotManager);
+                gameScreen = new GameScreen(world);
                 setScreen(gameScreen);
             }
         }
@@ -229,7 +241,7 @@ public class ClientGame extends Game {
 
         @Override
         public void shotAdd(Shot shot) {
-            if (shot.player == playerManager.getLocalPlayer()) {
+            if (shot.player == world.getPlayerManager().getLocalPlayer()) {
                 // TODO: send shot message
 //                client.send(new NewShotMessage(shot));
             }

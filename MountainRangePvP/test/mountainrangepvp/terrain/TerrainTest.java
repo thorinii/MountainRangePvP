@@ -4,6 +4,7 @@
  */
 package mountainrangepvp.terrain;
 
+import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.terrain.AbstractHeightMap;
 import mountainrangepvp.terrain.Terrain.Slice;
 import org.junit.Test;
@@ -49,6 +50,55 @@ public class TerrainTest {
 
         assertEquals(8, result.get(5));
         assertEquals(9, result.get(105));
+    }
+
+    @Test
+    public void testCollideLine() {
+        Terrain terrain = new Terrain(new TestGenerator());
+
+        // Test should be collision
+        Vector2 p1 = new Vector2(1000, 5);
+        Vector2 p2 = new Vector2(1030, 5);
+
+        assertTrue(terrain.collideLine(p1, p2));
+        assertTrue(terrain.collideLine(p2, p1));
+
+        // Test should not be collision
+        p1 = new Vector2(1000, 14);
+        p2 = new Vector2(1030, 14);
+
+        assertFalse(terrain.collideLine(p1, p2));
+        assertFalse(terrain.collideLine(p2, p1));
+    }
+
+    @Test
+    public void testCollideLineNegative() {
+        Terrain terrain = new Terrain(new TestGenerator());
+
+        // Test should be collision
+        Vector2 p1 = new Vector2(-400, 5);
+        Vector2 p2 = new Vector2(-380, 5);
+
+        assertTrue(terrain.collideLine(p1, p2));
+        assertTrue(terrain.collideLine(p2, p1));
+
+        // Test should not be collision
+        p1 = new Vector2(-400, 14);
+        p2 = new Vector2(-380, 14);
+
+        assertFalse(terrain.collideLine(p1, p2));
+        assertFalse(terrain.collideLine(p2, p1));
+    }
+
+    @Test
+    public void testHightestPoint() {
+        Terrain terrain = new Terrain(new TestGenerator());
+
+        assertEquals(0, terrain.getHighestPointBetween(0, 5));
+        assertEquals(10, terrain.getHighestPointBetween(0, 6));
+        assertEquals(11, terrain.getHighestPointBetween(0, 106));
+        assertEquals(11, terrain.getHighestPointBetween(105, 106));
+        assertEquals(6, terrain.getHighestPointBetween(-196, -100));
     }
 
     private class TestGenerator extends AbstractHeightMap {

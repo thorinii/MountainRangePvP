@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import mountainrangepvp.mp.MultiplayerConstants;
+import mountainrangepvp.player.Player;
 
 /**
  *
@@ -15,31 +16,35 @@ import mountainrangepvp.mp.MultiplayerConstants;
  */
 public class PlayerDisconnectMessage implements Message {
 
-    private String playerName;
+    private int id;
 
     public PlayerDisconnectMessage() {
     }
 
-    public PlayerDisconnectMessage(String playerName) {
-        this.playerName = playerName;
+    public PlayerDisconnectMessage(Player player) {
+        this(player.getID());
     }
 
-    public String getPlayerName() {
-        return playerName;
+    public PlayerDisconnectMessage(int id) {
+        this.id = id;
+    }
+
+    public int getID() {
+        return id;
     }
 
     @Override
     public void writeOut(DataOutputStream dos) throws IOException {
-        dos.writeUTF(playerName);
+        dos.writeInt(id);
     }
 
     @Override
     public void readIn(DataInputStream dis) throws IOException {
-        playerName = dis.readUTF();
+        id = dis.readInt();
     }
 
     @Override
     public String toString() {
-        return "PlayerDisconnect[" + playerName + "]";
+        return "PlayerDisconnect[" + id + "]";
     }
 }

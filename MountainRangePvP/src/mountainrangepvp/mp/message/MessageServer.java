@@ -7,10 +7,9 @@ package mountainrangepvp.mp.message;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mountainrangepvp.Log;
 import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.mp.lanping.PingServer;
@@ -130,6 +129,16 @@ public class MessageServer {
         return messageQueue;
     }
 
+    public List<Integer> getConnectedClients() {
+        List<Integer> ids = new ArrayList<>();
+
+        for (ClientProxy proxy : clients)
+            if (proxy.isValid())
+                ids.add(proxy.id);
+
+        return ids;
+    }
+
     private class AcceptRunnable implements Runnable {
 
         private final ServerSocket serverSocket;
@@ -194,6 +203,10 @@ public class MessageServer {
         }
 
         @Override
+        protected void errorInConnection() throws IOException {
+        }
+
+        @Override
         protected void disposeConnection() throws IOException {
             receiveQueue.pushMessage(new KillConnectionMessage(
                     KillConnectionMessage.Reason.ClientExit), id);
@@ -204,7 +217,6 @@ public class MessageServer {
         protected void onMessage(Message m) throws IOException {
             if (m instanceof KillConnectionMessage) {
                 KillConnectionMessage kill = (KillConnectionMessage) m;
-
                 Log.info(id + " disconnected: " + kill.getReason());
 
                 kill();

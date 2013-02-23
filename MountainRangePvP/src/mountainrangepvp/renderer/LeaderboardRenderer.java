@@ -26,11 +26,11 @@ public class LeaderboardRenderer implements Renderer {
     //
     private final int width, height;
 
-    public LeaderboardRenderer(SpriteBatch batch, PlayerManager playerManager,
-            TextRenderer textRenderer) {
+    public LeaderboardRenderer(SpriteBatch batch, TextRenderer textRenderer,
+            PlayerManager playerManager) {
         this.batch = batch;
-        this.playerManager = playerManager;
         this.textRenderer = textRenderer;
+        this.playerManager = playerManager;
 
         bodyTextures = new Texture[]{
             new Texture(Gdx.files.internal("player/head-orange.png")),

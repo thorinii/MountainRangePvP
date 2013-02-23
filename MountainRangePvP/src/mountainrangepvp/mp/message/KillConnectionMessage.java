@@ -19,7 +19,8 @@ public class KillConnectionMessage implements Message {
         InvalidHello("Client/server version mismatch"),
         NetworkError("Network transfer error"),
         ClientExit("Client exited"),
-        ServerShutdown("Server shutdown");
+        ServerShutdown("Server shutdown"),
+        DuplicatePlayer("Player with same name already connected");
         final String human;
 
         private Reason(String human) {

@@ -5,9 +5,10 @@
 package mountainrangepvp.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.terrain.HeightMap;
+import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
-import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.terrain.Terrain;
+import mountainrangepvp.terrain.Terrain.Slice;
 
 /**
  *
@@ -18,16 +19,14 @@ public class PhysicsSystem {
     private static final float GRAVITY = -1000f;
     private static final float DAMPING = 0.01f;
     //
-    private final HeightMap heightMap;
-    private final PlayerManager playerManager;
+    private final GameWorld world;
 
-    public PhysicsSystem(HeightMap heightMap, PlayerManager playerManager) {
-        this.heightMap = heightMap;
-        this.playerManager = playerManager;
+    public PhysicsSystem(GameWorld world) {
+        this.world = world;
     }
 
     public void update(float dt) {
-        for (Player player : playerManager.getPlayers()) {
+        for (Player player : world.getPlayerManager().getPlayers()) {
             updatePlayer(player, dt);
         }
     }
@@ -43,12 +42,10 @@ public class PhysicsSystem {
         Vector2 pos = player.getPosition();
         Vector2 vel = player.getVelocity();
 
-        dampenVelocity(vel, dt);
-
+        //dampenVelocity(vel, dt);
 
         checkWalkUpSlope(vel, pos, dt);
-        slideDownSlope(player, pos, vel, dt);
-
+        //slideDownSlope(player, pos, vel, dt);
 
         vel.y += GRAVITY * dt;
 
@@ -58,71 +55,51 @@ public class PhysicsSystem {
         checkGroundIntersection(player, pos, vel);
 
         player.update();
+
     }
 
     private void checkWalkUpSlope(Vector2 vel, Vector2 pos, float dt) {
+        Terrain terrain = world.getTerrain();
+
         int base, length;
         if (vel.x < 0) {
             base = (int) (pos.x + vel.x * dt);
-            length = (int) -Math.ceil(vel.x * dt) + 1;
-
-            int[] block = heightMap.getBlock(base, length);
-            for (int i = block.length - 1; i >= 0; i--) {
-                int slope = block[i] - (int) pos.y;
-
-                if (slope > Player.MAX_WALK_SLOPE) {
-                    vel.x = 0;
-                    break;
-                } else if (slope > 0) {
-                    vel.y += slope * 2 / 3;
-                }
-            }
+            length = (int) Math.ceil(-vel.x * dt) + 1;
         } else {
             base = (int) pos.x + Player.WIDTH;
             length = (int) Math.ceil(vel.x * dt) + 1;
+        }
 
-            int[] block = heightMap.getBlock(base, length);
-            for (int i = 0; i < block.length; i++) {
-                int slope = block[i] - (int) pos.y;
+        int highest = terrain.getHighestPointBetween(base, base + length);
+        int slope = highest - (int) pos.y;
 
-                if (slope > Player.MAX_WALK_SLOPE) {
-                    vel.x = 0;
-                    break;
-                } else if (slope > 0) {
-                    vel.y += slope * 2 / 3;
-                }
-            }
+
+        if (slope > Player.MAX_WALK_SLOPE) {
+            vel.x = 0;
+        } else if (slope > 0) {
+            vel.y += slope * 190 * dt;
         }
     }
 
     private void slideDownSlope(Player player, Vector2 pos, Vector2 vel,
             float dt) {
+        Terrain terrain = world.getTerrain();
+
         if (player.isOnGround()) {
-            int[] block = heightMap.getBlock((int) pos.x - 1, Player.WIDTH + 3);
-            int maxIndex = -1, maxHeight = -1;
+            Slice slice = terrain.getSlice((int) pos.x - 1, Player.WIDTH + 3);
 
-            for (int i = 1; i < block.length; i++) {
-                int height = block[i];
+            int maxIndex = slice.getHighestIndex();
+            int maxHeight = slice.getHighestPoint();
 
-                if (maxHeight < height) {
-                    maxIndex = i;
-                    maxHeight = height;
-                }
-            }
-
-            if (maxIndex == 1) {
-                // Its our left corner
-
-                int slope = (int) pos.y - block[2];
+            if (maxIndex == 1) { // left corner
+                int slope = (int) pos.y - maxHeight;
                 if (slope > Player.MIN_SLIDE_SLOPE) {
                     // Slide right
                     vel.x += 500 * dt;
                     vel.y -= 50 * dt;
                 }
-            } else if (maxIndex == Player.WIDTH + 2) {
-                // Its the right corner
-
-                int slope = (int) pos.y - block[Player.WIDTH - 1];
+            } else if (maxIndex == Player.WIDTH + 2) { // right corner
+                int slope = (int) pos.y - maxHeight;
                 if (slope > Player.MIN_SLIDE_SLOPE) {
                     // Slide left
                     vel.x -= 500 * dt;
@@ -133,19 +110,20 @@ public class PhysicsSystem {
     }
 
     private void checkGroundIntersection(Player player, Vector2 pos, Vector2 vel) {
-        int[] block = heightMap.getBlock((int) pos.x, Player.WIDTH);
+        Slice slice = world.getTerrain().getSlice((int) pos.x, Player.WIDTH);
+
+        int highestPoint = slice.getHighestPoint();
+
         boolean onGround = false;
-        for (int i = 0; i < block.length; i++) {
-            if (pos.y < block[i]) {
-                pos.y = block[i];
+        if (highestPoint > pos.y) {
+            pos.y = highestPoint;
 
-                if (vel.y < 0) {
-                    vel.y = -0.2f * vel.y;
-                }
-
-                if (player.isAlive())
-                    onGround = true;
+            if (vel.y < 0) {
+                vel.y = 0.2f * -vel.y;
             }
+
+            if (player.isAlive())
+                onGround = true;
         }
 
         player.setOnGround(onGround);

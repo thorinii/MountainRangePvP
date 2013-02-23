@@ -10,8 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import java.util.HashMap;
-import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.terrain.Terrain;
 
 /**

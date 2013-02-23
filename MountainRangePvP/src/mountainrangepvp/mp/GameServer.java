@@ -7,6 +7,9 @@ package mountainrangepvp.mp;
 import java.io.IOException;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.*;
+import mountainrangepvp.player.Player;
+import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.player.ServerPlayerManager;
 
 /**
  *
@@ -30,6 +33,7 @@ public class GameServer {
 
     private void setup() {
         messageServer.addMessageListener(new GameServerMessageListener());
+        messageServer.addMessageListener(world.getPlayerManager());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -60,25 +64,55 @@ public class GameServer {
         @Override
         public void accept(Message message, int id) throws IOException {
             if (message instanceof IntroduceMessage) {
-                NewWorldMessage newWorldMessage = new NewWorldMessage(
-                        NewWorldMessage.WorldType.Hills, 12);
-                messageServer.send(newWorldMessage, id);
-            } else {
-                System.out.println(id + " sent " + message);
+                IntroduceMessage introduceMessage = (IntroduceMessage) message;
+
+                Player existing = world.getPlayerManager().getPlayer(introduceMessage.
+                        getName());
+                if (existing != null) {
+                    KillConnectionMessage kcm = new KillConnectionMessage(
+                            KillConnectionMessage.Reason.DuplicatePlayer);
+                    messageServer.send(kcm, id);
+                } else {
+                    NewWorldMessage newWorldMessage = new NewWorldMessage(
+                            NewWorldMessage.WorldType.Hills, 12);
+                    messageServer.send(newWorldMessage, id);
+
+
+                    for (Player player : world.getPlayerManager().getPlayers()) {
+                        PlayerConnectMessage pcm = new PlayerConnectMessage(
+                                player);
+                        messageServer.send(pcm, id);
+                    }
+
+                    messageServer.broadcastExcept(new PlayerConnectMessage(
+                            new Player(introduceMessage.getName(), id)), id);
+                }
+
+            } else if (message instanceof KillConnectionMessage) {
+                messageServer.broadcastExcept(new PlayerDisconnectMessage(id),
+                                              id);
+
             }
         }
     }
 
     public static void main(String[] args) throws IOException,
             InterruptedException {
-        GameServer server = new GameServer(null);
+        PlayerManager manager = new ServerPlayerManager();
+
+        GameWorld world = new GameWorld();
+        world.setPlayerManager(manager);
+
+        GameServer server = new GameServer(world);
         server.start();
 
         System.out.println("Test Server started");
 
         while (true) {
-            Thread.sleep(100);
+            Thread.sleep(1000 / 60);
+
             server.update();
+            world.update(1 / 60f);
         }
     }
 }

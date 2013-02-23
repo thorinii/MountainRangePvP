@@ -4,10 +4,9 @@
  */
 package mountainrangepvp.game;
 
-import mountainrangepvp.terrain.HeightMap;
-import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.terrain.Terrain;
 
 /**
  *
@@ -16,15 +15,8 @@ import mountainrangepvp.shot.ShotManager;
 public class GameWorld {
 
     private Terrain terrain;
-    private final PlayerManager playerManager;
-    private final ShotManager shotManager;
-
-    public GameWorld(Terrain terrain, PlayerManager playerManager,
-            ShotManager shotManager) {
-        this.terrain = terrain;
-        this.playerManager = playerManager;
-        this.shotManager = shotManager;
-    }
+    private PlayerManager playerManager;
+    private ShotManager shotManager;
 
     public Terrain getTerrain() {
         return terrain;
@@ -38,7 +30,21 @@ public class GameWorld {
         return playerManager;
     }
 
+    public void setPlayerManager(PlayerManager playerManager) {
+        this.playerManager = playerManager;
+    }
+
     public ShotManager getShotManager() {
         return shotManager;
+    }
+
+    public void setShotManager(ShotManager shotManager) {
+        this.shotManager = shotManager;
+    }
+
+    public void update(float dt) {
+        // TODO: remove this
+        if (shotManager != null)
+            shotManager.update(dt);
     }
 }

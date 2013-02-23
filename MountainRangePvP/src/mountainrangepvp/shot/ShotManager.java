@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
@@ -23,14 +24,12 @@ public class ShotManager {
     public static final int MAX_SHOT_LIFE = 5;
     //
     private final List<Shot> shots;
-    private final HeightMap heightMap;
-    private final PlayerManager playerManager;
+    private final GameWorld world;
     private final List<ShotListener> listeners;
 
-    public ShotManager(HeightMap heightMap, PlayerManager playerManager) {
+    public ShotManager(GameWorld world) {
         shots = new LinkedList<>();
-        this.heightMap = heightMap;
-        this.playerManager = playerManager;
+        this.world = world;
         listeners = new ArrayList<>();
     }
 
@@ -64,7 +63,7 @@ public class ShotManager {
 
             if (testLife(shot)) {
                 itr.remove();
-            } else if (testTerrain(shot, pos, npos)) {
+            } else if (testTerrain(pos, npos)) {
                 itr.remove();
 
                 for (ShotListener listener : listeners) {
@@ -96,30 +95,8 @@ public class ShotManager {
         return shot.time > MAX_SHOT_LIFE;
     }
 
-    private boolean testTerrain(Shot shot, Vector2 pos, Vector2 npos) {
-        if (shot.direction.x > 0) {
-            int[] block = heightMap.getBlock((int) pos.x,
-                                             (int) Math.ceil(npos.x - pos.x));
-
-            float w = block.length;
-            for (int i = 0; i < block.length; i++) {
-                if (block[i] >= (w - i) / w * pos.y + i / w * npos.y) {
-                    return true;
-                }
-            }
-        } else {
-            int[] block = heightMap.getBlock((int) npos.x,
-                                             (int) Math.ceil(pos.x - npos.x));
-
-            float w = block.length;
-            for (int i = block.length - 1; i >= 0; i--) {
-                if (block[i] >= (w - i) / w * pos.y + i / w * npos.y) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
+    private boolean testTerrain(Vector2 pos, Vector2 npos) {
+        return world.getTerrain().collideLine(pos, npos);
     }
 
     private Player testPlayers(Shot shot, Vector2 pos, Vector2 npos) {
@@ -127,7 +104,7 @@ public class ShotManager {
         Vector2 shot2 = npos;
 
         Vector2 p1, p2;
-        for (Player player : playerManager.getPlayers()) {
+        for (Player player : world.getPlayerManager().getPlayers()) {
             if (!player.isAlive() || player == shot.player) {
                 continue;
             }

@@ -15,11 +15,16 @@ import mountainrangepvp.Log;
  */
 public abstract class Proxy implements Runnable {
 
-    protected final int id;
+    protected int id;
     protected final Socket socket;
     protected final MessageIO messageIO;
     protected final MessageQueue receiveQueue;
     protected final MessageQueue sendQueue;
+
+    public Proxy(Socket socket, MessageQueue receiveQueue) throws
+            IOException {
+        this(-1, socket, receiveQueue);
+    }
 
     public Proxy(int id, Socket socket, MessageQueue receiveQueue) throws
             IOException {
@@ -69,14 +74,19 @@ public abstract class Proxy implements Runnable {
             }
         } catch (EOFException e) {
             Log.info("Disconnect");
+        } catch (IOException ioe) {
+            errorInConnection();
+            throw ioe;
+        } finally {
+            disposeConnection();
         }
-
-        disposeConnection();
     }
 
     protected abstract void setupConnection() throws IOException;
 
     protected abstract void disposeConnection() throws IOException;
+
+    protected abstract void errorInConnection() throws IOException;
 
     protected void onMessage(Message m) throws IOException {
     }
