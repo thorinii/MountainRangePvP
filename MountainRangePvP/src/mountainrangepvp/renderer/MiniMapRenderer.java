@@ -148,7 +148,7 @@ public class MiniMapRenderer implements Renderer {
 
     private void drawShots(Vector2 scroll) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
-        shapeRenderer.setColor(Color.BLACK);
+        shapeRenderer.setColor(Color.RED);
 
         for (Shot shot : world.getShotManager().getShots()) {
             Vector2 pos = shot.position();

@@ -73,6 +73,8 @@ public class MessageServer {
                 Log.warn("Error stopping client connection", ioe);
             }
         }
+
+        clients.clear();
     }
 
     public void addMessageListener(MessageListener messageListener) {
@@ -139,6 +141,10 @@ public class MessageServer {
                 ids.add(proxy.id);
 
         return ids;
+    }
+
+    public boolean isGoing() {
+        return !serverSocket.isClosed();
     }
 
     private class AcceptRunnable implements Runnable {
