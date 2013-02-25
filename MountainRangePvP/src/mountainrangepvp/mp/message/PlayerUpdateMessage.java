@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.player.Player;
 
 /**

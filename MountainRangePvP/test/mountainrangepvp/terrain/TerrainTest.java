@@ -5,10 +5,9 @@
 package mountainrangepvp.terrain;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.terrain.AbstractHeightMap;
 import mountainrangepvp.terrain.Terrain.Slice;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *

@@ -11,9 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.GameWorld;
-import mountainrangepvp.terrain.Terrain.Slice;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.shot.Shot;
+import mountainrangepvp.terrain.Terrain.Slice;
 
 /**
  *

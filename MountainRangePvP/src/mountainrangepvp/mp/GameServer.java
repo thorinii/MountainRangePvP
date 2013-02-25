@@ -5,8 +5,6 @@
 package mountainrangepvp.mp;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mountainrangepvp.Log;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.*;
