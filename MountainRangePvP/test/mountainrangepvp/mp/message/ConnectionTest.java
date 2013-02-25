@@ -6,11 +6,10 @@ package mountainrangepvp.mp.message;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  *

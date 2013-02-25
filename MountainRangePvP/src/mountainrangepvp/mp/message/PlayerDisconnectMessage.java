@@ -7,7 +7,6 @@ package mountainrangepvp.mp.message;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.player.Player;
 
 /**

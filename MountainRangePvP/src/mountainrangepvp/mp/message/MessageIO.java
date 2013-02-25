@@ -5,12 +5,10 @@
 package mountainrangepvp.mp.message;
 
 import java.io.*;
-import java.lang.Class;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 import mountainrangepvp.Log;
-import mountainrangepvp.mp.message.Message;
 
 /**
  *
