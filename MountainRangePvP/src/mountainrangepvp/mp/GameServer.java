@@ -5,6 +5,8 @@
 package mountainrangepvp.mp;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mountainrangepvp.Log;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.*;
@@ -92,6 +94,10 @@ public class GameServer {
         messageServer.stop();
     }
 
+    public boolean isGoing() {
+        return messageServer.isGoing();
+    }
+
     private class GameServerMessageListener implements MessageListener {
 
         @Override
@@ -148,11 +154,8 @@ public class GameServer {
         }
     }
 
-    public static void main(String[] args) throws IOException,
-            InterruptedException {
-        GameWorld world = new GameWorld();
-
-        int seed = (int) (Math.random() * 100);
+    public static GameServer startBasicServer(int seed) {
+        final GameWorld world = new GameWorld();
 
         Terrain terrain = new Terrain(new HillsHeightMap(seed));
         world.setTerrain(terrain);
@@ -163,20 +166,48 @@ public class GameServer {
         ShotManager shotManager = new ServerShotManager(world);
         world.setShotManager(shotManager);
 
-        PhysicsSystem physicsSystem = new PhysicsSystem(world);
+        final PhysicsSystem physicsSystem = new PhysicsSystem(world);
 
-        GameServer server = new GameServer(world);
+        final GameServer server = new GameServer(world);
         server.setSeed(seed);
-        server.start();
 
-        System.out.println("Test Server started");
-
-        while (true) {
-            Thread.sleep(1000 / 60);
-
-            server.update();
-            physicsSystem.update(1 / 60f);
-            world.update(1 / 60f);
+        try {
+            Log.info("Starting server...");
+            server.start();
+        } catch (IOException ex) {
+            Log.warn("Server could not start:", ex);
+            return null;
         }
+
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    Log.info("Server ready");
+
+                    while (server.isGoing()) {
+                        Thread.sleep(1000 / 60);
+
+                        server.update();
+                        physicsSystem.update(1 / 60f);
+                        world.update(1 / 60f);
+                    }
+                } catch (Exception e) {
+                    Log.warn("Server crashed:", e);
+                }
+
+                System.out.println("Server stopped");
+            }
+        }).start();
+
+        return server;
+    }
+
+    public static void main(String[] args) throws IOException,
+            InterruptedException {
+        int seed = (int) (Math.random() * 100);
+
+        startBasicServer(seed);
     }
 }

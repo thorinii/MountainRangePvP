@@ -66,7 +66,8 @@ public class PingClient {
         try {
             socket.receive(packet);
         } catch (IOException ioe) {
-            Log.info("Could not read ping", ioe);
+            if (!socket.isClosed())
+                Log.info("Could not read ping", ioe);
             Thread.currentThread().interrupt();
         }
     }

@@ -64,6 +64,9 @@ public class Terrain {
         }
 
         float width = (float) Math.ceil(p2.x - p1.x);
+        if (width == 0)
+            width = 1;
+
         Slice slice = getSlice((int) p1.x, (int) width);
 
         for (int i = 0; i < width; i++) {

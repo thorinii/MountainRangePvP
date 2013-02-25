@@ -12,19 +12,22 @@ import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.input.InputHandler;
+import mountainrangepvp.mp.GameClient;
+import mountainrangepvp.mp.GameServer;
 import mountainrangepvp.mp.MultiplayerConstants;
-import mountainrangepvp.mp.message.MessageServer;
-import mountainrangepvp.mp.message.*;
+import mountainrangepvp.mp.message.KillConnectionMessage;
+import mountainrangepvp.mp.message.Message;
+import mountainrangepvp.mp.message.MessageListener;
+import mountainrangepvp.mp.message.NewWorldMessage;
 import mountainrangepvp.physics.PhysicsSystem;
-import mountainrangepvp.player.Player;
+import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.player.ServerPlayerManager;
-import mountainrangepvp.shot.Shot;
-import mountainrangepvp.shot.ShotListener;
 import mountainrangepvp.shot.ClientShotManager;
 import mountainrangepvp.shot.ShotManager;
 import mountainrangepvp.terrain.HeightMap;
 import mountainrangepvp.terrain.Terrain;
+import mountainrangepvp.util.Timer;
 
 /**
  *
@@ -32,81 +35,71 @@ import mountainrangepvp.terrain.Terrain;
  */
 public class ServerGame extends Game {
 
-    private final GameWorld world;
-    //
     private final String playerName;
-    private final MessageServer server;
+    private final int seed;
     //
-    private final PhysicsSystem physicsSystem;
-    private final InputHandler inputHandler;
-    private final AudioManager audioManager;
+    private final GameClient client;
+    private GameServer server;
+    //
+    private GameWorld world;
+    private PhysicsSystem physicsSystem;
+    private InputHandler inputHandler;
+    private AudioManager audioManager;
     //
     private GameScreen gameScreen;
     //
-    private int playerUpdateTimer;
+    private final Timer limitFPSTimer;
 
     public ServerGame(String playerName, int seed) {
         this.playerName = playerName;
+        this.seed = seed;
 
         world = new GameWorld();
 
-        HeightMap heightMap = new HillsHeightMap(seed);
-
-        Terrain terrain = new Terrain(heightMap);
-        world.setTerrain(terrain);
-
-        PlayerManager playerManager = new ServerPlayerManager();
+        PlayerManager playerManager = new ClientPlayerManager(playerName);
         world.setPlayerManager(playerManager);
 
         ShotManager shotManager = new ClientShotManager(world);
         world.setShotManager(shotManager);
 
-        physicsSystem = new PhysicsSystem(world);
-        inputHandler = new InputHandler(playerManager, shotManager);
-        audioManager = new AudioManager(playerManager, shotManager);
+        client = new GameClient(world, "localhost");
+        client.addMessageListener(new ServerMessageListener());
 
-        shotManager.addShotListener(new AddShotListener());
-
-        server = new MessageServer();
+        limitFPSTimer = new Timer();
     }
 
     @Override
     public void create() {
         try {
-            Log.info("Starting Server...");
-
-            //server.getMessageQueue().addListener(new ClientMessageListener());
-            server.start();
+            server = GameServer.startBasicServer(seed);
+            client.start();
         } catch (IOException ioe) {
-            Log.warn("Error starting server:", ioe);
-            JOptionPane.showMessageDialog(null, "Error starting server",
+            Log.warn("Error starting server connection:", ioe);
+            JOptionPane.showMessageDialog(null, "Error starting server " + ioe,
                                           "Mountain Range PvP",
                                           JOptionPane.ERROR_MESSAGE);
             Gdx.app.exit();
         }
-
-        inputHandler.register();
-        audioManager.loadAudio();
-
-        gameScreen = new GameScreen(world);
-        setScreen(gameScreen);
     }
 
     @Override
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
 
-        server.update();
+        limitFPSTimer.update();
 
-        inputHandler.update(dt);
-        world.update(dt);
-        physicsSystem.update(dt);
-        gameScreen.render(dt);
+        if (limitFPSTimer.getTime() < (1000 / 60)) {
+            return;
+        } else
+            limitFPSTimer.reset();
 
-        playerUpdateTimer += (int) (1000 * dt);
-        if (playerUpdateTimer > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-            // TODO: update player
-            playerUpdateTimer = 0;
+        client.update();
+
+        if (gameScreen != null) {
+            inputHandler.update(dt);
+            world.update(dt);
+            physicsSystem.update(dt);
+            gameScreen.render(dt);
         }
     }
 
@@ -114,74 +107,58 @@ public class ServerGame extends Game {
     public void dispose() {
         super.dispose();
 
+        client.stop();
         server.stop();
     }
 
-//    private class ClientMessageListener implements MessageListener {
-//
-//        @Override
-//        public void accept(Message message, Proxy proxy) throws IOException {
-//            if (message instanceof ClientHelloMessage) {
-//                server.send(new PlayerConnectMessage(playerName), proxy);
-//
-//                Log.fine("Got Hello, Sending player connect");
-//            } else if (message instanceof PlayerConnectMessage) {
-//                PlayerConnectMessage pcm = (PlayerConnectMessage) message;
-//                playerManager.addPlayer(pcm.getPlayerName());
-//
-//                Log.info(pcm.getPlayerName(), "connected");
-//
-//                server.broadcastExcept(pcm, proxy);
-//
-//                for (Player p : playerManager.getPlayers()) {
-//                    if (!p.getName().equals(pcm.getPlayerName()) && !p.getName().
-//                            equals(playerName)) {
-//                        server.send(new PlayerConnectMessage(p.getName()), proxy);
-//                        Log.info("sending", pcm.getPlayerName(), p.getName());
-//                    }
-//                }
-//
-//            } else if (message instanceof PlayerDisconnectMessage) {
-//                String name = ((MessageServer.ClientProxy) proxy).getPlayerName();
-//
-//                playerManager.removePlayer(name);
-//                server.broadcastExcept(new PlayerDisconnectMessage(name), proxy);
-//
-//                Log.info(name, "disconnected");
-//            } else if (message instanceof PlayerUpdateMessage) {
-//                PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
-//
-//                Player p = playerManager.getPlayer(pum.getPlayer());
-//                p.getPosition().set(pum.getPos());
-//                p.getVelocity().set(pum.getVel());
-//                p.getGunDirection().set(pum.getGun());
-//                p.setAlive(pum.isAlive());
-//
-//                server.broadcastExcept(message, proxy);
-//            } else if (message instanceof NewShotMessage) {
-//                NewShotMessage nsm = (NewShotMessage) message;
-//
-//                shotManager.addShot(nsm.getShot(playerManager));
-//                server.broadcastExcept(message, proxy);
-//            }
-//        }
-//    }
-    private class AddShotListener implements ShotListener {
+    private class ServerMessageListener implements MessageListener {
 
         @Override
-        public void shotAdd(Shot shot) {
-            if (shot.player == world.getPlayerManager().getLocalPlayer()) {
-                // TODO: send shot message
-//                server.broadcast(new NewShotMessage(shot));
+        public void accept(Message message, int id) throws IOException {
+            if (message instanceof KillConnectionMessage) {
+                KillConnectionMessage kill = (KillConnectionMessage) message;
+
+                Gdx.app.exit();
+
+                if (kill.getReason() != KillConnectionMessage.Reason.ServerShutdown)
+                    JOptionPane.showMessageDialog(null, "Error: " + kill.
+                            getReason(),
+                                                  "Mountain Range PvP",
+                                                  JOptionPane.ERROR_MESSAGE);
+                else
+                    JOptionPane.showMessageDialog(null, "Server quit",
+                                                  "Mountain Range PvP",
+                                                  JOptionPane.ERROR_MESSAGE);
+            } else if (message instanceof NewWorldMessage) {
+                NewWorldMessage newWorldMessage = (NewWorldMessage) message;
+
+                Log.info("Received Seed", newWorldMessage.getSeed(),
+                         "Changing Map");
+
+                HeightMap heightMap;
+                switch (newWorldMessage.getWorldType()) {
+                    case Hills:
+                        heightMap = new HillsHeightMap(newWorldMessage.getSeed());
+                        break;
+                    default:
+                        heightMap = null;
+                }
+
+                world.setTerrain(new Terrain(heightMap));
+
+                physicsSystem = new PhysicsSystem(world);
+
+                inputHandler = new InputHandler(world.getPlayerManager(), world.
+                        getShotManager());
+                inputHandler.register();
+
+                audioManager = new AudioManager(world.getPlayerManager(), world.
+                        getShotManager());
+                audioManager.loadAudio();
+
+                gameScreen = new GameScreen(world);
+                setScreen(gameScreen);
             }
-        }
-
-        @Override
-        public void shotTerrainCollision(Shot shot) {
-        }
-
-        @Override
-        public void shotPlayerCollision(Shot shot, Player player) {
         }
     }
 }
