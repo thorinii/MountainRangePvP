@@ -35,12 +35,10 @@ public class HillsHeightMap extends AbstractHeightMap {
             return -10000;
         }
 
-        x = x / SCALE;
-
-        if (makeWalls && Math.abs(x % (WALL_DISTANCE / SCALE)) < (WALL_WIDTH / SCALE)) {
+        if (makeWalls && Math.abs(x % WALL_DISTANCE) < WALL_WIDTH) {
             // Wall Generator
             int sample = (int) sample(
-                    x / (WALL_WIDTH / SCALE) * (WALL_WIDTH / SCALE));
+                    x / WALL_WIDTH * WALL_WIDTH);
             return sample + WALL_HEIGHT;
         }
 
@@ -53,6 +51,8 @@ public class HillsHeightMap extends AbstractHeightMap {
 
     private float sample(float x) {
         float noise = 50;
+
+        x /= SCALE;
 
         noise += InterpolatedNoise1(x / 800f + 100) * 100000;
         noise += InterpolatedNoise1(x / 70f + 230) * 6000;

@@ -26,7 +26,7 @@ public class ShotRenderer implements Renderer {
         this.batch = batch;
         this.shotManager = shotManager;
 
-        shotTexture = new Texture(Gdx.files.internal("shot/shot2.png"));
+        shotTexture = new Texture(Gdx.files.internal("shot/shot.png"));
     }
 
     @Override

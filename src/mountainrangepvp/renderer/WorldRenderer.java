@@ -28,7 +28,7 @@ public class WorldRenderer {
     private GameWorld world;
     //
     private BackgroundRenderer backgroundRenderer;
-    private HeightMapRenderer heightMapRenderer;
+    private TerrainRenderer heightMapRenderer;
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
     private MiniMapRenderer miniMapRenderer;
@@ -57,7 +57,7 @@ public class WorldRenderer {
     public void setWorld(GameWorld world) {
         this.world = world;
 
-        heightMapRenderer = new HeightMapRenderer(batch, world.getTerrain());
+        heightMapRenderer = new TerrainRenderer(batch, world.getTerrain());
 
         playerRenderer = new PlayerRenderer(batch, textRenderer, world.
                 getPlayerManager());
