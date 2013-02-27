@@ -16,9 +16,9 @@ import mountainrangepvp.terrain.Terrain;
  *
  * @author lachlan
  */
-public class HeightMapRenderer implements Renderer {
+public class TerrainRenderer implements Renderer {
 
-    private static final Color BASE_COLOUR = new Color(0.5765f, 0.5843f, 0.5922f,
+    private static final Color BASE_COLOUR = new Color(0.5451f, 0.3686f, 0.2314f,
                                                        1);
     //
     private final Terrain map;
@@ -28,7 +28,7 @@ public class HeightMapRenderer implements Renderer {
     private final SpriteBatch batch;
     private final Texture worldSliceTexture;
 
-    public HeightMapRenderer(SpriteBatch batch, Terrain map) {
+    public TerrainRenderer(SpriteBatch batch, Terrain map) {
         this.map = map;
 
         width = Gdx.graphics.getWidth() + 1;
@@ -37,7 +37,7 @@ public class HeightMapRenderer implements Renderer {
         shapeRenderer = new ShapeRenderer();
         this.batch = batch;
 
-        worldSliceTexture = new Texture(Gdx.files.internal("terrain/slice2.png"));
+        worldSliceTexture = new Texture(Gdx.files.internal("terrain/slice.png"));
     }
 
     @Override

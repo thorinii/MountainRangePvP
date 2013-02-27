@@ -16,17 +16,17 @@ public class Player {
     public static final int WIDTH = 40;
     public static final int HEIGHT = 100;
     public static final float WALK_SPEED = 1000;
-    public static final float WALK_ACCELERATION = 15;
-    public static final float AIR_SPEED = 500;
-    public static final float AIR_ACCELERATION = 15;
+    public static final float WALK_ACCELERATION = 100;
+    public static final float AIR_SPEED = 1000;
+    public static final float AIR_ACCELERATION = 80;
     public static final float FRICTION = 0.1f;
-    public static final float JUMP_SPEED = 550f;
+    public static final float JUMP_SPEED = 1050f;
     public static final int MAX_WALK_SLOPE = 30;
     public static final int MIN_SLIDE_SLOPE = 50;
     public static final int MAX_SLIDE_SLOPE = 80;
     public static final int RESPAWN_TIMEOUT = 2000;
     public static final int RESPAWN_RANGE_X = 1000;
-    public static final int SPAWN_BUBBLE_TIMEOUT = 5000;
+    public static final int SPAWN_BUBBLE_TIMEOUT = 8000;
     public static final int SPAWN_BUBBLE_RADIUS = 51;
     private static final int ON_GROUND_TIMEOUT = 3;
     //

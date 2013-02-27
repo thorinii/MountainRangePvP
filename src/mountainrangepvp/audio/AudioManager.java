@@ -29,7 +29,7 @@ public class AudioManager {
     }
 
     public void loadAudio() {
-        gunShot = Gdx.audio.newSound(Gdx.files.internal("shot/gun-shot.ogg"));
+        gunShot = Gdx.audio.newSound(Gdx.files.internal("shot/fire.ogg"));
     }
 
     private class AudioShotListener implements ShotListener {
