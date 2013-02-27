@@ -1,3 +1,6 @@
 /MountainRangePvP/build/
 /MountainRangePvP/dist/
 /MountainRangePvP/mountainrangepvp-log-.*.txt
+/nbproject/private/
+/build/
+/dist/
