@@ -24,7 +24,7 @@ public class InputHandler implements InputProcessor {
     private final int DOUBLE_JUMP_MAX = 500;
     private final int GUN_RATE = 100;
     //
-    private boolean up, left, right;
+    private boolean up, down, left, right;
     private int doubleJumpTimer;
     //
     private boolean gun;
@@ -96,6 +96,10 @@ public class InputHandler implements InputProcessor {
                 }
             }
         }
+
+        if (down) {
+            vel.y -= Player.DOWN_ACCELERATION;
+        }
     }
 
     private float accelerate(float v, float accel, float max) {
@@ -147,6 +151,9 @@ public class InputHandler implements InputProcessor {
             case Keys.D:
                 right = true;
                 break;
+            case Keys.S:
+                down = true;
+                break;
             case Keys.ESCAPE:
                 Gdx.app.exit();
                 break;
@@ -166,6 +173,9 @@ public class InputHandler implements InputProcessor {
                 break;
             case Keys.D:
                 right = false;
+                break;
+            case Keys.S:
+                down = false;
                 break;
         }
         return true;
