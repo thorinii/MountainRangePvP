@@ -4,8 +4,6 @@
  */
 package mountainrangepvp.player;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.util.Timer;
 
@@ -27,6 +25,7 @@ public class Player {
     public static final float AIR_ACCELERATION = 80;
     public static final float FRICTION = 0.1f;
     public static final float JUMP_SPEED = 1050f;
+    public static final float DOWN_ACCELERATION = 40f;
     public static final int MAX_WALK_SLOPE = 30;
     public static final int MIN_SLIDE_SLOPE = 50;
     public static final int MAX_SLIDE_SLOPE = 80;
