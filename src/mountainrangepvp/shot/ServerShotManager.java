@@ -75,9 +75,10 @@ public class ServerShotManager implements ShotManager {
             } else {
                 Player hit = testPlayers(shot, pos, npos);
                 if (hit != null) {
-                    itr.remove();
-
-                    if (!hit.isSpawnBubbleOn()) {
+                    if (hit.getTeam() == shot.player.getTeam()) {
+                        // Let it pass if its our own
+                    } else if (!hit.isSpawnBubbleOn()) {
+                        itr.remove();
                         hit.kill();
                         shot.player.addHit();
 
@@ -85,6 +86,7 @@ public class ServerShotManager implements ShotManager {
                             listener.shotPlayerCollision(shot, hit);
                         }
                     } else {
+                        itr.remove();
                         // TODO: make ricochet
                     }
                 }

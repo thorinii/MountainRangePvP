@@ -27,9 +27,9 @@ public class Main {
     public static void startGame(GameConfig gameConfig) {
         Game game;
         if (gameConfig.server) {
-            game = new ServerGame(gameConfig.playerName, gameConfig.seed);
+            game = new ServerGame(gameConfig);
         } else {
-            game = new ClientGame(gameConfig.playerName, gameConfig.serverIP);
+            game = new ClientGame(gameConfig);
         }
 
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
@@ -37,9 +37,11 @@ public class Main {
         appConfig.useGL20 = true;
         appConfig.forceExit = false;
         appConfig.fullscreen = gameConfig.fullscreen;
+        appConfig.resizable = false;
+        
         appConfig.width = gameConfig.resolutionWidth;
         appConfig.height = gameConfig.resolutionHeight;
-        appConfig.resizable = false;
+        appConfig.depth = gameConfig.bitDepth;
 
         LwjglApplication app = new LwjglApplication(game, appConfig);
     }

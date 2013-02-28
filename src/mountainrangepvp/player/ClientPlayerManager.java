@@ -7,6 +7,7 @@ package mountainrangepvp.player;
 import java.io.IOException;
 import java.util.*;
 import mountainrangepvp.mp.message.*;
+import mountainrangepvp.player.Player.Team;
 
 /**
  *
@@ -16,11 +17,13 @@ public class ClientPlayerManager implements PlayerManager {
 
     private final List<Player> players;
     private final String localPlayerName;
+    private final Team localPlayerTeam;
     private Player localPlayer;
 
-    public ClientPlayerManager(String localName) {
+    public ClientPlayerManager(String localName, Team localTeam) {
         players = new ArrayList<>();
         localPlayerName = localName;
+        localPlayerTeam = localTeam;
     }
 
     @Override
@@ -37,23 +40,8 @@ public class ClientPlayerManager implements PlayerManager {
         return localPlayerName;
     }
 
-    @Deprecated
-    @Override
-    public void addPlayer(String playerName) {
-        players.add(new Player(playerName, -1));
-    }
-
-    @Deprecated
-    @Override
-    public void removePlayer(String playerName) {
-        Iterator<Player> itr = players.iterator();
-        while (itr.hasNext()) {
-            Player p = itr.next();
-
-            if (p.getName().equals(playerName)) {
-                itr.remove();
-            }
-        }
+    public Team getLocalPlayerTeam() {
+        return localPlayerTeam;
     }
 
     @Override
@@ -99,12 +87,14 @@ public class ClientPlayerManager implements PlayerManager {
     public void accept(Message message, int id) throws IOException {
         if (message instanceof ServerHelloMessage) {
             ServerHelloMessage shm = (ServerHelloMessage) message;
-            localPlayer = new Player(localPlayerName, shm.getClientID());
+            localPlayer = new Player(localPlayerName, shm.getClientID(),
+                                     localPlayerTeam);
             players.add(localPlayer);
 
         } else if (message instanceof PlayerConnectMessage) {
             PlayerConnectMessage pcm = (PlayerConnectMessage) message;
-            players.add(new Player(pcm.getPlayerName(), pcm.getID()));
+            players.add(new Player(pcm.getPlayerName(), pcm.getID(),
+                                   pcm.getTeam()));
 
         } else if (message instanceof PlayerDisconnectMessage) {
             PlayerDisconnectMessage pdm = (PlayerDisconnectMessage) message;

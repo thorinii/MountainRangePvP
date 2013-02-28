@@ -4,23 +4,19 @@
  */
 package mountainrangepvp;
 
-import java.awt.DisplayMode;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.badlogic.gdx.Gdx;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.List;
 import java.util.prefs.Preferences;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
+import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import mountainrangepvp.mp.lanping.PingClient;
 import mountainrangepvp.mp.lanping.PingClient.ServerData;
+import mountainrangepvp.player.Player.Team;
 
 /**
  *
@@ -56,10 +52,13 @@ public class LauncherGUI extends javax.swing.JFrame {
         pingReadTimer.start();
 
 
-        DefaultComboBoxModel<String> displayModesModel = new DefaultComboBoxModel<>();
-        screenResBox.setModel(displayModesModel);
+        teamBox.setRenderer(new TeamListCellRenderer());
 
-        setupResolutions(displayModesModel);
+
+        DefaultComboBoxModel<String> screenResModel = new DefaultComboBoxModel<>();
+        screenResBox.setModel(screenResModel);
+
+        setupResolutions(screenResModel);
 
         loadPrefs();
 
@@ -76,10 +75,14 @@ public class LauncherGUI extends javax.swing.JFrame {
                 getDefaultScreenDevice();
 
         DisplayMode[] modes = graphicsDevice.getDisplayModes();
+        Set<String> resolutions = new TreeSet<>();
+
         for (DisplayMode mode : modes) {
-            displayModesModel.addElement(
-                    mode.getWidth() + "x" + mode.getHeight() + " (" + mode.
-                    getRefreshRate() + "Hz)" + " (" + mode.getBitDepth() + "bits)");
+            resolutions.add(mode.getWidth() + "x" + mode.getHeight());
+        }
+
+        for (String res : resolutions) {
+            displayModesModel.addElement(res);
         }
     }
 
@@ -93,43 +96,89 @@ public class LauncherGUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mpTypeBtnGrp = new javax.swing.ButtonGroup();
         gameTypeBtnGrp = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
-        gameTypeServerBtn = new javax.swing.JRadioButton();
-        gameTypeClientBtn = new javax.swing.JRadioButton();
-        jLabel1 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        mpTypeServerBtn = new javax.swing.JRadioButton();
+        gameTypeFFABtn = new javax.swing.JRadioButton();
+        gameTypeTeamBtn = new javax.swing.JRadioButton();
+        jPanel5 = new javax.swing.JPanel();
+        mpTypeClientBtn = new javax.swing.JRadioButton();
+        jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         serversList = new javax.swing.JList();
         serverIPTxt = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         playerNameTxt = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        teamBox = new javax.swing.JComboBox();
         startBtn = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         fullscreenBtn = new javax.swing.JCheckBox();
         screenResBox = new javax.swing.JComboBox();
+        refreshRateBox = new javax.swing.JComboBox();
+        bitDepthBox = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mountain Range PvP Launcher");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(1, 1, 1), 1, true), "Multiplayer"));
 
-        gameTypeBtnGrp.add(gameTypeServerBtn);
-        gameTypeServerBtn.setSelected(true);
-        gameTypeServerBtn.setText("Server");
+        jPanel4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
 
-        gameTypeBtnGrp.add(gameTypeClientBtn);
-        gameTypeClientBtn.setText("Client");
-        gameTypeClientBtn.addItemListener(new java.awt.event.ItemListener() {
+        mpTypeBtnGrp.add(mpTypeServerBtn);
+        mpTypeServerBtn.setSelected(true);
+        mpTypeServerBtn.setText("Start a Server");
+
+        gameTypeBtnGrp.add(gameTypeFFABtn);
+        gameTypeFFABtn.setText("Free For All");
+
+        gameTypeBtnGrp.add(gameTypeTeamBtn);
+        gameTypeTeamBtn.setSelected(true);
+        gameTypeTeamBtn.setText("Teams");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mpTypeServerBtn)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(gameTypeFFABtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(gameTypeTeamBtn)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mpTypeServerBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(gameTypeFFABtn)
+                    .addComponent(gameTypeTeamBtn))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+
+        mpTypeBtnGrp.add(mpTypeClientBtn);
+        mpTypeClientBtn.setText("Join a Server");
+        mpTypeClientBtn.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                gameTypeClientBtnItemStateChanged(evt);
+                mpTypeClientBtnItemStateChanged(evt);
             }
         });
 
-        jLabel1.setText("Game Type:");
+        jLabel3.setText("LAN Servers:");
 
         serversList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "IP Address" };
@@ -150,7 +199,40 @@ public class LauncherGUI extends javax.swing.JFrame {
 
         jLabel2.setText("Server IP Address:");
 
-        jLabel3.setText("Recent/LAN Servers:");
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(mpTypeClientBtn)
+                            .addComponent(jLabel3))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(serverIPTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mpTypeClientBtn)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(serverIPTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -158,41 +240,18 @@ public class LauncherGUI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(gameTypeServerBtn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(gameTypeClientBtn))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(serverIPTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel3)))
-                .addGap(12, 12, 12)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(gameTypeServerBtn)
-                    .addComponent(gameTypeClientBtn)
-                    .addComponent(jLabel1))
-                .addGap(0, 0, 0)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(serverIPTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -200,15 +259,23 @@ public class LauncherGUI extends javax.swing.JFrame {
 
         jLabel4.setText("Player Name:");
 
+        jLabel6.setText("Team:");
+
+        teamBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Blue", "Green", "Orange", "Red" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel4)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel4))
                 .addGap(18, 18, 18)
-                .addComponent(playerNameTxt)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(playerNameTxt)
+                    .addComponent(teamBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -216,13 +283,17 @@ public class LauncherGUI extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(playerNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(playerNameTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(teamBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         startBtn.setFont(startBtn.getFont().deriveFont(startBtn.getFont().getSize()+5f));
-        startBtn.setText("Start Server");
+        startBtn.setText("Start");
         startBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startBtnActionPerformed(evt);
@@ -242,6 +313,17 @@ public class LauncherGUI extends javax.swing.JFrame {
 
         screenResBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1000x800" }));
         screenResBox.setEnabled(false);
+        screenResBox.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                screenResBoxItemStateChanged(evt);
+            }
+        });
+
+        refreshRateBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        refreshRateBox.setEnabled(false);
+
+        bitDepthBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        bitDepthBox.setEnabled(false);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -256,7 +338,11 @@ public class LauncherGUI extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
-                        .addComponent(screenResBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(screenResBox, 0, 120, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(refreshRateBox, 0, 94, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(bitDepthBox, 0, 94, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -267,8 +353,10 @@ public class LauncherGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(screenResBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                    .addComponent(screenResBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refreshRateBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bitDepthBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -288,11 +376,11 @@ public class LauncherGUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(startBtn)
                 .addContainerGap())
@@ -301,16 +389,13 @@ public class LauncherGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void gameTypeClientBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_gameTypeClientBtnItemStateChanged
-        serverIPTxt.setEnabled(gameTypeClientBtn.isSelected());
-        serversList.setEnabled(gameTypeClientBtn.isSelected());
+    private void mpTypeClientBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_mpTypeClientBtnItemStateChanged
+        serverIPTxt.setEnabled(mpTypeClientBtn.isSelected());
+        serversList.setEnabled(mpTypeClientBtn.isSelected());
 
-        if (gameTypeClientBtn.isSelected()) {
-            startBtn.setText("Start Client");
-        } else {
-            startBtn.setText("Start Server");
-        }
-    }//GEN-LAST:event_gameTypeClientBtnItemStateChanged
+        gameTypeFFABtn.setEnabled(!mpTypeClientBtn.isSelected());
+        gameTypeTeamBtn.setEnabled(!mpTypeClientBtn.isSelected());
+    }//GEN-LAST:event_mpTypeClientBtnItemStateChanged
 
     private void serversListValueChanged(//GEN-FIRST:event_serversListValueChanged
             javax.swing.event.ListSelectionEvent evt) {//GEN-HEADEREND:event_serversListValueChanged
@@ -324,6 +409,9 @@ public class LauncherGUI extends javax.swing.JFrame {
         if (playerNameTxt.getText().isEmpty()) {
             return;
         }
+        if (mpTypeClientBtn.isSelected() && serverIPTxt.getText().isEmpty()) {
+            return;
+        }
 
         dispose();
         pingReadTimer.stop();
@@ -334,19 +422,21 @@ public class LauncherGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_startBtnActionPerformed
 
     private void savePrefs() {
-        prefs.putBoolean("game-type-client", gameTypeClientBtn.isSelected());
+        prefs.putBoolean("game-type-client", mpTypeClientBtn.isSelected());
         prefs.put("player-name", playerNameTxt.getText());
         prefs.putBoolean("fullscreen", fullscreenBtn.isSelected());
         prefs.putInt("screen-resolution", screenResBox.getSelectedIndex());
+        prefs.putInt("team", teamBox.getSelectedIndex());
     }
 
     private void loadPrefs() {
         try {
-            gameTypeClientBtn.setSelected(
+            mpTypeClientBtn.setSelected(
                     prefs.getBoolean("game-type-client", false));
             playerNameTxt.setText(prefs.get("player-name", ""));
             fullscreenBtn.setSelected(prefs.getBoolean("fullscreen", false));
             screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
+            teamBox.setSelectedIndex(prefs.getInt("team", 0));
         } catch (Exception e) {
             Log.warn("Could not load prefs", e);
         }
@@ -357,25 +447,79 @@ public class LauncherGUI extends javax.swing.JFrame {
         config.fullscreen = fullscreenBtn.isSelected();
 
         if (fullscreenBtn.isSelected()) {
-            String displayMode = (String) screenResBox.getSelectedItem();
-            String resolution = displayMode.split(" ")[0];
+            String resolution = (String) screenResBox.getSelectedItem();
             String[] resSplit = resolution.split("x");
 
             config.resolutionWidth = Integer.parseInt(resSplit[0]);
             config.resolutionHeight = Integer.parseInt(resSplit[1]);
+
+            config.bitDepth = Integer.parseInt((String) bitDepthBox.
+                    getSelectedItem());
         }
 
         config.playerName = playerNameTxt.getText();
 
-        config.server = gameTypeServerBtn.isSelected();
+        config.server = mpTypeServerBtn.isSelected();
         config.serverIP = serverIPTxt.getText();
+
+        switch ((String) teamBox.getSelectedItem()) {
+            case "Blue":
+                config.team = Team.BLUE;
+                break;
+            case "Green":
+                config.team = Team.GREEN;
+                break;
+            case "Orange":
+                config.team = Team.ORANGE;
+                break;
+            case "Red":
+                config.team = Team.RED;
+                break;
+        }
 
         Main.startGame(config);
     }
 
     private void fullscreenBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fullscreenBtnItemStateChanged
         screenResBox.setEnabled(fullscreenBtn.isSelected());
+        refreshRateBox.setEnabled(fullscreenBtn.isSelected());
+        bitDepthBox.setEnabled(fullscreenBtn.isSelected());
     }//GEN-LAST:event_fullscreenBtnItemStateChanged
+
+    private void screenResBoxItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_screenResBoxItemStateChanged
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.
+                getLocalGraphicsEnvironment().
+                getDefaultScreenDevice();
+
+        DisplayMode[] modes = graphicsDevice.getDisplayModes();
+        Set<String> rates = new TreeSet<>();
+        Set<String> depths = new TreeSet<>();
+
+        DefaultComboBoxModel<String> refreshRateModel = new DefaultComboBoxModel<>();
+        DefaultComboBoxModel<String> bitDepthModel = new DefaultComboBoxModel<>();
+
+        for (DisplayMode mode : modes) {
+            rates.add("" + mode.getRefreshRate());
+            depths.add("" + mode.getBitDepth());
+        }
+
+        for (String rate : rates) {
+            refreshRateModel.addElement(rate);
+        }
+
+        for (String depth : depths) {
+            bitDepthModel.addElement(depth);
+        }
+
+        refreshRateBox.setModel(refreshRateModel);
+        bitDepthBox.setModel(bitDepthModel);
+
+        DisplayMode currentMode = graphicsDevice.getDisplayMode();
+        if (rates.contains("" + currentMode.getRefreshRate()))
+            refreshRateBox.setSelectedItem("" + currentMode.getRefreshRate());
+        if (depths.contains("" + currentMode.getBitDepth()))
+            bitDepthBox.setSelectedItem("" + currentMode.getBitDepth());
+    }//GEN-LAST:event_screenResBoxItemStateChanged
 
     /**
      * @param args the command line arguments
@@ -406,24 +550,32 @@ public class LauncherGUI extends javax.swing.JFrame {
         //</editor-fold>
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox bitDepthBox;
     private javax.swing.JCheckBox fullscreenBtn;
     private javax.swing.ButtonGroup gameTypeBtnGrp;
-    private javax.swing.JRadioButton gameTypeClientBtn;
-    private javax.swing.JRadioButton gameTypeServerBtn;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JRadioButton gameTypeFFABtn;
+    private javax.swing.JRadioButton gameTypeTeamBtn;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.ButtonGroup mpTypeBtnGrp;
+    private javax.swing.JRadioButton mpTypeClientBtn;
+    private javax.swing.JRadioButton mpTypeServerBtn;
     private javax.swing.JTextField playerNameTxt;
+    private javax.swing.JComboBox refreshRateBox;
     private javax.swing.JComboBox screenResBox;
     private javax.swing.JTextField serverIPTxt;
     private javax.swing.JList serversList;
     private javax.swing.JButton startBtn;
+    private javax.swing.JComboBox teamBox;
     // End of variables declaration//GEN-END:variables
 
     private class PingReader implements ActionListener {
@@ -458,6 +610,63 @@ public class LauncherGUI extends javax.swing.JFrame {
                     serversListModel.removeElement(ip);
                 }
             }
+        }
+    }
+
+    private static class TeamListCellRenderer extends JLabel implements
+            ListCellRenderer<String> {
+
+        private final ImageIcon BLUE = new ImageIcon(this.getClass().getResource(
+                "/minimap/head-blue.png"));
+        private final ImageIcon GREEN = new ImageIcon(this.getClass().
+                getResource(
+                "/minimap/head-green.png"));
+        private final ImageIcon ORANGE = new ImageIcon(this.getClass().
+                getResource(
+                "/minimap/head-orange.png"));
+        private final ImageIcon RED = new ImageIcon(this.getClass().getResource(
+                "/minimap/head-red.png"));
+
+        @Override
+        public Component getListCellRendererComponent(
+                JList<? extends String> list,
+                String value, int index, boolean isSelected,
+                boolean cellHasFocus) {
+
+            setText(value);
+            switch (value) {
+                case "Blue":
+                    setIcon(BLUE);
+                    break;
+                case "Green":
+                    setIcon(GREEN);
+                    break;
+                case "Orange":
+                    setIcon(ORANGE);
+                    break;
+                case "Red":
+                    setIcon(RED);
+                    break;
+            }
+
+            setBackground(Color.GRAY);
+            setOpaque(isSelected);
+            addMouseListener(new MouseAdapter() {
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    setOpaque(true);
+                    repaint();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    setOpaque(false);
+                    repaint();
+                }
+            });
+
+            return this;
         }
     }
 }

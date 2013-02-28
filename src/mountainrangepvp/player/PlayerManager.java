@@ -17,12 +17,6 @@ public interface PlayerManager extends MessageListener {
 
     public Player getLocalPlayer();
 
-    @Deprecated
-    public void addPlayer(String playerName);
-
-    @Deprecated
-    public void removePlayer(String playerName);
-
     public Player getPlayer(String playerName);
 
     public Player getPlayer(int id);

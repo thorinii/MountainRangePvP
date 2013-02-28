@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import mountainrangepvp.player.Player;
+import mountainrangepvp.player.Player.Team;
 
 /**
  *
@@ -17,17 +18,19 @@ public class PlayerConnectMessage implements Message {
 
     private String playerName;
     private int id;
+    private int teamID;
 
     public PlayerConnectMessage() {
     }
 
     public PlayerConnectMessage(Player player) {
-        this(player.getName(), player.getID());
+        this(player.getName(), player.getID(), player.getTeam().ordinal());
     }
 
-    public PlayerConnectMessage(String playerName, int id) {
+    public PlayerConnectMessage(String playerName, int id, int teamID) {
         this.playerName = playerName;
         this.id = id;
+        this.teamID = teamID;
     }
 
     public String getPlayerName() {
@@ -38,16 +41,22 @@ public class PlayerConnectMessage implements Message {
         return id;
     }
 
+    public Team getTeam() {
+        return Team.values()[teamID];
+    }
+
     @Override
     public void writeOut(DataOutputStream dos) throws IOException {
         dos.writeUTF(playerName);
         dos.writeInt(id);
+        dos.writeInt(teamID);
     }
 
     @Override
     public void readIn(DataInputStream dis) throws IOException {
         playerName = dis.readUTF();
         id = dis.readInt();
+        teamID = dis.readInt();
     }
 
     @Override

@@ -5,6 +5,7 @@
 package mountainrangepvp;
 
 import mountainrangepvp.mp.MultiplayerConstants;
+import mountainrangepvp.player.Player.Team;
 
 /**
  *
@@ -14,8 +15,10 @@ public class GameConfig {
 
     public boolean fullscreen;
     public int resolutionWidth, resolutionHeight;
+    public int bitDepth;
     //
     public String playerName;
+    public Team team;
     //
     public boolean server;
     public int port;

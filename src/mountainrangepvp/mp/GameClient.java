@@ -12,6 +12,7 @@ import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.Player;
+import mountainrangepvp.player.Player.Team;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ClientShotManager;
 import mountainrangepvp.shot.Shot;
@@ -94,10 +95,11 @@ public class GameClient {
         @Override
         public void accept(Message message, int id) throws IOException {
             if (message instanceof ServerHelloMessage) {
-                // TODO: fix this
+                ClientPlayerManager cpm = (ClientPlayerManager) world.
+                        getPlayerManager();
+
                 IntroduceMessage introduceMessage = new IntroduceMessage(
-                        ((ClientPlayerManager) world.getPlayerManager()).
-                        getLocalPlayerName());
+                        cpm.getLocalPlayerName(), cpm.getLocalPlayerTeam());
                 messageClient.send(introduceMessage);
             }
         }
@@ -125,7 +127,8 @@ public class GameClient {
         final GameWorld world = new GameWorld();
 
         String playerName = "test player " + (int) (Math.random() * 2000 + 2);
-        PlayerManager playerManager = new ClientPlayerManager(playerName);
+        PlayerManager playerManager = new ClientPlayerManager(playerName,
+                                                              Team.GREEN);
         world.setPlayerManager(playerManager);
 
         ShotManager shotManager = new ClientShotManager(world);
