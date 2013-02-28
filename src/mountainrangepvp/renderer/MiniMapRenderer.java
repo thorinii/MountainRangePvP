@@ -63,17 +63,16 @@ public class MiniMapRenderer implements Renderer {
     @Override
     public void render(Vector2 scroll) {
         batch.begin();
-
         batch.draw(background, width - SHIFT - WIDTH, height - SHIFT - HEIGHT,
                    WIDTH, HEIGHT);
-
-        drawTerrain(scroll);
-        drawPlayers(scroll);
         batch.end();
 
         drawShots(scroll);
 
         batch.begin();
+        drawTerrain(scroll);
+        drawPlayers(scroll);
+
         batch.draw(border, width - SHIFT - 20 - WIDTH,
                    height - SHIFT - 20 - HEIGHT,
                    WIDTH + 40, HEIGHT + 40);
@@ -129,8 +128,7 @@ public class MiniMapRenderer implements Renderer {
             pos.x += width - SHIFT - WIDTH + WIDTH / 2;
             pos.y += height - SHIFT - HEIGHT + HEIGHT / 2;
 
-            Texture head = headTextures[Math.max(0, player.getName().hashCode()
-                    % headTextures.length)];
+            Texture head = headTextures[player.getTeam().ordinal()];
 
             Vector2 dir = player.getGunDirection();
             batch.draw(head,

@@ -34,25 +34,6 @@ public class ServerPlayerManager implements PlayerManager {
         return null;
     }
 
-    @Deprecated
-    @Override
-    public void addPlayer(String playerName) {
-        players.add(new Player(playerName, -1));
-    }
-
-    @Deprecated
-    @Override
-    public void removePlayer(String playerName) {
-        Iterator<Player> itr = players.iterator();
-        while (itr.hasNext()) {
-            Player p = itr.next();
-
-            if (p.getName().equals(playerName)) {
-                itr.remove();
-            }
-        }
-    }
-
     @Override
     public Player getPlayer(String playerName) {
         for (Player p : players) {
@@ -108,7 +89,8 @@ public class ServerPlayerManager implements PlayerManager {
 
         } else if (message instanceof IntroduceMessage) {
             IntroduceMessage introduceMessage = (IntroduceMessage) message;
-            players.add(new Player(introduceMessage.getName(), id));
+            players.add(new Player(introduceMessage.getName(), id,
+                                   introduceMessage.getTeam()));
 
             Log.info(introduceMessage.getName(), "connected");
 

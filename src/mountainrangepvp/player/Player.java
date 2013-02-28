@@ -4,6 +4,8 @@
  */
 package mountainrangepvp.player;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.util.Timer;
 
@@ -13,6 +15,10 @@ import mountainrangepvp.util.Timer;
  */
 public class Player {
 
+    public enum Team {
+
+        ORANGE, RED, GREEN, BLUE
+    }
     public static final int WIDTH = 40;
     public static final int HEIGHT = 100;
     public static final float WALK_SPEED = 1000;
@@ -32,6 +38,7 @@ public class Player {
     //
     private final String name;
     private final int id;
+    private final Team team;
     private final Vector2 position;
     private final Vector2 velocity;
     private final Vector2 gunDirection;
@@ -42,9 +49,10 @@ public class Player {
     //
     private int hits;
 
-    public Player(String name, int id) {
+    public Player(String name, int id, Team team) {
         this.name = name;
         this.id = id;
+        this.team = team;
 
         this.position = new Vector2();
         this.velocity = new Vector2();
@@ -127,6 +135,10 @@ public class Player {
 
     public void setHits(int hits) {
         this.hits = hits;
+    }
+
+    public Team getTeam() {
+        return team;
     }
 
     public void update() {

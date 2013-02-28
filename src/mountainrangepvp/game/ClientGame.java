@@ -8,6 +8,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import mountainrangepvp.GameConfig;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.input.InputHandler;
@@ -44,12 +45,13 @@ public class ClientGame extends Game {
     //
     private final Timer limitFPSTimer;
 
-    public ClientGame(String playerName, String serverIP) {
-        this.serverIP = serverIP;
+    public ClientGame(GameConfig config) {
+        this.serverIP = config.serverIP;
 
         world = new GameWorld();
 
-        PlayerManager playerManager = new ClientPlayerManager(playerName);
+        PlayerManager playerManager = new ClientPlayerManager(config.playerName,
+                                                              config.team);
         world.setPlayerManager(playerManager);
 
         ShotManager shotManager = new ClientShotManager(world);

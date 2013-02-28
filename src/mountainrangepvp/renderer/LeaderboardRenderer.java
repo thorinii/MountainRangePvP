@@ -55,9 +55,7 @@ public class LeaderboardRenderer implements Renderer {
             if (p.getHits() == 0)
                 continue;
 
-            Texture tex = bodyTextures[
-                    Math.max(0, p.getName().hashCode()
-                    % bodyTextures.length)];
+            Texture tex = bodyTextures[p.getTeam().ordinal()];
 
             String text = p.getName() + " " + p.getHits();
             textRenderer.drawString(text, batch, x + tex.getWidth() + 20, y);

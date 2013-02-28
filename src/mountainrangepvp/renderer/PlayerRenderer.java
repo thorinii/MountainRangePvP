@@ -64,8 +64,7 @@ public class PlayerRenderer implements Renderer {
     }
 
     private void drawPlayer(Player player, Vector2 scroll) {
-        Texture tex = bodyTextures[Math.max(0,
-                                            player.getName().hashCode() % bodyTextures.length)];
+        Texture tex = bodyTextures[player.getTeam().ordinal()];
 
         Vector2 pos = player.getPosition().cpy();
         pos.sub(scroll);

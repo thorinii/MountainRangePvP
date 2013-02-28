@@ -122,7 +122,8 @@ public class GameServer {
                     }
 
                     messageServer.broadcastExcept(new PlayerConnectMessage(
-                            new Player(introduceMessage.getName(), id)), id);
+                            new Player(introduceMessage.getName(), id,
+                                       introduceMessage.getTeam())), id);
                 }
 
             } else if (message instanceof KillConnectionMessage) {
