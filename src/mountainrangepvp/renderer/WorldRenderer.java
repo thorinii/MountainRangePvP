@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.game.GameWorld;
 
 /**
@@ -28,9 +29,10 @@ public class WorldRenderer {
     private GameWorld world;
     //
     private BackgroundRenderer backgroundRenderer;
-    private TerrainRenderer heightMapRenderer;
+    private TerrainRenderer terrainRenderer;
     private PlayerRenderer playerRenderer;
     private ShotRenderer shotRenderer;
+    private ChatRenderer chatRenderer;
     private MiniMapRenderer miniMapRenderer;
     private LeaderboardRenderer leaderboardRenderer;
     //
@@ -57,16 +59,15 @@ public class WorldRenderer {
     public void setWorld(GameWorld world) {
         this.world = world;
 
-        heightMapRenderer = new TerrainRenderer(batch, world.getTerrain());
-
+        terrainRenderer = new TerrainRenderer(batch, world.getTerrain());
         playerRenderer = new PlayerRenderer(batch, textRenderer, world.
                 getPlayerManager());
+        shotRenderer = new ShotRenderer(batch, world.getShotManager());
+        chatRenderer = new ChatRenderer(batch, textRenderer, world.
+                getChatManager());
+        miniMapRenderer = new MiniMapRenderer(batch, world);
         leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer,
                                                       world.getPlayerManager());
-
-        shotRenderer = new ShotRenderer(batch, world.getShotManager());
-
-        miniMapRenderer = new MiniMapRenderer(batch, world);
     }
 
     public void render(Vector2 scroll) {
@@ -75,8 +76,9 @@ public class WorldRenderer {
 
         backgroundRenderer.render(scroll);
         shotRenderer.render(scroll);
-        heightMapRenderer.render(scroll);
+        terrainRenderer.render(scroll);
         playerRenderer.render(scroll);
+        chatRenderer.render(scroll);
         leaderboardRenderer.render(scroll);
         miniMapRenderer.render(scroll);
 

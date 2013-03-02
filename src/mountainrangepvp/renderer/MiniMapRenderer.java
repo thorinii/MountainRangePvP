@@ -5,14 +5,11 @@
 package mountainrangepvp.renderer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
-import mountainrangepvp.shot.Shot;
 import mountainrangepvp.terrain.Terrain.Slice;
 
 /**
@@ -31,7 +28,6 @@ public class MiniMapRenderer implements Renderer {
     //
     private final int width, height;
     //
-    private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
     //
     private final Texture background;
@@ -45,8 +41,6 @@ public class MiniMapRenderer implements Renderer {
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
-
-        shapeRenderer = new ShapeRenderer();
 
         background = new Texture(Gdx.files.internal("minimap/background.png"));
         border = new Texture(Gdx.files.internal("minimap/border.png"));
@@ -65,11 +59,7 @@ public class MiniMapRenderer implements Renderer {
         batch.begin();
         batch.draw(background, width - SHIFT - WIDTH, height - SHIFT - HEIGHT,
                    WIDTH, HEIGHT);
-        batch.end();
 
-        drawShots(scroll);
-
-        batch.begin();
         drawTerrain(scroll);
         drawPlayers(scroll);
 
@@ -142,33 +132,5 @@ public class MiniMapRenderer implements Renderer {
                        head.getWidth(), head.getHeight(), // Src WH
                        dir.x > 0, false);
         }
-    }
-
-    private void drawShots(Vector2 scroll) {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.FilledCircle);
-        shapeRenderer.setColor(Color.RED);
-
-        for (Shot shot : world.getShotManager().getShots()) {
-            Vector2 pos = shot.position();
-            pos.sub(scroll);
-
-            pos.x -= width / 2;
-            pos.y -= height / 2;
-
-            pos.x /= H_SCALE;
-            pos.y /= V_SCALE;
-
-            if (pos.x < -WIDTH / 2 || pos.x > WIDTH / 2)
-                continue;
-            if (pos.y < -HEIGHT / 2 || pos.y > HEIGHT / 2)
-                continue;
-
-            pos.x += width - SHIFT - WIDTH + WIDTH / 2;
-            pos.y += height - SHIFT - HEIGHT + HEIGHT / 2;
-
-            shapeRenderer.filledCircle(pos.x, pos.y, 1);
-        }
-
-        shapeRenderer.end();
     }
 }

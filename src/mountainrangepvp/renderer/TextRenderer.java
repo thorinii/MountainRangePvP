@@ -5,6 +5,7 @@
 package mountainrangepvp.renderer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -27,7 +28,11 @@ public class TextRenderer {
         privateBatch = new SpriteBatch();
     }
 
-    public void drawString(String string, SpriteBatch batch, int x, int y) {
+    public void setColour(Color c) {
+        font.setColor(c);
+    }
+
+    public void drawString(SpriteBatch batch, String string, int x, int y) {
         font.draw(batch, string, x, y);
     }
 

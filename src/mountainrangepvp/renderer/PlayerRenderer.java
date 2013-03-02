@@ -5,6 +5,7 @@
 package mountainrangepvp.renderer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -54,6 +55,7 @@ public class PlayerRenderer implements Renderer {
     public void render(Vector2 scroll) {
         batch.begin();
 
+        textRenderer.setColour(Color.BLACK);
         for (Player player : playerManager.getPlayers()) {
             if (player.isAlive()) {
                 drawPlayer(player, scroll);
@@ -119,7 +121,7 @@ public class PlayerRenderer implements Renderer {
                        pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.getHeight() / 2);
         }
 
-        textRenderer.drawString(player.getName(), batch,
+        textRenderer.drawString(batch, player.getName(),
                                 (int) pos.x,
                                 (int) pos.y + Player.HEIGHT + 20);
     }

@@ -6,6 +6,9 @@ package mountainrangepvp.mp;
 
 import java.io.IOException;
 import mountainrangepvp.Log;
+import mountainrangepvp.chat.ChatLine;
+import mountainrangepvp.chat.ChatListener;
+import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.physics.PhysicsSystem;
@@ -47,8 +50,10 @@ public class GameServer {
         messageServer.addMessageListener(new GameServerMessageListener());
         messageServer.addMessageListener(world.getPlayerManager());
         messageServer.addMessageListener(world.getShotManager());
+        messageServer.addMessageListener(world.getChatManager());
 
         world.getShotManager().addShotListener(new NewShotListener());
+        world.getChatManager().addChatListener(new NewChatListener());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -153,6 +158,15 @@ public class GameServer {
         }
     }
 
+    private class NewChatListener implements ChatListener {
+
+        @Override
+        public void onMessage(ChatLine line) {
+            messageServer.broadcastExcept(new NewChatMessage(line), line.
+                    getPlayer().getID());
+        }
+    }
+
     public static GameServer startBasicServer(int seed) {
         final GameWorld world = new GameWorld();
 
@@ -164,6 +178,9 @@ public class GameServer {
 
         ShotManager shotManager = new ServerShotManager(world);
         world.setShotManager(shotManager);
+
+        ChatManager chatManager = new ChatManager(playerManager);
+        world.setChatManager(chatManager);
 
         final PhysicsSystem physicsSystem = new PhysicsSystem(world);
 
