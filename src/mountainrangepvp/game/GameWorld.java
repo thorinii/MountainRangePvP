@@ -4,6 +4,7 @@
  */
 package mountainrangepvp.game;
 
+import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.ShotManager;
 import mountainrangepvp.terrain.Terrain;
@@ -17,6 +18,7 @@ public class GameWorld {
     private Terrain terrain;
     private PlayerManager playerManager;
     private ShotManager shotManager;
+    private ChatManager chatManager;
 
     public Terrain getTerrain() {
         return terrain;
@@ -40,6 +42,14 @@ public class GameWorld {
 
     public void setShotManager(ShotManager shotManager) {
         this.shotManager = shotManager;
+    }
+
+    public ChatManager getChatManager() {
+        return chatManager;
+    }
+
+    public void setChatManager(ChatManager chatManager) {
+        this.chatManager = chatManager;
     }
 
     public void update(float dt) {

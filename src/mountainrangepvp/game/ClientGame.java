@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import mountainrangepvp.GameConfig;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
+import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.GameClient;
 import mountainrangepvp.mp.message.KillConnectionMessage;
@@ -56,6 +57,9 @@ public class ClientGame extends Game {
 
         ShotManager shotManager = new ClientShotManager(world);
         world.setShotManager(shotManager);
+
+        ChatManager chatManager = new ChatManager(playerManager);
+        world.setChatManager(chatManager);
 
         client = new GameClient(world, serverIP);
         client.addMessageListener(new ServerMessageListener());
@@ -143,8 +147,7 @@ public class ClientGame extends Game {
 
                 physicsSystem = new PhysicsSystem(world);
 
-                inputHandler = new InputHandler(world.getPlayerManager(), world.
-                        getShotManager());
+                inputHandler = new InputHandler(world);
                 inputHandler.register();
 
                 audioManager = new AudioManager(world.getPlayerManager(), world.

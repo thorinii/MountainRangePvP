@@ -6,23 +6,24 @@ package mountainrangepvp.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.chat.ChatLine;
+import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
-import mountainrangepvp.player.PlayerManager;
-import mountainrangepvp.shot.ShotManager;
 
 /**
  *
  * @author lachlan
  */
-public class InputHandler implements InputProcessor {
+public class InputHandler {
 
-    private final PlayerManager playerManager;
-    private final ShotManager shotManager;
-    private final int DOUBLE_JUMP_MIN = 50;
-    private final int DOUBLE_JUMP_MAX = 500;
-    private final int GUN_RATE = 100;
+    private static final int DOUBLE_JUMP_MIN = 50;
+    private static final int DOUBLE_JUMP_MAX = 500;
+    private static final int GUN_RATE = 100;
+    //
+    private final GameWorld world;
+    private final PlayerInputHandler playerInputHandler;
+    private final ChatInputHandler chatInputHandler;
     //
     private boolean up, down, left, right;
     private int doubleJumpTimer;
@@ -30,17 +31,19 @@ public class InputHandler implements InputProcessor {
     private boolean gun;
     private int gunTimer;
 
-    public InputHandler(PlayerManager playerManager, ShotManager shotManager) {
-        this.playerManager = playerManager;
-        this.shotManager = shotManager;
+    public InputHandler(GameWorld world) {
+        this.world = world;
+
+        playerInputHandler = new PlayerInputHandler();
+        chatInputHandler = new ChatInputHandler();
     }
 
     public void register() {
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(playerInputHandler);
     }
 
     public void update(float dt) {
-        Player local = playerManager.getLocalPlayer();
+        Player local = world.getPlayerManager().getLocalPlayer();
         if (!local.isAlive()) {
             gun = false;
             doubleJumpTimer = 0;
@@ -132,84 +135,122 @@ public class InputHandler implements InputProcessor {
             gunTimer = 0;
 
             Vector2 pos = player.getCentralPosition();
-            shotManager.addShot(pos,
-                                player.getGunDirection().cpy(),
-                                player);
+            world.getShotManager().addShot(pos,
+                                           player.getGunDirection().cpy(),
+                                           player);
         }
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Keys.SPACE:
-            case Keys.W:
-                up = true;
-                break;
-            case Keys.A:
-                left = true;
-                break;
-            case Keys.D:
-                right = true;
-                break;
-            case Keys.S:
-                down = true;
-                break;
-            case Keys.ESCAPE:
-                Gdx.app.exit();
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        switch (keycode) {
-            case Keys.SPACE:
-            case Keys.W:
-                up = false;
-                break;
-            case Keys.A:
-                left = false;
-                break;
-            case Keys.D:
-                right = false;
-                break;
-            case Keys.S:
-                down = false;
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return true;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        gun = true;
-        return true;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    private void reset() {
+        up = down = left = right = false;
         gun = false;
-        return true;
+
+        doubleJumpTimer = 0;
+        gunTimer = 0;
     }
 
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return true;
+    class PlayerInputHandler extends AbstractInputProcessor {
+
+        @Override
+        public boolean keyDown(int keycode) {
+            switch (keycode) {
+                case Keys.SPACE:
+                case Keys.W:
+                    up = true;
+                    break;
+                case Keys.A:
+                    left = true;
+                    break;
+                case Keys.D:
+                    right = true;
+                    break;
+                case Keys.S:
+                    down = true;
+                    break;
+                case Keys.ESCAPE:
+                    Gdx.app.exit();
+                    break;
+            }
+            return true;
+        }
+
+        @Override
+        public boolean keyUp(int keycode) {
+            switch (keycode) {
+                case Keys.SPACE:
+                case Keys.W:
+                    up = false;
+                    break;
+                case Keys.A:
+                    left = false;
+                    break;
+                case Keys.D:
+                    right = false;
+                    break;
+                case Keys.S:
+                    down = false;
+                    break;
+                case Keys.TAB:
+                    Gdx.input.setInputProcessor(chatInputHandler);
+                    world.getChatManager().setChatting(true);
+                    reset();
+                    break;
+            }
+            return true;
+        }
+
+        @Override
+        public boolean touchDown(int screenX, int screenY, int pointer,
+                int button) {
+            gun = true;
+            return true;
+        }
+
+        @Override
+        public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+            gun = false;
+            return true;
+        }
     }
 
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return true;
-    }
+    class ChatInputHandler extends AbstractInputProcessor {
 
-    @Override
-    public boolean scrolled(int amount) {
-        return true;
+        @Override
+        public boolean keyUp(int keycode) {
+            String line = world.getChatManager().getCurrentLine();
+            switch (keycode) {
+                case Keys.ENTER:
+                    if (!line.isEmpty())
+                        world.getChatManager().addLine(new ChatLine(world.
+                                getPlayerManager().getLocalPlayer(), line));
+                case Keys.ESCAPE:
+                case Keys.TAB:
+                    Gdx.input.setInputProcessor(playerInputHandler);
+                    world.getChatManager().setChatting(false);
+                    break;
+                case Keys.BACKSPACE:
+                    if (!line.isEmpty())
+                        line = line.substring(0, line.length() - 1);
+                    break;
+            }
+
+            world.getChatManager().setCurrentLine(line);
+            return true;
+        }
+
+        @Override
+        public boolean keyTyped(char character) {
+            boolean acceptable = ("" + character).matches(
+                    "[a-zA-Z0-9`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\\\\\|]");
+
+            if (!acceptable)
+                return true;
+
+            String line = world.getChatManager().getCurrentLine();
+            line += character;
+            world.getChatManager().setCurrentLine(line);
+
+            return true;
+        }
     }
 }

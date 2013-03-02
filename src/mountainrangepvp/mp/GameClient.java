@@ -6,6 +6,8 @@ package mountainrangepvp.mp;
 
 import java.io.IOException;
 import mountainrangepvp.Log;
+import mountainrangepvp.chat.ChatLine;
+import mountainrangepvp.chat.ChatListener;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.KillConnectionMessage.Reason;
 import mountainrangepvp.mp.message.*;
@@ -49,8 +51,10 @@ public class GameClient {
         messageClient.addMessageListener(new GameClientMessageListener());
         messageClient.addMessageListener(world.getPlayerManager());
         messageClient.addMessageListener(world.getShotManager());
+        messageClient.addMessageListener(world.getChatManager());
 
         world.getShotManager().addShotListener(new NewShotListener());
+        world.getChatManager().addChatListener(new NewChatListener());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -119,6 +123,15 @@ public class GameClient {
 
         @Override
         public void shotPlayerCollision(Shot shot, Player player) {
+        }
+    }
+
+    private class NewChatListener implements ChatListener {
+
+        @Override
+        public void onMessage(ChatLine line) {
+            if (line.getPlayer() == world.getPlayerManager().getLocalPlayer())
+                messageClient.send(new NewChatMessage(line));
         }
     }
 
