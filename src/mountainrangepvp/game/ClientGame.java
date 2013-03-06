@@ -8,6 +8,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import java.io.IOException;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import mountainrangepvp.GameConfig;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
@@ -115,19 +116,25 @@ public class ClientGame extends Game {
         @Override
         public void accept(Message message, int id) throws IOException {
             if (message instanceof KillConnectionMessage) {
-                KillConnectionMessage kill = (KillConnectionMessage) message;
+                final KillConnectionMessage kill = (KillConnectionMessage) message;
 
                 Gdx.app.exit();
 
-                if (kill.getReason() != KillConnectionMessage.Reason.ServerShutdown)
-                    JOptionPane.showMessageDialog(null, "Error: " + kill.
-                            getReason(),
-                                                  "Mountain Range PvP",
-                                                  JOptionPane.ERROR_MESSAGE);
-                else
-                    JOptionPane.showMessageDialog(null, "Server quit",
-                                                  "Mountain Range PvP",
-                                                  JOptionPane.ERROR_MESSAGE);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (kill.getReason() != KillConnectionMessage.Reason.ServerShutdown)
+                            JOptionPane.showMessageDialog(null,
+                                                          "Error: " + kill.
+                                    getReason(),
+                                                          "Mountain Range PvP",
+                                                          JOptionPane.ERROR_MESSAGE);
+                        else
+                            JOptionPane.showMessageDialog(null, "Server quit",
+                                                          "Mountain Range PvP",
+                                                          JOptionPane.ERROR_MESSAGE);
+                    }
+                });
             } else if (message instanceof NewWorldMessage) {
                 NewWorldMessage newWorldMessage = (NewWorldMessage) message;
 
