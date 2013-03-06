@@ -8,9 +8,11 @@ import java.io.IOException;
 import mountainrangepvp.Log;
 import mountainrangepvp.chat.ChatLine;
 import mountainrangepvp.chat.ChatListener;
+import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.KillConnectionMessage.Reason;
 import mountainrangepvp.mp.message.*;
+import static mountainrangepvp.mp.message.NewWorldMessage.WorldType.Hills;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.Player;
@@ -147,6 +149,9 @@ public class GameClient {
         ShotManager shotManager = new ClientShotManager(world);
         world.setShotManager(shotManager);
 
+        ChatManager chatManager = new ChatManager(playerManager);
+        world.setChatManager(chatManager);
+
         PhysicsSystem physicsSystem = new PhysicsSystem(world);
 
         GameClient client = new GameClient(world, "localhost");
@@ -168,6 +173,7 @@ public class GameClient {
                         default:
                             heightMap = null;
                     }
+
                     world.setTerrain(new Terrain(heightMap));
                 }
             }
@@ -180,8 +186,11 @@ public class GameClient {
         while (client.isConnected()) {
             Thread.sleep(100);
             client.update();
-            physicsSystem.update(1 / 60f);
-            world.update(1 / 60f);
+
+            if (world.getTerrain() != null) {
+                physicsSystem.update(1 / 60f);
+                world.update(1 / 60f);
+            }
         }
     }
 }

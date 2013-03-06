@@ -19,6 +19,11 @@ public class GameWorld {
     private PlayerManager playerManager;
     private ShotManager shotManager;
     private ChatManager chatManager;
+    private boolean teamModeOn;
+
+    public GameWorld() {
+        teamModeOn = false;
+    }
 
     public Terrain getTerrain() {
         return terrain;
@@ -50,6 +55,14 @@ public class GameWorld {
 
     public void setChatManager(ChatManager chatManager) {
         this.chatManager = chatManager;
+    }
+
+    public boolean isTeamModeOn() {
+        return teamModeOn;
+    }
+
+    public void setTeamModeOn(boolean teamModeOn) {
+        this.teamModeOn = teamModeOn;
     }
 
     public void update(float dt) {
