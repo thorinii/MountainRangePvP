@@ -118,7 +118,8 @@ public class PlayerRenderer implements Renderer {
         if (player.isSpawnBubbleOn()) {
             batch.draw(spawnBubbleTexture,
                        pos.x + Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
-                       pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.getHeight() / 2);
+                       pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.
+                    getHeight() / 2);
         }
 
         textRenderer.drawString(batch, player.getName(),

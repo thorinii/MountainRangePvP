@@ -32,8 +32,8 @@ public class Log {
         LOG.addHandler(makeConsoleHandler());
         LOG.addHandler(makeFileHandler());
 
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-
+        Thread.setDefaultUncaughtExceptionHandler(
+                new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 LOG.log(Level.SEVERE, "Uncaught Exception", e);

@@ -59,7 +59,6 @@ public class ServerPlayerManager implements PlayerManager {
         List<Player> tmp = new ArrayList<>(players);
 
         Collections.sort(tmp, new Comparator<Player>() {
-
             @Override
             public int compare(Player o1, Player o2) {
                 return o2.getHits() - o1.getHits();

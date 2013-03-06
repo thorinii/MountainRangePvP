@@ -108,7 +108,8 @@ public class GameServer {
             if (message instanceof IntroduceMessage) {
                 IntroduceMessage introduceMessage = (IntroduceMessage) message;
 
-                Player existing = world.getPlayerManager().getPlayer(introduceMessage.
+                Player existing = world.getPlayerManager().getPlayer(
+                        introduceMessage.
                         getName());
                 if (existing != null) {
                     KillConnectionMessage kcm = new KillConnectionMessage(
@@ -196,7 +197,6 @@ public class GameServer {
         }
 
         new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {

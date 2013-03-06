@@ -38,7 +38,7 @@ public class Main {
         appConfig.forceExit = false;
         appConfig.fullscreen = gameConfig.fullscreen;
         appConfig.resizable = false;
-        
+
         appConfig.width = gameConfig.resolutionWidth;
         appConfig.height = gameConfig.resolutionHeight;
         appConfig.depth = gameConfig.bitDepth;

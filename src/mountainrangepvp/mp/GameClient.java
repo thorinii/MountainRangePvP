@@ -151,7 +151,6 @@ public class GameClient {
 
         GameClient client = new GameClient(world, "localhost");
         client.addMessageListener(new MessageListener() {
-
             @Override
             public void accept(Message message, int id) throws IOException {
                 if (message instanceof NewWorldMessage) {

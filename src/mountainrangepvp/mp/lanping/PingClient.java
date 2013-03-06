@@ -33,7 +33,6 @@ public class PingClient {
         packet = makePacket();
 
         listenThread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {

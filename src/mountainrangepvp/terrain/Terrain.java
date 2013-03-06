@@ -23,7 +23,6 @@ public class Terrain {
     public Terrain(HeightMap heightMap) {
         this.heightMap = heightMap;
         blocks = new LinkedHashMap<Integer, int[]>() {
-
             @Override
             protected boolean removeEldestEntry(Entry<Integer, int[]> eldest) {
                 return size() > MAX_CACHED_BLOCKS;
