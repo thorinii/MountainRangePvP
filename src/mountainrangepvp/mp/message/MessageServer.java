@@ -237,7 +237,6 @@ public class MessageServer {
         MessageServer server = new MessageServer();
         server.messageQueue.setInQueueMode(false);
         server.messageQueue.addListener(new MessageListener() {
-
             @Override
             public void accept(Message message, int id) throws
                     IOException {

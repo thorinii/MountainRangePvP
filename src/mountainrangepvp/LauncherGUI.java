@@ -4,7 +4,6 @@
  */
 package mountainrangepvp;
 
-import com.badlogic.gdx.Gdx;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.prefs.Preferences;
 import javax.swing.*;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 import mountainrangepvp.mp.lanping.PingClient;
 import mountainrangepvp.mp.lanping.PingClient.ServerData;
 import mountainrangepvp.player.Player.Team;
@@ -70,19 +68,23 @@ public class LauncherGUI extends javax.swing.JFrame {
     }
 
     private void setupResolutions(DefaultComboBoxModel<String> displayModesModel) {
-        GraphicsDevice graphicsDevice = GraphicsEnvironment.
-                getLocalGraphicsEnvironment().
-                getDefaultScreenDevice();
+        DisplayMode[] modes = getModes();
+        Set<DisplayMode> resolutions = new TreeSet<>(
+                new Comparator<DisplayMode>() {
+            @Override
+            public int compare(DisplayMode o1, DisplayMode o2) {
+                if (o1.getWidth() == o2.getWidth())
+                    return o1.getHeight() - o2.getHeight();
+                else
+                    return o1.getWidth() - o2.getWidth();
+            }
+        });
 
-        DisplayMode[] modes = graphicsDevice.getDisplayModes();
-        Set<String> resolutions = new TreeSet<>();
+        resolutions.addAll(Arrays.asList(modes));
 
-        for (DisplayMode mode : modes) {
-            resolutions.add(mode.getWidth() + "x" + mode.getHeight());
-        }
-
-        for (String res : resolutions) {
-            displayModesModel.addElement(res);
+        for (DisplayMode mode : resolutions) {
+            displayModesModel.addElement(mode.getWidth() + "x" + mode.
+                    getHeight());
         }
     }
 
@@ -491,35 +493,43 @@ public class LauncherGUI extends javax.swing.JFrame {
                 getLocalGraphicsEnvironment().
                 getDefaultScreenDevice();
 
-        DisplayMode[] modes = graphicsDevice.getDisplayModes();
-        Set<String> rates = new TreeSet<>();
-        Set<String> depths = new TreeSet<>();
+        DisplayMode[] modes = getModes();
+        Set<Integer> rates = new TreeSet<>();
+        Set<Integer> depths = new TreeSet<>();
 
         DefaultComboBoxModel<String> refreshRateModel = new DefaultComboBoxModel<>();
         DefaultComboBoxModel<String> bitDepthModel = new DefaultComboBoxModel<>();
 
         for (DisplayMode mode : modes) {
-            rates.add("" + mode.getRefreshRate());
-            depths.add("" + mode.getBitDepth());
+            rates.add(mode.getRefreshRate());
+            depths.add(mode.getBitDepth());
         }
 
-        for (String rate : rates) {
-            refreshRateModel.addElement(rate);
+        for (int rate : rates) {
+            refreshRateModel.addElement("" + rate);
         }
 
-        for (String depth : depths) {
-            bitDepthModel.addElement(depth);
+        for (int depth : depths) {
+            bitDepthModel.addElement("" + depth);
         }
 
         refreshRateBox.setModel(refreshRateModel);
         bitDepthBox.setModel(bitDepthModel);
 
         DisplayMode currentMode = graphicsDevice.getDisplayMode();
-        if (rates.contains("" + currentMode.getRefreshRate()))
+        if (rates.contains(currentMode.getRefreshRate()))
             refreshRateBox.setSelectedItem("" + currentMode.getRefreshRate());
-        if (depths.contains("" + currentMode.getBitDepth()))
+        if (depths.contains(currentMode.getBitDepth()))
             bitDepthBox.setSelectedItem("" + currentMode.getBitDepth());
     }//GEN-LAST:event_screenResBoxItemStateChanged
+
+    private DisplayMode[] getModes() {
+        GraphicsDevice graphicsDevice = GraphicsEnvironment.
+                getLocalGraphicsEnvironment().
+                getDefaultScreenDevice();
+
+        return graphicsDevice.getDisplayModes();
+    }
 
     /**
      * @param args the command line arguments
@@ -584,7 +594,6 @@ public class LauncherGUI extends javax.swing.JFrame {
         public void actionPerformed(ActionEvent e) {
             List<ServerData> servers = pingClient.getServers();
             Collections.sort(servers, new Comparator<ServerData>() {
-
                 @Override
                 public int compare(ServerData o1, ServerData o2) {
                     return o1.getFreshness() - o2.getFreshness();
@@ -616,7 +625,8 @@ public class LauncherGUI extends javax.swing.JFrame {
     private static class TeamListCellRenderer extends JLabel implements
             ListCellRenderer<String> {
 
-        private final ImageIcon BLUE = new ImageIcon(this.getClass().getResource(
+        private final ImageIcon BLUE = new ImageIcon(this.getClass().
+                getResource(
                 "/minimap/head-blue.png"));
         private final ImageIcon GREEN = new ImageIcon(this.getClass().
                 getResource(
@@ -652,7 +662,6 @@ public class LauncherGUI extends javax.swing.JFrame {
             setBackground(Color.GRAY);
             setOpaque(isSelected);
             addMouseListener(new MouseAdapter() {
-
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     setOpaque(true);

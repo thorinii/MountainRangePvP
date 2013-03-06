@@ -145,7 +145,8 @@ public class MessageClient {
 
     public static void main(String[] args) {
         try {
-            new MessageClient("localhost", MultiplayerConstants.STD_PORT).start();
+            new MessageClient("localhost", MultiplayerConstants.STD_PORT).
+                    start();
         } catch (IOException ex) {
             Logger.getLogger(MessageServer.class.getName()).log(Level.SEVERE,
                                                                 null, ex);

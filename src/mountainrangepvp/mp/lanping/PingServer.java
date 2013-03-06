@@ -25,7 +25,6 @@ public class PingServer {
         packet = makePacket();
 
         pingThread = new Thread(new Runnable() {
-
             @Override
             public void run() {
                 try {
