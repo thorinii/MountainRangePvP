@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import mountainrangepvp.Log;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.NewShotMessage;
@@ -98,21 +99,22 @@ public abstract class AbstractShotManager implements ShotManager {
                             getCentralPosition()).nor();
 
                     Shot ricochet = new Shot(intersection, direction,
-                                             shot.player);
-                    addShot(ricochet);
+                                             hit);
+                    shots.add(ricochet);
 
                     return true;
                 }
             } else {
                 hit = testNonRespawnPlayers(shot, pos, npos);
-                if (world.isTeamModeOn() && hit.getTeam() == shot.player.
-                        getTeam()) {
-                    // Let it pass
-                } else if (hit != null) {
-                    handlePlayerHit(shot, hit);
-                    fireShotPlayerCollision(shot, hit);
-                    return true;
-                }
+                if (hit != null)
+                    if (world.isTeamModeOn() && hit.getTeam() == shot.player.
+                            getTeam()) {
+                        // Let it pass
+                    } else {
+                        handlePlayerHit(shot, hit);
+                        fireShotPlayerCollision(shot, hit);
+                        return true;
+                    }
             }
         }
 

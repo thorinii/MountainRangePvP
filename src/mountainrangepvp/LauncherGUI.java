@@ -459,10 +459,11 @@ public class LauncherGUI extends javax.swing.JFrame {
                     getSelectedItem());
         }
 
-        config.playerName = playerNameTxt.getText();
-
         config.server = mpTypeServerBtn.isSelected();
         config.serverIP = serverIPTxt.getText();
+
+        config.playerName = playerNameTxt.getText();
+        config.teamModeOn = (config.server) ? gameTypeTeamBtn.isSelected() : true;
 
         switch ((String) teamBox.getSelectedItem()) {
             case "Blue":

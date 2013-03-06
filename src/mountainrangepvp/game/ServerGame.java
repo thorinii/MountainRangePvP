@@ -55,6 +55,7 @@ public class ServerGame extends Game {
         this.seed = config.seed;
 
         world = new GameWorld();
+        world.setTeamModeOn(config.teamModeOn);
 
         PlayerManager playerManager = new ClientPlayerManager(config.playerName,
                                                               config.team);
