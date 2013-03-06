@@ -117,6 +117,10 @@ public class ClientPlayerManager implements PlayerManager {
             Player hit = getPlayer(pdm.getHitID());
             Player hitter = getPlayer(pdm.getHitterID());
 
+
+            if (hit == null || hitter == null)
+                return;
+
             hit.kill();
             hitter.addHit();
         }

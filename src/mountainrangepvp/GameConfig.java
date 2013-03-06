@@ -19,6 +19,7 @@ public class GameConfig {
     //
     public String playerName;
     public Team team;
+    public boolean teamModeOn;
     //
     public boolean server;
     public int port;
@@ -33,6 +34,8 @@ public class GameConfig {
         resolutionHeight = 800;
 
         playerName = null;
+        team = Team.BLUE;
+        teamModeOn = false;
 
         server = false;
         port = MultiplayerConstants.STD_PORT;

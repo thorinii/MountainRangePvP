@@ -51,6 +51,7 @@ public class ClientGame extends Game {
         this.serverIP = config.serverIP;
 
         world = new GameWorld();
+        world.setTeamModeOn(config.teamModeOn);
 
         PlayerManager playerManager = new ClientPlayerManager(config.playerName,
                                                               config.team);
