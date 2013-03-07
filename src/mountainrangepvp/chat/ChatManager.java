@@ -12,6 +12,7 @@ import java.util.List;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.MessageListener;
 import mountainrangepvp.mp.message.NewChatMessage;
+import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 
 /**
@@ -42,6 +43,17 @@ public class ChatManager implements MessageListener {
         return Collections.unmodifiableList(lines.subList(0,
                                                           Math.min(lines.size(),
                                                                    length)));
+    }
+
+    /**
+     * Something spoken by the server.
+     */
+    public void addLine(String text) {
+        addLine(new ChatLine(null, text));
+    }
+
+    public void addLine(Player player, String text) {
+        addLine(new ChatLine(player, text));
     }
 
     public void addLine(ChatLine line) {

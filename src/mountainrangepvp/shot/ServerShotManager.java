@@ -21,6 +21,8 @@ public class ServerShotManager extends AbstractShotManager {
     @Override
     protected void handlePlayerHit(Shot shot, Player hit) {
         Log.fine(hit + " (server) was shot");
+        world.getChatManager().addLine(hit.getName() + " was hit.");
+
         hit.kill();
         shot.player.addHit();
     }

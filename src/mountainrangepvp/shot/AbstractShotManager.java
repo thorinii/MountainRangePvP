@@ -9,12 +9,9 @@ import com.badlogic.gdx.math.Vector2;
 import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import mountainrangepvp.Log;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.NewShotMessage;
@@ -29,7 +26,7 @@ public abstract class AbstractShotManager implements ShotManager {
 
     private final List<ShotListener> listeners;
     private final List<Shot> shots;
-    private final GameWorld world;
+    protected final GameWorld world;
 
     public AbstractShotManager(GameWorld world) {
         listeners = new ArrayList<>();

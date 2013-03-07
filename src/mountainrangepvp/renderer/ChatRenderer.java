@@ -61,7 +61,11 @@ public class ChatRenderer implements Renderer {
             Player p = line.getPlayer();
             String name = line.getPlayerName();
 
-            String text = name + ": " + line.getText();
+            String text;
+            if (p == null)
+                text = line.getText();
+            else
+                text = name + ": " + line.getText();
 
             if (p == null)
                 textRenderer.setColour(Color.BLACK);
@@ -71,6 +75,8 @@ public class ChatRenderer implements Renderer {
 
             i++;
         }
+
+        textRenderer.setColour(Color.BLACK);
     }
 
     private void drawCurrentChat() {

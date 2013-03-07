@@ -20,7 +20,7 @@ public class ChatLine {
 
     public ChatLine(Player player, String text) {
         this.player = player;
-        this.playerName = player.getName();
+        this.playerName = (player == null) ? "" : player.getName();
         this.text = text;
 
         time = System.currentTimeMillis();
@@ -49,5 +49,9 @@ public class ChatLine {
     @Override
     public String toString() {
         return playerName + ": " + text;
+    }
+
+    public boolean isServer() {
+        return player == null;
     }
 }
