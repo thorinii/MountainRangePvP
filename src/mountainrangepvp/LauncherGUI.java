@@ -137,10 +137,10 @@ public class LauncherGUI extends javax.swing.JFrame {
         mpTypeServerBtn.setText("Start a Server");
 
         gameTypeBtnGrp.add(gameTypeFFABtn);
+        gameTypeFFABtn.setSelected(true);
         gameTypeFFABtn.setText("Free For All");
 
         gameTypeBtnGrp.add(gameTypeTeamBtn);
-        gameTypeTeamBtn.setSelected(true);
         gameTypeTeamBtn.setText("Teams");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -428,7 +428,8 @@ public class LauncherGUI extends javax.swing.JFrame {
         prefs.put("player-name", playerNameTxt.getText());
         prefs.putBoolean("fullscreen", fullscreenBtn.isSelected());
         prefs.putInt("screen-resolution", screenResBox.getSelectedIndex());
-        prefs.putInt("team", teamBox.getSelectedIndex());
+        prefs.putInt("team-colour", teamBox.getSelectedIndex());
+        prefs.putBoolean("team-mode-on", gameTypeTeamBtn.isSelected());
     }
 
     private void loadPrefs() {
@@ -438,7 +439,8 @@ public class LauncherGUI extends javax.swing.JFrame {
             playerNameTxt.setText(prefs.get("player-name", ""));
             fullscreenBtn.setSelected(prefs.getBoolean("fullscreen", false));
             screenResBox.setSelectedIndex(prefs.getInt("screen-resolution", 0));
-            teamBox.setSelectedIndex(prefs.getInt("team", 0));
+            teamBox.setSelectedIndex(prefs.getInt("team-colour", 0));
+            gameTypeTeamBtn.setSelected(prefs.getBoolean("team-mode-on", false));
         } catch (Exception e) {
             Log.warn("Could not load prefs", e);
         }
