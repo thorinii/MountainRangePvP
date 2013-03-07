@@ -31,7 +31,7 @@ public class Player {
     public static final int MAX_SLIDE_SLOPE = 80;
     public static final int RESPAWN_TIMEOUT = 2000;
     public static final int RESPAWN_RANGE_X = 1000;
-    public static final int SPAWN_BUBBLE_TIMEOUT = 80000;
+    public static final int SPAWN_BUBBLE_TIMEOUT = 8000;
     public static final int SPAWN_BUBBLE_RADIUS = 51;
     private static final int ON_GROUND_TIMEOUT = 3;
     //

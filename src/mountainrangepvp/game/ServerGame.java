@@ -76,7 +76,7 @@ public class ServerGame extends Game {
     @Override
     public void create() {
         try {
-            server = GameServer.startBasicServer(seed);
+            server = GameServer.startBasicServer(seed, world.isTeamModeOn());
             client.start();
         } catch (IOException ioe) {
             Log.warn("Error starting server connection:", ioe);

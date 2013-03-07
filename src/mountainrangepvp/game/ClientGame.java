@@ -152,6 +152,7 @@ public class ClientGame extends Game {
                 }
 
                 world.setTerrain(new Terrain(heightMap));
+                world.setTeamModeOn(newWorldMessage.isTeamModeOn());
 
                 physicsSystem = new PhysicsSystem(world);
 

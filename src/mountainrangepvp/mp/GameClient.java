@@ -4,6 +4,7 @@
  */
 package mountainrangepvp.mp;
 
+import com.badlogic.gdx.math.Vector2;
 import java.io.IOException;
 import mountainrangepvp.Log;
 import mountainrangepvp.chat.ChatLine;
@@ -132,8 +133,17 @@ public class GameClient {
 
         @Override
         public void onMessage(ChatLine line) {
-            if (line.getPlayer() == world.getPlayerManager().getLocalPlayer())
-                messageClient.send(new NewChatMessage(line));
+            switch (line.getText()) {
+                case "/y": {
+                    Player player = line.getPlayer();
+                    player.getRespawnTimer().reset();
+                }
+                default:
+                    if (line.getPlayer() == world.getPlayerManager().
+                            getLocalPlayer())
+                        messageClient.send(new NewChatMessage(line));
+                    break;
+            }
         }
     }
 
@@ -175,6 +185,7 @@ public class GameClient {
                     }
 
                     world.setTerrain(new Terrain(heightMap));
+                    world.setTeamModeOn(newWorldMessage.isTeamModeOn());
                 }
             }
         });

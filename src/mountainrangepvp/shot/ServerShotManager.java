@@ -4,6 +4,7 @@
  */
 package mountainrangepvp.shot;
 
+import mountainrangepvp.Log;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
 
@@ -19,6 +20,7 @@ public class ServerShotManager extends AbstractShotManager {
 
     @Override
     protected void handlePlayerHit(Shot shot, Player hit) {
+        Log.fine(hit + " (server) was shot");
         hit.kill();
         shot.player.addHit();
     }
