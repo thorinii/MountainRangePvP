@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mountainrangepvp.mp.message;
 
 import com.badlogic.gdx.math.Vector2;
