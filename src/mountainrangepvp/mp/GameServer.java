@@ -206,9 +206,12 @@ public class GameServer {
                     player.getRespawnTimer().reset();
                 }
                 default:
-                    messageServer.broadcastExcept(new NewChatMessage(line),
-                                                  line.
-                            getPlayer().getID());
+                    if (line.isServer())
+                        messageServer.broadcast(new NewChatMessage(line));
+                    else
+                        messageServer.broadcastExcept(new NewChatMessage(line),
+                                                      line.
+                                getPlayer().getID());
                     break;
             }
         }

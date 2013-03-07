@@ -28,7 +28,8 @@ public class NewChatMessage implements Message {
     }
 
     public NewChatMessage(ChatLine line) {
-        this(line.getPlayer().getID(), line.getText());
+        this((line.getPlayer() == null) ? 0 : line.getPlayer().getID(), line.
+                getText());
     }
 
     public int getID() {
@@ -40,6 +41,8 @@ public class NewChatMessage implements Message {
     }
 
     public ChatLine getLine(PlayerManager playerManager) {
+        if (id == 0)
+            return new ChatLine(null, message);
         return new ChatLine(playerManager.getPlayer(id), message);
     }
 
