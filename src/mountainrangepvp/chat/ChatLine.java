@@ -45,4 +45,9 @@ public class ChatLine {
     public boolean isOld() {
         return System.currentTimeMillis() - time > OLD_TIME;
     }
+
+    @Override
+    public String toString() {
+        return playerName + ": " + text;
+    }
 }

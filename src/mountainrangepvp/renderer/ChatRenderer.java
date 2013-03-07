@@ -55,6 +55,8 @@ public class ChatRenderer implements Renderer {
         for (ChatLine line : chatManager.getLinesHead(20)) {
             if (!chatManager.isChatting() && line.isOld())
                 continue;
+            if (line.getText().startsWith("/"))
+                continue;
 
             Player p = line.getPlayer();
             String name = line.getPlayerName();

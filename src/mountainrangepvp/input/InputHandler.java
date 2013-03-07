@@ -7,6 +7,7 @@ package mountainrangepvp.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
+import java.util.regex.Pattern;
 import mountainrangepvp.chat.ChatLine;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
@@ -167,6 +168,18 @@ public class InputHandler {
                 case Keys.S:
                     down = true;
                     break;
+                case Keys.R:
+                    world.getChatManager().addLine(new ChatLine(world.
+                            getPlayerManager().getLocalPlayer(), "/s"));
+                    break;
+                case Keys.F:
+                    world.getChatManager().addLine(new ChatLine(world.
+                            getPlayerManager().getLocalPlayer(), "/f"));
+                    break;
+                case Keys.Y:
+                    world.getChatManager().addLine(new ChatLine(world.
+                            getPlayerManager().getLocalPlayer(), "/y"));
+                    break;
                 case Keys.ESCAPE:
                     Gdx.app.exit();
                     break;
@@ -241,7 +254,7 @@ public class InputHandler {
         @Override
         public boolean keyTyped(char character) {
             boolean acceptable = ("" + character).matches(
-                    "[a-zA-Z0-9`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\\\\\|]");
+                    "[a-zA-Z0-9`\\~\\!\\@\\#\\$\\%\\^\\&\\*\\(\\)\\-\\_\\=\\+\\\\\\|/\\.,<>\\?]");
 
             if (!acceptable)
                 return true;

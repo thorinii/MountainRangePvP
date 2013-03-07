@@ -4,6 +4,7 @@
  */
 package mountainrangepvp.mp;
 
+import com.badlogic.gdx.math.Vector2;
 import java.io.IOException;
 import mountainrangepvp.Log;
 import mountainrangepvp.chat.ChatLine;
@@ -117,7 +118,8 @@ public class GameServer {
                     messageServer.send(kcm, id);
                 } else {
                     NewWorldMessage newWorldMessage = new NewWorldMessage(
-                            NewWorldMessage.WorldType.Hills, seed);
+                            NewWorldMessage.WorldType.Hills, seed, world.
+                            isTeamModeOn());
                     messageServer.send(newWorldMessage, id);
 
 
@@ -163,13 +165,58 @@ public class GameServer {
 
         @Override
         public void onMessage(ChatLine line) {
-            messageServer.broadcastExcept(new NewChatMessage(line), line.
-                    getPlayer().getID());
+            switch (line.getText()) {
+                case "/s": {
+                    ShotManager manager = world.getShotManager();
+                    Vector2 base = line.getPlayer().getCentralPosition();
+                    final int SHOTS = 100;
+                    for (int i = 0; i < SHOTS; i++) {
+                        float a = (float) Math.PI / SHOTS * i * 2;
+
+                        Shot shot = new Shot(base,
+                                             new Vector2((float) Math.cos(a),
+                                                         (float) Math.sin(a)),
+                                             line.getPlayer());
+                        manager.addShot(shot);
+                        messageServer.broadcast(new NewShotMessage(shot));
+                    }
+                    break;
+                }
+                case "/f": {
+                    ShotManager manager = world.getShotManager();
+                    Player player = line.getPlayer();
+                    Vector2 base = player.getCentralPosition();
+                    float gunAngle = (float) Math.toRadians(
+                            player.getGunDirection().angle());
+                    final int SHOTS = 20;
+                    for (int i = 0; i < SHOTS; i++) {
+                        float a = gunAngle + (float) 0.4f / SHOTS * (i - SHOTS / 2);
+
+                        Shot shot = new Shot(base,
+                                             new Vector2((float) Math.cos(a),
+                                                         (float) Math.sin(a)),
+                                             player);
+                        manager.addShot(shot);
+                        messageServer.broadcast(new NewShotMessage(shot));
+                    }
+                    break;
+                }
+                case "/y": {
+                    Player player = line.getPlayer();
+                    player.getRespawnTimer().reset();
+                }
+                default:
+                    messageServer.broadcastExcept(new NewChatMessage(line),
+                                                  line.
+                            getPlayer().getID());
+                    break;
+            }
         }
     }
 
-    public static GameServer startBasicServer(int seed) {
+    public static GameServer startBasicServer(int seed, boolean teamModeOn) {
         final GameWorld world = new GameWorld();
+        world.setTeamModeOn(teamModeOn);
 
         Terrain terrain = new Terrain(new HillsHeightMap(seed));
         world.setTerrain(terrain);
@@ -224,6 +271,6 @@ public class GameServer {
             InterruptedException {
         int seed = (int) (Math.random() * 100);
 
-        startBasicServer(seed);
+        startBasicServer(seed, false);
     }
 }
