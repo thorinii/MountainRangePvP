@@ -12,60 +12,11 @@ import mountainrangepvp.mp.message.PlayerUpdateMessage;
  *
  * @author lachlan
  */
-public class ServerPlayerManager implements PlayerManager {
-
-    private final List<Player> players;
-
-    public ServerPlayerManager() {
-        players = new ArrayList<>();
-    }
-
-    @Override
-    public List<Player> getPlayers() {
-        return Collections.unmodifiableList(players);
-    }
+public class ServerPlayerManager extends AbstractPlayerManager {
 
     @Override
     public Player getLocalPlayer() {
         return null;
-    }
-
-    @Override
-    public Player getPlayer(String playerName) {
-        for (Player p : players) {
-            if (p.getName().equals(playerName)) {
-                return p;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public Player getPlayer(int id) {
-        for (Player player : players) {
-            if (player.getID() == id)
-                return player;
-        }
-        return null;
-    }
-
-    @Override
-    public List<Player> getPlayersByHits(int count) {
-        List<Player> tmp = new ArrayList<>(players);
-
-        Collections.sort(tmp, new Comparator<Player>() {
-            @Override
-            public int compare(Player o1, Player o2) {
-                return o2.getHits() - o1.getHits();
-            }
-        });
-
-        return tmp.subList(0, Math.min(tmp.size(), count));
-    }
-
-    @Override
-    public void update(float dt) {
     }
 
     @Override
