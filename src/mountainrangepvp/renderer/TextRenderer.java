@@ -12,37 +12,43 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
  */
 public class TextRenderer {
 
-    private final BitmapFont font;
-    private final SpriteBatch privateBatch;
+    private final FreeTypeFontGenerator generator;
+    private final BitmapFont[] fonts;
+    private BitmapFont current;
+    private Color c;
 
     public TextRenderer() {
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.
+        generator = new FreeTypeFontGenerator(Gdx.files.
                 classpath("arial.ttf"));
-        font = generator.generateFont(20);
-        font.setColor(0, 0, 0, 1);
+        fonts = new BitmapFont[100];
 
-        privateBatch = new SpriteBatch();
+        setSize(20);
+    }
+
+    public void setSize(int size) {
+        if (fonts[size] != null) {
+            current = fonts[size];
+        } else {
+            BitmapFont font = generator.generateFont(size);
+            font.setColor(0, 0, 0, 1);
+
+            fonts[size] = font;
+            current = font;
+        }
     }
 
     public void setColour(Color c) {
-        font.setColor(c);
+        current.setColor(c);
     }
 
     public void drawString(SpriteBatch batch, String string, int x, int y) {
-        font.draw(batch, string, x, y);
+        current.draw(batch, string, x, y);
     }
 
-    /**
-     * Draws a string. Not as efficient as drawString(String string, SpriteBatch
-     * batch, int x, int y)
-     * <p/>
-     * @param string
-     * @param x
-     * @param y
-     */
-    public void drawString(String string, int x, int y) {
-        privateBatch.begin();
-        font.draw(privateBatch, string, x, y);
-        privateBatch.end();
+    public void drawStringCentred(SpriteBatch batch, String string, int x, int y) {
+        BitmapFont.TextBounds bounds = current.getBounds(string);
+        x -= bounds.width / 2;
+        y -= bounds.height / 2;
+        drawString(batch, string, x, y);
     }
 }
