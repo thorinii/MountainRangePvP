@@ -9,22 +9,15 @@ import mountainrangepvp.player.Player.Team;
  *
  * @author lachlan
  */
-public class ClientPlayerManager implements PlayerManager {
+public class ClientPlayerManager extends AbstractPlayerManager {
 
-    private final List<Player> players;
     private final String localPlayerName;
     private final Team localPlayerTeam;
     private Player localPlayer;
 
     public ClientPlayerManager(String localName, Team localTeam) {
-        players = new ArrayList<>();
         localPlayerName = localName;
         localPlayerTeam = localTeam;
-    }
-
-    @Override
-    public List<Player> getPlayers() {
-        return Collections.unmodifiableList(players);
     }
 
     @Override
@@ -38,44 +31,6 @@ public class ClientPlayerManager implements PlayerManager {
 
     public Team getLocalPlayerTeam() {
         return localPlayerTeam;
-    }
-
-    @Override
-    public Player getPlayer(String playerName) {
-        for (Player p : players) {
-            if (p.getName().equals(playerName)) {
-                return p;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public Player getPlayer(int id) {
-        for (Player player : players) {
-            if (player.getID() == id)
-                return player;
-        }
-        return null;
-    }
-
-    @Override
-    public List<Player> getPlayersByHits(int count) {
-        List<Player> tmp = new ArrayList<>(players);
-
-        Collections.sort(tmp, new Comparator<Player>() {
-            @Override
-            public int compare(Player o1, Player o2) {
-                return o2.getHits() - o1.getHits();
-            }
-        });
-
-        return tmp.subList(0, Math.min(tmp.size(), count));
-    }
-
-    @Override
-    public void update(float dt) {
     }
 
     @Override
@@ -107,6 +62,7 @@ public class ClientPlayerManager implements PlayerManager {
             p.getVelocity().set(pum.getVel());
             p.getGunDirection().set(pum.getGun());
             p.setHits(pum.getHits());
+
         } else if (message instanceof PlayerDeathMessage) {
             PlayerDeathMessage pdm = (PlayerDeathMessage) message;
 
