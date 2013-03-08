@@ -51,11 +51,14 @@ public class PlayerRenderer implements Renderer {
     public void render(Vector2 scroll) {
         batch.begin();
 
-        textRenderer.setColour(Color.BLACK);
         for (Player player : playerManager.getPlayers()) {
             if (player.isAlive()) {
                 drawPlayer(player, scroll);
             }
+        }
+
+        if (!playerManager.getLocalPlayer().isAlive()) {
+            drawDeathMessage();
         }
 
         batch.end();
@@ -121,5 +124,13 @@ public class PlayerRenderer implements Renderer {
         textRenderer.drawString(batch, player.getName(),
                                 (int) pos.x,
                                 (int) pos.y + Player.HEIGHT + 20);
+    }
+
+    private void drawDeathMessage() {
+        textRenderer.setSize(50);
+        textRenderer.drawStringCentred(batch, "You were shot",
+                                       (int) width / 2,
+                                       (int) height / 2);
+        textRenderer.setSize(20);
     }
 }

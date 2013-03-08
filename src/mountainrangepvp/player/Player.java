@@ -25,7 +25,7 @@ public class Player {
     public static final int MAX_WALK_SLOPE = 30;
     public static final int MIN_SLIDE_SLOPE = 50;
     public static final int MAX_SLIDE_SLOPE = 80;
-    public static final int RESPAWN_TIMEOUT = 2000;
+    public static final int RESPAWN_TIMEOUT = 3000;
     public static final int RESPAWN_RANGE_X = 1000;
     public static final int SPAWN_BUBBLE_TIMEOUT = 8000;
     public static final int SPAWN_BUBBLE_RADIUS = 51;
@@ -49,9 +49,9 @@ public class Player {
         this.id = id;
         this.team = team;
 
-        this.position = new Vector2();
-        this.velocity = new Vector2();
-        this.gunDirection = new Vector2();
+        this.position = new Vector2(0, 0);
+        this.velocity = new Vector2(0, 0);
+        this.gunDirection = new Vector2(1, 0);
 
         this.onGround = 0;
 
