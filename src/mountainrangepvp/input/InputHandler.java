@@ -164,18 +164,6 @@ public class InputHandler {
                 case Keys.S:
                     down = true;
                     break;
-                case Keys.R:
-                    world.getChatManager().addLine(new ChatLine(world.
-                            getPlayerManager().getLocalPlayer(), "/s"));
-                    break;
-                case Keys.F:
-                    world.getChatManager().addLine(new ChatLine(world.
-                            getPlayerManager().getLocalPlayer(), "/f"));
-                    break;
-                case Keys.Y:
-                    world.getChatManager().addLine(new ChatLine(world.
-                            getPlayerManager().getLocalPlayer(), "/y"));
-                    break;
                 case Keys.ESCAPE:
                     Gdx.app.exit();
                     break;
