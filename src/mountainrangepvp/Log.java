@@ -21,8 +21,8 @@ public class Log {
         setupLog();
     }
 
-    public static void setupLog() {
-        LOG.setLevel(Level.FINE);
+    public static void setupLog(Level level) {
+        LOG.setLevel(level);
         LOG.setUseParentHandlers(false);
 
         LOG.addHandler(makeConsoleHandler());
@@ -36,6 +36,14 @@ public class Log {
                 System.exit(1);
             }
         });
+    }
+
+    public static void setupLog(boolean debug) {
+        setupLog(debug ? Level.FINE : Level.INFO);
+    }
+
+    public static void setupLog() {
+        setupLog(true);
     }
 
     public static void info(Object... data) {

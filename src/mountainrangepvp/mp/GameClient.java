@@ -129,22 +129,15 @@ public class GameClient {
 
         @Override
         public void onMessage(ChatLine line) {
-            switch (line.getText()) {
-                case "/y": {
-                    Player player = line.getPlayer();
-                    player.getRespawnTimer().reset();
-                }
-                default:
-                    if (line.getPlayer() == world.getPlayerManager().
-                            getLocalPlayer())
-                        messageClient.send(new NewChatMessage(line));
-                    break;
-            }
+            if (line.getPlayer() == world.getPlayerManager().
+                    getLocalPlayer())
+                messageClient.send(new NewChatMessage(line));
         }
     }
 
-    public static void main(String[] args) throws IOException,
+    public static void startClient(String host) throws IOException,
             InterruptedException {
+
         final GameWorld world = new GameWorld();
 
         String playerName = "test player " + (int) (Math.random() * 2000 + 2);
@@ -160,7 +153,7 @@ public class GameClient {
 
         PhysicsSystem physicsSystem = new PhysicsSystem(world);
 
-        GameClient client = new GameClient(world, "localhost");
+        GameClient client = new GameClient(world, host);
         client.addMessageListener(new MessageListener() {
             @Override
             public void accept(Message message, int id) throws IOException {
@@ -188,16 +181,37 @@ public class GameClient {
 
         client.start();
 
-        System.out.println("Test Client started");
-
+        Player local = null;
         while (client.isConnected()) {
-            Thread.sleep(100);
+            Thread.sleep(500+(int)(Math.random()*100));
             client.update();
 
             if (world.getTerrain() != null) {
+                if (local == null)
+                    local = playerManager.getLocalPlayer();
+
+                local.getPosition().add(
+                        (float) Math.random() * 300 - 100,
+                        (float) Math.random() * 300 - 100);
+                shotManager.addShot(local.getCentralPosition(), new Vector2(
+                        (float) Math.random() * 30 - 15,
+                        (float) Math.random() * 30 - 15).nor(),
+                                    local);
+
                 physicsSystem.update(1 / 60f);
                 world.update(1 / 60f);
             }
+
         }
+    }
+
+    public static void main(String[] args) throws IOException,
+            InterruptedException {
+        System.out.println("Test Client starting");
+
+        if (args.length == 1)
+            startClient(args[0]);
+        else
+            startClient("localhost");
     }
 }
