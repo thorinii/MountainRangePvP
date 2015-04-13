@@ -30,7 +30,6 @@ public class Main {
 
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
         appConfig.title = "Mountain Range PvP";
-        appConfig.useGL20 = true;
         appConfig.forceExit = false;
         appConfig.fullscreen = gameConfig.fullscreen;
         appConfig.resizable = false;

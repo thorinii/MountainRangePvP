@@ -27,6 +27,6 @@ public class Shot {
     }
 
     public Vector2 position(float time) {
-        return base.cpy().add(direction.cpy().mul(SHOT_SPEED * time));
+        return base.cpy().add(direction.cpy().scl(SHOT_SPEED * time));
     }
 }
