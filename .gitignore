@@ -5,3 +5,5 @@
 /build/
 /dist/
 /log-*.txt
+target
+*.swp
