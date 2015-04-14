@@ -1,9 +1,11 @@
+organization := "me.lachlanap"
+
 name := "mountainrangepvp"
 
 version := "1.0"
 
-scalaVersion := "2.11.5"
 
+scalaVersion := "2.11.5"
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.2.1",
@@ -11,8 +13,10 @@ libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % "1.5.3",
   "com.badlogicgames.gdx" % "gdx-freetype" % "1.5.3",
   "com.badlogicgames.gdx" % "gdx-freetype-platform" % "1.5.3" classifier "natives-desktop",
-  "com.badlogicgames.gdx" % "gdx-platform" % "1.5.3" classifier "natives-desktop"
+  "com.badlogicgames.gdx" % "gdx-platform" % "1.5.3" classifier "natives-desktop",
+  "com.novocode" % "junit-interface" % "0.11" % "test"
 )
+
 
 scalacOptions ++= Seq(
   "-Xlint",
@@ -21,15 +25,21 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-deprecation",
   "-feature",
-  "-encoding", "UTF-8"
+  "-encoding", "UTF-8",
+  "-target:jvm-1.7"
 )
-
 
 javacOptions ++= Seq(
   "-Xlint:deprecation",
-  "-Xlint:unchecked"
+  "-Xlint:unchecked",
+  "-source", "1.7",
+  "-target", "1.7"
 )
 
 
 fork in run := true
+
+mainClass in (Compile, run) := Some("mountainrangepvp.Main")
+
+mainClass in assembly := Some("mountainrangepvp.Main")
 
