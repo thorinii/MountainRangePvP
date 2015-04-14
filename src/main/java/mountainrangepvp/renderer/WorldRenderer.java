@@ -77,6 +77,11 @@ public class WorldRenderer {
         miniMapRenderer.render(scroll);
 
         drawCrosshair();
+
+        textRenderer.setSize(15);
+        textRenderer.setColour(Color.RED);
+        textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
+        textRenderer.setColour(Color.BLACK);
     }
 
     private void drawCrosshair() {

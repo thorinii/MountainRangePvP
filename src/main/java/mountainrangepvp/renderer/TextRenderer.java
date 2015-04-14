@@ -42,11 +42,17 @@ public class TextRenderer {
         current.setColor(c);
     }
 
-    public void drawString(SpriteBatch batch, String string, int x, int y) {
+    public void drawString(SpriteBatch batch, String string, float x, float y) {
+        boolean autoBegin = !batch.isDrawing();
+
+        if (autoBegin) batch.begin();
+
         current.draw(batch, string, x, y);
+
+        if (autoBegin) batch.end();
     }
 
-    public void drawStringCentred(SpriteBatch batch, String string, int x, int y) {
+    public void drawStringCentred(SpriteBatch batch, String string, float x, float y) {
         BitmapFont.TextBounds bounds = current.getBounds(string);
         x -= bounds.width / 2;
         y -= bounds.height / 2;

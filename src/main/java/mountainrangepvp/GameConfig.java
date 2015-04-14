@@ -41,7 +41,7 @@ public class GameConfig {
 
         serverIP = "localhost";
 
-        seed = 11;
+        seed = 234;
 
         audioOn = false;
     }
