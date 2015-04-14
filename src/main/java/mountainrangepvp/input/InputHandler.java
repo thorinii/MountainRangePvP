@@ -117,12 +117,14 @@ public class InputHandler {
         int x = Gdx.input.getX();
         int y = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-        Vector2 dir = new Vector2(x, y);
-        dir.x -= Gdx.graphics.getWidth() / 2;
-        dir.y -= Gdx.graphics.getHeight() / 2;
-        dir.nor();
+        Vector2 target = new Vector2(x, y);
+        target.x -= Gdx.graphics.getWidth() / 2;
+        target.y -= Gdx.graphics.getHeight() / 2;
+        target.nor();
 
-        player.getGunDirection().set(dir);
+        Vector2 dir = player.getGunDirection();
+        float lerpSpeed = Math.min(0.8f, Math.max(0.3f, 10f / player.getVelocity().x));
+        dir.lerp(target, lerpSpeed);
     }
 
     private void doShooting(Player player) {
