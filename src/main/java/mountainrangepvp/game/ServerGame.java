@@ -86,28 +86,26 @@ public class ServerGame extends Game {
     }
 
     private float sinceLastUpdate = 0;
+
     @Override
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
         sinceLastUpdate += dt;
 
-        if(sinceLastUpdate > config.TIMESTEP) {
-            while(sinceLastUpdate > config.TIMESTEP) {
-                client.update();
-                if (gameScreen != null) {
-                    inputHandler.update(config.TIMESTEP);
-                    world.update(config.TIMESTEP);
-                    physicsSystem.update(config.TIMESTEP);
-                }
-
-                sinceLastUpdate -= config.TIMESTEP;
+        if (sinceLastUpdate > config.TIMESTEP) {
+            client.update();
+            if (gameScreen != null) {
+                inputHandler.update(config.TIMESTEP);
+                world.update(config.TIMESTEP);
+                physicsSystem.update(config.TIMESTEP);
             }
 
             sinceLastUpdate = 0;
-        }
 
-        if (gameScreen != null) {
-            gameScreen.render(dt);
+
+            if (gameScreen != null) {
+                gameScreen.render(dt);
+            }
         }
     }
 
