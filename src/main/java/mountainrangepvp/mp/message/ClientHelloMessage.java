@@ -1,12 +1,12 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.mp.MultiplayerConstants;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import mountainrangepvp.mp.MultiplayerConstants;
 
 /**
- *
  * @author lachlan
  */
 public class ClientHelloMessage implements Message {

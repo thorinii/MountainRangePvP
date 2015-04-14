@@ -1,13 +1,13 @@
 package mountainrangepvp.stress;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.logging.Level;
 import mountainrangepvp.Log;
 import mountainrangepvp.mp.GameClient;
 
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+
 /**
- *
  * @author lachlan
  */
 public class StressTest {

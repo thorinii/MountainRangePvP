@@ -1,7 +1,6 @@
 package mountainrangepvp.renderer;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -9,7 +8,6 @@ import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 
 /**
- *
  * @author lachlan
  */
 public class PlayerRenderer implements Renderer {
@@ -23,7 +21,7 @@ public class PlayerRenderer implements Renderer {
     private final Texture spawnBubbleTexture;
 
     public PlayerRenderer(SpriteBatch batch, TextRenderer textRenderer,
-            PlayerManager playerManager) {
+                          PlayerManager playerManager) {
         this.batch = batch;
         this.textRenderer = textRenderer;
         this.playerManager = playerManager;
@@ -118,7 +116,7 @@ public class PlayerRenderer implements Renderer {
             batch.draw(spawnBubbleTexture,
                        pos.x + Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
                        pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.
-                    getHeight() / 2);
+                               getHeight() / 2);
         }
 
         textRenderer.drawString(batch, player.getName(),

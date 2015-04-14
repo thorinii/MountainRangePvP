@@ -1,12 +1,12 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.player.Player;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class PlayerDeathMessage implements Message {

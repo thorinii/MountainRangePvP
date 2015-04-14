@@ -7,23 +7,21 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.game.GameWorld;
 
 /**
- *
  * @author lachlan
  */
 public class WorldRenderer {
 
     private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
-    //
+
     private final Vector2 screen;
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
-    //
+
     private GameWorld world;
-    //
+
     private BackgroundRenderer backgroundRenderer;
     private TerrainRenderer terrainRenderer;
     private PlayerRenderer playerRenderer;
@@ -31,9 +29,9 @@ public class WorldRenderer {
     private ChatRenderer chatRenderer;
     private MiniMapRenderer miniMapRenderer;
     private LeaderboardRenderer leaderboardRenderer;
-    //
+
     private TextRenderer textRenderer;
-    //
+
     private final Texture crossHairTexture;
 
     public WorldRenderer() {

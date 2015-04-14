@@ -1,7 +1,6 @@
 package mountainrangepvp.terrain;
 
 /**
- *
  * @author lachlan
  */
 public class Noise {

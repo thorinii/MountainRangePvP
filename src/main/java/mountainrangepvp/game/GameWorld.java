@@ -6,7 +6,6 @@ import mountainrangepvp.shot.ShotManager;
 import mountainrangepvp.terrain.Terrain;
 
 /**
- *
  * @author lachlan
  */
 public class GameWorld {

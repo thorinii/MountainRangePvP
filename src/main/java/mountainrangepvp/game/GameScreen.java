@@ -5,7 +5,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import java.nio.IntBuffer;
 import mountainrangepvp.Log;
 import mountainrangepvp.renderer.WorldRenderer;
 import org.lwjgl.BufferUtils;
@@ -13,16 +12,17 @@ import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 
+import java.nio.IntBuffer;
+
 /**
- *
  * @author lachlan
  */
 public class GameScreen implements Screen {
 
     private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
-    //
+
     private Cursor emptyCursor = null;
-    //
+
     private final GameWorld world;
     private final WorldRenderer renderer;
     private final int width, height;

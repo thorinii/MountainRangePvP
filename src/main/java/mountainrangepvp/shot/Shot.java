@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class Shot {

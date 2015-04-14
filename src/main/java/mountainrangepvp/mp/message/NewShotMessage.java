@@ -1,14 +1,14 @@
 package mountainrangepvp.mp.message;
 
 import com.badlogic.gdx.math.Vector2;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.Shot;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class NewShotMessage implements Message {

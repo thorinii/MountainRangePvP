@@ -7,7 +7,6 @@ import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.ServerGame;
 
 /**
- *
  * @author lachlan
  */
 public class Main {

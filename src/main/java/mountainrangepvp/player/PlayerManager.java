@@ -1,10 +1,10 @@
 package mountainrangepvp.player;
 
-import java.util.List;
 import mountainrangepvp.mp.message.MessageListener;
 
+import java.util.List;
+
 /**
- *
  * @author lachlan
  */
 public interface PlayerManager extends MessageListener {

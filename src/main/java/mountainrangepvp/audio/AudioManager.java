@@ -3,6 +3,7 @@ package mountainrangepvp.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.GameConfig;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 import mountainrangepvp.shot.Shot;
@@ -10,16 +11,18 @@ import mountainrangepvp.shot.ShotListener;
 import mountainrangepvp.shot.ShotManager;
 
 /**
- *
  * @author lachlan
  */
 public class AudioManager {
 
     private final Player localPlayer;
+    private final GameConfig config;
     private Sound gunShot;
 
-    public AudioManager(PlayerManager playerManager, ShotManager shotManager) {
+
+    public AudioManager(PlayerManager playerManager, ShotManager shotManager, GameConfig config) {
         localPlayer = playerManager.getLocalPlayer();
+        this.config = config;
 
         shotManager.addShotListener(new AudioShotListener());
     }
@@ -38,7 +41,8 @@ public class AudioManager {
             Vector2 diff = shot.base.cpy().sub(localPlayer.getPosition());
             float volume = Math.min(1, Math.max(0, 1000f / diff.len()));
 
-            gunShot.play(volume);
+            if (config.audioOn)
+                gunShot.play(volume);
         }
 
         @Override

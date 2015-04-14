@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- *
  * @author lachlan
  */
 public abstract class AbstractPlayerManager implements PlayerManager {

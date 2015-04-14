@@ -3,7 +3,6 @@ package mountainrangepvp.shot;
 import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public interface ShotListener {

@@ -1,14 +1,14 @@
 package mountainrangepvp.mp.lanping;
 
+import mountainrangepvp.Log;
+import mountainrangepvp.mp.MultiplayerConstants;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.util.*;
-import mountainrangepvp.Log;
-import mountainrangepvp.mp.MultiplayerConstants;
 
 /**
- *
  * @author lachlan
  */
 public class PingClient {

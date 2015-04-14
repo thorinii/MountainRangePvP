@@ -9,17 +9,16 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.terrain.Terrain;
 
 /**
- *
  * @author lachlan
  */
 public class TerrainRenderer implements Renderer {
 
     private static final Color BASE_COLOUR = new Color(0.5451f, 0.3686f, 0.2314f,
                                                        1);
-    //
+
     private final Terrain map;
     private final int width, height;
-    //
+
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
     private final Texture worldSliceTexture;
@@ -82,9 +81,9 @@ public class TerrainRenderer implements Renderer {
 //            return blocks.get(blockNumber);
 //        } else {
 //            int[] block = map.getBlock(width * blockNumber, width);
-//            
+//
 //            blocks.put(blockNumber, block);
-//            
+//
 //            return block;
 //        }
 //    }

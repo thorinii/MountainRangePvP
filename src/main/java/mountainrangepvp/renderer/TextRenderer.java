@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 /**
- *
  * @author lachlan
  */
 public class TextRenderer {
@@ -29,7 +28,9 @@ public class TextRenderer {
         if (fonts[size] != null) {
             current = fonts[size];
         } else {
-            BitmapFont font = generator.generateFont(size);
+            FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+            parameter.size = size;
+            BitmapFont font = generator.generateFont(parameter);
             font.setColor(0, 0, 0, 1);
 
             fonts[size] = font;

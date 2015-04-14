@@ -8,11 +8,10 @@ import mountainrangepvp.shot.Shot;
 import mountainrangepvp.shot.ShotManager;
 
 /**
- *
  * @author lachlan
  */
 public class ShotRenderer implements Renderer {
-//
+
 
     private final ShotManager shotManager;
     private final SpriteBatch batch;

@@ -1,12 +1,11 @@
 package mountainrangepvp.terrain;
 
 import com.badlogic.gdx.math.Vector2;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
- *
  * @author lachlan
  */
 public class Terrain {
@@ -20,7 +19,7 @@ public class Terrain {
         this.heightMap = heightMap;
         blocks = new LinkedHashMap<Integer, int[]>() {
             @Override
-            protected boolean removeEldestEntry(Entry<Integer, int[]> eldest) {
+            protected boolean removeEldestEntry(Map.Entry<Integer, int[]> eldest) {
                 return size() > MAX_CACHED_BLOCKS;
             }
         };

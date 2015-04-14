@@ -1,13 +1,13 @@
 package mountainrangepvp.mp.message;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import mountainrangepvp.chat.ChatLine;
 import mountainrangepvp.player.PlayerManager;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class NewChatMessage implements Message {

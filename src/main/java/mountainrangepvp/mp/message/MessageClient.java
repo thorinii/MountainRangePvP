@@ -1,14 +1,14 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.Log;
+import mountainrangepvp.mp.MultiplayerConstants;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mountainrangepvp.Log;
-import mountainrangepvp.mp.MultiplayerConstants;
 
 /**
- *
  * @author lachlan
  */
 public class MessageClient {

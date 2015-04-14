@@ -1,13 +1,13 @@
 package mountainrangepvp.mp.message;
 
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.player.Player;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class PlayerUpdateMessage implements Message {
@@ -28,7 +28,7 @@ public class PlayerUpdateMessage implements Message {
     }
 
     public PlayerUpdateMessage(int id, Vector2 pos, Vector2 vel, Vector2 gun,
-            boolean alive, int hits) {
+                               boolean alive, int hits) {
         this.id = id;
         this.pos = pos;
         this.vel = vel;

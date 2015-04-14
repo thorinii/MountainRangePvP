@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- *
  * @author lachlan
  */
 public class KillConnectionMessage implements Message {
@@ -28,6 +27,7 @@ public class KillConnectionMessage implements Message {
             return human;
         }
     }
+
     private Reason reason;
 
     public KillConnectionMessage() {

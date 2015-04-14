@@ -1,15 +1,15 @@
 package mountainrangepvp.player;
 
-import java.io.IOException;
-import java.util.*;
 import mountainrangepvp.Log;
 import mountainrangepvp.mp.message.IntroduceMessage;
 import mountainrangepvp.mp.message.KillConnectionMessage;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.PlayerUpdateMessage;
 
+import java.io.IOException;
+import java.util.Iterator;
+
 /**
- *
  * @author lachlan
  */
 public class ServerPlayerManager extends AbstractPlayerManager {

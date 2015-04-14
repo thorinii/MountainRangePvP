@@ -1,7 +1,5 @@
 package mountainrangepvp.mp;
 
-import com.badlogic.gdx.math.Vector2;
-import java.io.IOException;
 import mountainrangepvp.Log;
 import mountainrangepvp.chat.ChatLine;
 import mountainrangepvp.chat.ChatListener;
@@ -20,8 +18,9 @@ import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class GameServer {
@@ -107,7 +106,7 @@ public class GameServer {
 
                 Player existing = world.getPlayerManager().getPlayer(
                         introduceMessage.
-                        getName());
+                                getName());
                 if (existing != null) {
                     KillConnectionMessage kcm = new KillConnectionMessage(
                             KillConnectionMessage.Reason.DuplicatePlayer);
@@ -166,7 +165,7 @@ public class GameServer {
             else
                 messageServer.broadcastExcept(new NewChatMessage(line),
                                               line.
-                        getPlayer().getID());
+                                                      getPlayer().getID());
         }
     }
 

@@ -6,11 +6,11 @@ package mountainrangepvp.terrain;
 
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.terrain.Terrain.Slice;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
- *
  * @author lachlan
  */
 public class TerrainTest {

@@ -2,8 +2,6 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import java.io.IOException;
-import javax.swing.JOptionPane;
 import mountainrangepvp.GameConfig;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
@@ -25,30 +23,34 @@ import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
+import javax.swing.*;
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class ServerGame extends Game {
 
     private final String playerName;
     private final int seed;
-    //
+    private final GameConfig config;
+
     private final GameClient client;
     private GameServer server;
-    //
+
     private GameWorld world;
     private PhysicsSystem physicsSystem;
     private InputHandler inputHandler;
     private AudioManager audioManager;
-    //
+
     private GameScreen gameScreen;
-    //
+
     private final Timer limitFPSTimer;
 
     public ServerGame(GameConfig config) {
         this.playerName = config.playerName;
         this.seed = config.seed;
+        this.config = config;
 
         world = new GameWorld();
         world.setTeamModeOn(config.teamModeOn);
@@ -122,8 +124,7 @@ public class ServerGame extends Game {
                 Gdx.app.exit();
 
                 if (kill.getReason() != KillConnectionMessage.Reason.ServerShutdown)
-                    JOptionPane.showMessageDialog(null, "Error: " + kill.
-                            getReason(),
+                    JOptionPane.showMessageDialog(null, "Error: " + kill.getReason(),
                                                   "Mountain Range PvP",
                                                   JOptionPane.ERROR_MESSAGE);
                 else
@@ -133,8 +134,7 @@ public class ServerGame extends Game {
             } else if (message instanceof NewWorldMessage) {
                 NewWorldMessage newWorldMessage = (NewWorldMessage) message;
 
-                Log.info("Received Seed", newWorldMessage.getSeed(),
-                         "Changing Map");
+                Log.info("Received Seed", newWorldMessage.getSeed(), "Changing Map");
 
                 HeightMap heightMap;
                 switch (newWorldMessage.getWorldType()) {
@@ -152,8 +152,9 @@ public class ServerGame extends Game {
                 inputHandler = new InputHandler(world);
                 inputHandler.register();
 
-                audioManager = new AudioManager(world.getPlayerManager(), world.
-                        getShotManager());
+                audioManager = new AudioManager(world.getPlayerManager(),
+                                                world.getShotManager(),
+                                                config);
                 audioManager.loadAudio();
 
                 gameScreen = new GameScreen(world);

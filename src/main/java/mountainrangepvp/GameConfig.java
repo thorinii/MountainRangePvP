@@ -4,7 +4,6 @@ import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.player.Player.Team;
 
 /**
- *
  * @author lachlan
  */
 public class GameConfig {
@@ -12,17 +11,19 @@ public class GameConfig {
     public boolean fullscreen;
     public int resolutionWidth, resolutionHeight;
     public int bitDepth;
-    //
+
     public String playerName;
     public Team team;
     public boolean teamModeOn;
-    //
+
     public boolean server;
     public int port;
-    //
+
     public String serverIP;
-    //
+
     public int seed;
+
+    public boolean audioOn;
 
     public GameConfig() {
         fullscreen = false;
@@ -39,5 +40,7 @@ public class GameConfig {
         serverIP = "localhost";
 
         seed = 11;
+
+        audioOn = false;
     }
 }

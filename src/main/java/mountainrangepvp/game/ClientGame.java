@@ -2,9 +2,6 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import java.io.IOException;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import mountainrangepvp.GameConfig;
 import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
@@ -25,26 +22,30 @@ import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
+import javax.swing.*;
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class ClientGame extends Game {
 
     private final String serverIP;
     private final GameClient client;
-    //
+    private final GameConfig config;
+
     private GameWorld world;
     private PhysicsSystem physicsSystem;
     private InputHandler inputHandler;
     private AudioManager audioManager;
-    //
+
     private GameScreen gameScreen;
-    //
+
     private final Timer limitFPSTimer;
 
     public ClientGame(GameConfig config) {
         this.serverIP = config.serverIP;
+        this.config = config;
 
         world = new GameWorld();
         world.setTeamModeOn(config.teamModeOn);
@@ -122,8 +123,7 @@ public class ClientGame extends Game {
                     public void run() {
                         if (kill.getReason() != KillConnectionMessage.Reason.ServerShutdown)
                             JOptionPane.showMessageDialog(null,
-                                                          "Error: " + kill.
-                                    getReason(),
+                                                          "Error: " + kill.getReason(),
                                                           "Mountain Range PvP",
                                                           JOptionPane.ERROR_MESSAGE);
                         else
@@ -155,8 +155,9 @@ public class ClientGame extends Game {
                 inputHandler = new InputHandler(world);
                 inputHandler.register();
 
-                audioManager = new AudioManager(world.getPlayerManager(), world.
-                        getShotManager());
+                audioManager = new AudioManager(world.getPlayerManager(),
+                                                world.getShotManager(),
+                                                config);
                 audioManager.loadAudio();
 
                 gameScreen = new GameScreen(world);

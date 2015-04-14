@@ -1,18 +1,18 @@
 package mountainrangepvp.chat;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.MessageListener;
 import mountainrangepvp.mp.message.NewChatMessage;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- *
  * @author lachlan
  */
 public class ChatManager implements MessageListener {
@@ -20,7 +20,7 @@ public class ChatManager implements MessageListener {
     private final PlayerManager playerManager;
     private final List<ChatLine> lines;
     private final List<ChatListener> listeners;
-    //
+
     private boolean chatting;
     private String currentLine;
 

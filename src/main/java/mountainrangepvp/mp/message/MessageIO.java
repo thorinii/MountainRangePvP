@@ -1,13 +1,13 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.Log;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import mountainrangepvp.Log;
 
 /**
- *
  * @author lachlan
  */
 public class MessageIO {
@@ -30,6 +30,7 @@ public class MessageIO {
     /**
      * Sends a message over the stream.
      * <p/>
+     *
      * @param message
      * @throws IOException
      */
@@ -42,6 +43,7 @@ public class MessageIO {
     /**
      * Blocking reads a message from the stream.
      * <p/>
+     *
      * @return
      * @throws IOException
      */
@@ -59,14 +61,19 @@ public class MessageIO {
             Class<Message> klass = messageClasses.get(messageClass);
 
             if (klass == null) {
-                klass = (Class<Message>) Class.forName(messageClass);
+                klass = getMessageClass(messageClass);
                 messageClasses.put(messageClass, klass);
             }
 
-            return (Message) klass.newInstance();
+            return klass.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             Log.warn("Could not find message for class: ", messageClass, e);
             return null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<Message> getMessageClass(String messageClass) throws ClassNotFoundException {
+        return (Class<Message>) Class.forName(messageClass);
     }
 }

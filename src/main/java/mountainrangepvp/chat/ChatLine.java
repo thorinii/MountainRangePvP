@@ -3,7 +3,6 @@ package mountainrangepvp.chat;
 import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class ChatLine {
