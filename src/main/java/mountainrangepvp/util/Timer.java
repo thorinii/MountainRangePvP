@@ -1,7 +1,6 @@
 package mountainrangepvp.util;
 
 /**
- *
  * @author lachlan
  */
 public class Timer {

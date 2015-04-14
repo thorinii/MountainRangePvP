@@ -1,12 +1,11 @@
 package mountainrangepvp.player;
 
-import java.io.IOException;
-import java.util.*;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.player.Player.Team;
 
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class ClientPlayerManager extends AbstractPlayerManager {

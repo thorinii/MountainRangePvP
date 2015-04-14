@@ -1,14 +1,14 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.Log;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-import mountainrangepvp.Log;
 
 /**
- *
  * @author lachlan
  */
 public class MessageQueue {

@@ -1,12 +1,12 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.Log;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Socket;
-import mountainrangepvp.Log;
 
 /**
- *
  * @author lachlan
  */
 public abstract class Proxy implements Runnable {

@@ -5,7 +5,6 @@ import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class ClientShotManager extends AbstractShotManager {

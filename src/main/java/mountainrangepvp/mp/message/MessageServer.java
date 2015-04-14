@@ -1,31 +1,31 @@
 package mountainrangepvp.mp.message;
 
+import mountainrangepvp.Log;
+import mountainrangepvp.mp.MultiplayerConstants;
+import mountainrangepvp.mp.lanping.PingServer;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import mountainrangepvp.Log;
-import mountainrangepvp.mp.MultiplayerConstants;
-import mountainrangepvp.mp.lanping.PingServer;
 
 /**
- *
  * @author lachlan
  */
 public class MessageServer {
 
     private final int port;
-    //
+
     private ServerSocket serverSocket;
     private Thread acceptThread;
     private PingServer pingServer;
-    //
+
     private final List<ClientProxy> clients;
-    //
+
     private final MessageQueue messageQueue;
-    //
+
     private int currentID;
 
     public MessageServer() {

@@ -10,24 +10,23 @@ import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class ChatRenderer implements Renderer {
 
     private static final Color[] COLOURS = new Color[]{
-        new Color(1, .5f, 0, 1),
-        new Color(1, 0, 0, 1),
-        new Color(0, 1, 0, 1),
-        new Color(0, 0, 1, 1)};
+            new Color(1, .5f, 0, 1),
+            new Color(1, 0, 0, 1),
+            new Color(0, 1, 0, 1),
+            new Color(0, 0, 1, 1)};
     private final SpriteBatch batch;
     private final TextRenderer textRenderer;
     private final ChatManager chatManager;
-    //
+
     private final Texture background;
 
     public ChatRenderer(SpriteBatch batch, TextRenderer textRenderer,
-            ChatManager chatManager) {
+                        ChatManager chatManager) {
         this.batch = batch;
         this.chatManager = chatManager;
         this.textRenderer = textRenderer;

@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- *
  * @author lachlan
  */
 public class NewWorldMessage implements Message {
@@ -14,6 +13,7 @@ public class NewWorldMessage implements Message {
 
         Hills
     }
+
     private WorldType worldType;
     private int seed;
     private boolean teamModeOn;

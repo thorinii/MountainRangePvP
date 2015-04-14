@@ -6,14 +6,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- *
  * @author lachlan
  */
 public class BackgroundRenderer implements Renderer {
 
     private static final float SCROLL_RATE_H = 0.003f;
     private static final float SCROLL_RATE_V = 0.03f;
-    //
+
     private final SpriteBatch batch;
     private final Texture sunTexture;
     private final int width;

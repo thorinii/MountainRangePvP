@@ -3,7 +3,6 @@ package mountainrangepvp.mp.message;
 import java.io.IOException;
 
 /**
- *
  * @author lachlan
  */
 public interface MessageListener {

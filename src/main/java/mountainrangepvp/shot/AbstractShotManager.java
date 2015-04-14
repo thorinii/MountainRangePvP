@@ -2,20 +2,19 @@ package mountainrangepvp.shot;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.game.GameWorld;
+import mountainrangepvp.mp.message.Message;
+import mountainrangepvp.mp.message.NewShotMessage;
+import mountainrangepvp.player.Player;
+
 import java.awt.geom.Line2D;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import mountainrangepvp.game.GameWorld;
-import mountainrangepvp.mp.message.Message;
-import mountainrangepvp.mp.message.NewShotMessage;
-import mountainrangepvp.player.Player;
-import static mountainrangepvp.shot.ShotManager.MAX_SHOT_LIFE;
 
 /**
- *
  * @author lachlan
  */
 public abstract class AbstractShotManager implements ShotManager {
@@ -178,7 +177,7 @@ public abstract class AbstractShotManager implements ShotManager {
     }
 
     private Vector2 getLineCircleIntersection(Vector2 l1, Vector2 l2,
-            Vector2 circle, float radius) {
+                                              Vector2 circle, float radius) {
         float baX = l2.x - l1.x;
         float baY = l2.y - l1.y;
         float caX = circle.x - l1.x;

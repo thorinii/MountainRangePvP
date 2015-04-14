@@ -3,13 +3,11 @@ package mountainrangepvp.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
-import java.util.regex.Pattern;
 import mountainrangepvp.chat.ChatLine;
 import mountainrangepvp.game.GameWorld;
 import mountainrangepvp.player.Player;
 
 /**
- *
  * @author lachlan
  */
 public class InputHandler {
@@ -17,14 +15,14 @@ public class InputHandler {
     private static final int DOUBLE_JUMP_MIN = 50;
     private static final int DOUBLE_JUMP_MAX = 500;
     private static final int GUN_RATE = 100;
-    //
+
     private final GameWorld world;
     private final PlayerInputHandler playerInputHandler;
     private final ChatInputHandler chatInputHandler;
-    //
+
     private boolean up, down, left, right;
     private int doubleJumpTimer;
-    //
+
     private boolean gun;
     private int gunTimer;
 
@@ -198,7 +196,7 @@ public class InputHandler {
 
         @Override
         public boolean touchDown(int screenX, int screenY, int pointer,
-                int button) {
+                                 int button) {
             gun = true;
             return true;
         }

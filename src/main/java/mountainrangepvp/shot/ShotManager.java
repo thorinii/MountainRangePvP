@@ -1,12 +1,12 @@
 package mountainrangepvp.shot;
 
 import com.badlogic.gdx.math.Vector2;
-import java.util.List;
 import mountainrangepvp.mp.message.MessageListener;
 import mountainrangepvp.player.Player;
 
+import java.util.List;
+
 /**
- *
  * @author lachlan
  */
 public interface ShotManager extends MessageListener {

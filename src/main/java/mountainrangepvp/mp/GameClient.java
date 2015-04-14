@@ -1,15 +1,13 @@
 package mountainrangepvp.mp;
 
 import com.badlogic.gdx.math.Vector2;
-import java.io.IOException;
 import mountainrangepvp.Log;
 import mountainrangepvp.chat.ChatLine;
 import mountainrangepvp.chat.ChatListener;
 import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.game.GameWorld;
-import mountainrangepvp.mp.message.KillConnectionMessage.Reason;
 import mountainrangepvp.mp.message.*;
-import static mountainrangepvp.mp.message.NewWorldMessage.WorldType.Hills;
+import mountainrangepvp.mp.message.KillConnectionMessage.Reason;
 import mountainrangepvp.physics.PhysicsSystem;
 import mountainrangepvp.player.ClientPlayerManager;
 import mountainrangepvp.player.Player;
@@ -24,8 +22,9 @@ import mountainrangepvp.terrain.HillsHeightMap;
 import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class GameClient {
@@ -183,7 +182,7 @@ public class GameClient {
 
         Player local = null;
         while (client.isConnected()) {
-            Thread.sleep(500+(int)(Math.random()*100));
+            Thread.sleep(500 + (int) (Math.random() * 100));
             client.update();
 
             if (world.getTerrain() != null) {
@@ -194,8 +193,8 @@ public class GameClient {
                         (float) Math.random() * 300 - 100,
                         (float) Math.random() * 300 - 100);
                 shotManager.addShot(local.getCentralPosition(), new Vector2(
-                        (float) Math.random() * 30 - 15,
-                        (float) Math.random() * 30 - 15).nor(),
+                                            (float) Math.random() * 30 - 15,
+                                            (float) Math.random() * 30 - 15).nor(),
                                     local);
 
                 physicsSystem.update(1 / 60f);

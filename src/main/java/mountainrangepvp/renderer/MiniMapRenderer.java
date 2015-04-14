@@ -9,7 +9,6 @@ import mountainrangepvp.player.Player;
 import mountainrangepvp.terrain.Terrain.Slice;
 
 /**
- *
  * @author lachlan
  */
 public class MiniMapRenderer implements Renderer {
@@ -19,13 +18,13 @@ public class MiniMapRenderer implements Renderer {
     private static final int SHIFT = 30;
     private static final float H_SCALE = 20;
     private static final float V_SCALE = 20;
-    //
+
     private final GameWorld world;
-    //
+
     private final int width, height;
-    //
+
     private final SpriteBatch batch;
-    //
+
     private final Texture background;
     private final Texture border;
     private final Texture terrain;
@@ -43,10 +42,10 @@ public class MiniMapRenderer implements Renderer {
         terrain = new Texture(Gdx.files.internal("minimap/terrain.png"));
 
         headTextures = new Texture[]{
-            new Texture(Gdx.files.internal("minimap/head-orange.png")),
-            new Texture(Gdx.files.internal("minimap/head-red.png")),
-            new Texture(Gdx.files.internal("minimap/head-green.png")),
-            new Texture(Gdx.files.internal("minimap/head-blue.png"))
+                new Texture(Gdx.files.internal("minimap/head-orange.png")),
+                new Texture(Gdx.files.internal("minimap/head-red.png")),
+                new Texture(Gdx.files.internal("minimap/head-green.png")),
+                new Texture(Gdx.files.internal("minimap/head-blue.png"))
         };
     }
 

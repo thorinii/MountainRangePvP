@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
- *
  * @author lachlan
  */
 public interface Message {

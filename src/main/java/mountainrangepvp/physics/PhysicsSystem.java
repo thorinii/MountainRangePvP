@@ -7,14 +7,13 @@ import mountainrangepvp.terrain.Terrain;
 import mountainrangepvp.terrain.Terrain.Slice;
 
 /**
- *
  * @author lachlan
  */
 public class PhysicsSystem {
 
     private static final float GRAVITY = -1000f;
     private static final float DAMPING = 0.01f;
-    //
+
     private final GameWorld world;
 
     public PhysicsSystem(GameWorld world) {
@@ -31,6 +30,7 @@ public class PhysicsSystem {
      * Updates the player's velocity and position, with collision detection.
      * A bit of fun when the player dies: turn off collision detection.
      * <p/>
+     *
      * @param player
      * @param dt
      */
@@ -78,7 +78,7 @@ public class PhysicsSystem {
     }
 
     private void slideDownSlope(Player player, Vector2 pos, Vector2 vel,
-            float dt) {
+                                float dt) {
         Terrain terrain = world.getTerrain();
 
         if (player.isOnGround()) {

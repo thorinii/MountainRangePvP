@@ -4,15 +4,16 @@
  */
 package mountainrangepvp.mp.message;
 
-import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicBoolean;
-import static org.junit.Assert.fail;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.junit.Assert.fail;
+
 /**
- *
  * @author lachlan
  */
 public class ConnectionTest {

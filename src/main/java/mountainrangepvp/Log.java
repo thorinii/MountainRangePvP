@@ -10,7 +10,6 @@ import java.util.Enumeration;
 import java.util.logging.*;
 
 /**
- *
  * @author lachlan
  */
 public class Log {
@@ -30,12 +29,12 @@ public class Log {
 
         Thread.setDefaultUncaughtExceptionHandler(
                 new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                LOG.log(Level.SEVERE, "Uncaught Exception", e);
-                System.exit(1);
-            }
-        });
+                    @Override
+                    public void uncaughtException(Thread t, Throwable e) {
+                        LOG.log(Level.SEVERE, "Uncaught Exception", e);
+                        System.exit(1);
+                    }
+                });
     }
 
     public static void setupLog(boolean debug) {

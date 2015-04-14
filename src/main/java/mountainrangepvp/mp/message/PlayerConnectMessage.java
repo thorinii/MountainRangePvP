@@ -1,13 +1,13 @@
 package mountainrangepvp.mp.message;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.Player.Team;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
 /**
- *
  * @author lachlan
  */
 public class PlayerConnectMessage implements Message {

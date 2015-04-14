@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import java.util.List;
 import mountainrangepvp.player.Player;
 import mountainrangepvp.player.PlayerManager;
 
+import java.util.List;
+
 /**
- *
  * @author lachlan
  */
 public class LeaderboardRenderer implements Renderer {
@@ -17,22 +17,22 @@ public class LeaderboardRenderer implements Renderer {
     private final PlayerManager playerManager;
     private final SpriteBatch batch;
     private final TextRenderer textRenderer;
-    //
+
     private final Texture[] bodyTextures;
-    //
+
     private final int width, height;
 
     public LeaderboardRenderer(SpriteBatch batch, TextRenderer textRenderer,
-            PlayerManager playerManager) {
+                               PlayerManager playerManager) {
         this.batch = batch;
         this.textRenderer = textRenderer;
         this.playerManager = playerManager;
 
         bodyTextures = new Texture[]{
-            new Texture(Gdx.files.internal("player/head-orange.png")),
-            new Texture(Gdx.files.internal("player/head-red.png")),
-            new Texture(Gdx.files.internal("player/head-green.png")),
-            new Texture(Gdx.files.internal("player/head-blue.png"))
+                new Texture(Gdx.files.internal("player/head-orange.png")),
+                new Texture(Gdx.files.internal("player/head-red.png")),
+                new Texture(Gdx.files.internal("player/head-green.png")),
+                new Texture(Gdx.files.internal("player/head-blue.png"))
         };
 
         width = Gdx.graphics.getWidth() + 1;

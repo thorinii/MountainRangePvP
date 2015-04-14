@@ -3,7 +3,6 @@ package mountainrangepvp.input;
 import com.badlogic.gdx.InputProcessor;
 
 /**
- *
  * @author lachlan
  */
 public class AbstractInputProcessor implements InputProcessor {

@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.util.Timer;
 
 /**
- *
  * @author lachlan
  */
 public class Player {
@@ -13,6 +12,7 @@ public class Player {
 
         ORANGE, RED, GREEN, BLUE
     }
+
     public static final int WIDTH = 40;
     public static final int HEIGHT = 100;
     public static final float WALK_SPEED = 1000;
@@ -30,7 +30,7 @@ public class Player {
     public static final int SPAWN_BUBBLE_TIMEOUT = 8000;
     public static final int SPAWN_BUBBLE_RADIUS = 51;
     private static final int ON_GROUND_TIMEOUT = 3;
-    //
+
     private final String name;
     private final int id;
     private final Team team;
@@ -38,10 +38,10 @@ public class Player {
     private final Vector2 velocity;
     private final Vector2 gunDirection;
     private int onGround;
-    //
+
     private boolean alive;
     private Timer timer;
-    //
+
     private int hits;
 
     public Player(String name, int id, Team team) {

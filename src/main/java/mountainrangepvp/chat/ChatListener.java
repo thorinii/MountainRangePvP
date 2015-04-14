@@ -1,7 +1,6 @@
 package mountainrangepvp.chat;
 
 /**
- *
  * @author lachlan
  */
 public interface ChatListener {
