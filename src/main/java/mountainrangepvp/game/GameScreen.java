@@ -53,6 +53,8 @@ public class GameScreen implements Screen {
         }
     }
 
+    private final Vector2 cameraPosition = new Vector2();
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
@@ -61,13 +63,14 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        Vector2 pos = world.getPlayerManager().getLocalPlayer().
-                getCentralPosition();
+        Vector2 pos = world.getPlayerManager().getLocalPlayer().getCentralPosition();
 
         pos.x = pos.x - width / 2;
         pos.y = pos.y - height / 2;
 
-        renderer.render(pos);
+        cameraPosition.lerp(pos, 0.2f);
+
+        renderer.render(cameraPosition);
     }
 
     @Override
