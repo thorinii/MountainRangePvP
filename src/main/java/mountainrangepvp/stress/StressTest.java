@@ -14,8 +14,15 @@ public class StressTest {
 
     private static final int DEFAULT_CLIENTS_TO_SPAWN = 30;
 
-    private static void stressTest(final String host, int num) throws
-            InterruptedException {
+    public static void stressTest(final String host, int num) {
+        try {
+            stressTestUnsafe(host, num);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to fully execute stress test", e);
+        }
+    }
+
+    private static void stressTestUnsafe(final String host, int num) throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(num);
 
         for (int i = 0; i < num; i++) {

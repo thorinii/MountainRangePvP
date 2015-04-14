@@ -119,6 +119,7 @@ public class PlayerRenderer implements Renderer {
                                getHeight() / 2);
         }
 
+        textRenderer.setSize(20);
         textRenderer.drawString(batch, player.getName(),
                                 (int) pos.x,
                                 (int) pos.y + Player.HEIGHT + 20);
