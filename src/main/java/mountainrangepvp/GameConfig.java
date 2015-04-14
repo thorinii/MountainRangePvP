@@ -7,6 +7,8 @@ import mountainrangepvp.player.Player.Team;
  * @author lachlan
  */
 public class GameConfig {
+    public final int FPS = 60;
+    public final float TIMESTEP = 1.0f / FPS;
 
     public boolean fullscreen;
     public int resolutionWidth, resolutionHeight;
