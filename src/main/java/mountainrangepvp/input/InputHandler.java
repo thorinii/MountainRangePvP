@@ -135,6 +135,9 @@ public class InputHandler {
             world.getShotManager().addShot(pos,
                                            player.getGunDirection().cpy(),
                                            player);
+
+            Vector2 kickback = player.getGunDirection().cpy().scl(-90f);
+            player.getVelocity().add(kickback);
         }
     }
 
