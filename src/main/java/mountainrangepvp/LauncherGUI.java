@@ -1,6 +1,6 @@
 package mountainrangepvp;
 
-import mountainrangepvp.game.GameConfig;
+import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.mp.lanping.PingClient;
 import mountainrangepvp.mp.lanping.PingClient.ServerData;
 import mountainrangepvp.world.player.Player.Team;
@@ -454,7 +454,7 @@ public class LauncherGUI extends javax.swing.JFrame {
     }
 
     private void makeGame() {
-        GameConfig config = new GameConfig();
+        GameSettings config = new GameSettings();
         config.fullscreen = fullscreenBtn.isSelected();
 
         if (fullscreenBtn.isSelected()) {

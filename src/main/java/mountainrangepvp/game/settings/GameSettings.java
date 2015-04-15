@@ -1,4 +1,4 @@
-package mountainrangepvp.game;
+package mountainrangepvp.game.settings;
 
 import mountainrangepvp.mp.MultiplayerConstants;
 import mountainrangepvp.world.player.Player.Team;
@@ -6,7 +6,7 @@ import mountainrangepvp.world.player.Player.Team;
 /**
  * @author lachlan
  */
-public class GameConfig {
+public class GameSettings {
     public final int FPS = 60;
     public final float TIMESTEP = 1.0f / FPS;
 
@@ -27,7 +27,7 @@ public class GameConfig {
 
     public boolean audioOn;
 
-    public GameConfig() {
+    public GameSettings() {
         fullscreen = false;
         resolutionWidth = 1000;
         resolutionHeight = 800;

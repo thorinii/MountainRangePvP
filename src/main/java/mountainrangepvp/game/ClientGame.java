@@ -1,11 +1,13 @@
 package mountainrangepvp.game;
 
+import mountainrangepvp.game.settings.GameSettings;
+
 /**
  * @author lachlan
  */
 public class ClientGame extends Game {
 
-    public ClientGame(GameConfig config) {
+    public ClientGame(GameSettings config) {
         super(config);
     }
 }

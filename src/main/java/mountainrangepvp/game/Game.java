@@ -9,6 +9,7 @@ import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.MessageListener;
 import mountainrangepvp.mp.message.NewWorldMessage;
 import mountainrangepvp.renderer.GameScreen;
+import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.util.Log;
 import mountainrangepvp.world.Instance;
 import mountainrangepvp.world.Map;
@@ -28,7 +29,7 @@ import java.io.IOException;
  */
 public abstract class Game {
 
-    public final GameConfig config;
+    public final GameSettings config;
 
     public final GameClient client;
     public final PhysicsSystem physicsSystem;
@@ -38,7 +39,7 @@ public abstract class Game {
 
     public final Instance instance;
 
-    public Game(GameConfig config) {
+    public Game(GameSettings config) {
         this.config = config;
 
         physicsSystem = new PhysicsSystem();

@@ -1,6 +1,7 @@
 package mountainrangepvp.game;
 
 import mountainrangepvp.mp.GameServer;
+import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.util.Log;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ public class ServerGame extends Game {
     private GameServer server;
     private final int seed;
 
-    public ServerGame(GameConfig config) {
+    public ServerGame(GameSettings config) {
         super(config);
         this.seed = config.seed;
     }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 /**
  * @author lachlan
  */
-public class AbstractInputProcessor implements InputProcessor {
+public class LibGdxInputAdaptor implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
