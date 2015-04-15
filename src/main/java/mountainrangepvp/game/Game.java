@@ -10,17 +10,8 @@ import mountainrangepvp.game.mp.message.MessageListener;
 import mountainrangepvp.game.mp.message.NewWorldMessage;
 import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
+import mountainrangepvp.game.world.*;
 import mountainrangepvp.util.Log;
-import mountainrangepvp.game.world.Instance;
-import mountainrangepvp.game.world.Map;
-import mountainrangepvp.game.world.ChatManager;
-import mountainrangepvp.game.world.PhysicsSystem;
-import mountainrangepvp.game.world.ClientPlayerManager;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.ClientShotManager;
-import mountainrangepvp.game.world.HeightMap;
-import mountainrangepvp.game.world.HillsHeightMap;
-import mountainrangepvp.game.world.Terrain;
 
 import java.io.IOException;
 
@@ -115,8 +106,9 @@ public abstract class Game {
                         heightMap = null;
                 }
 
-                ClientShotManager shotManager = new ClientShotManager(instance);
-                Map map = new Map(shotManager, new Terrain(heightMap), newWorldMessage.isTeamModeOn());
+                Terrain terrain = new Terrain(heightMap);
+                ShotManager shotManager = new ShotManager(instance.playerManager, terrain, false, newWorldMessage.isTeamModeOn());
+                Map map = new Map(shotManager, terrain, newWorldMessage.isTeamModeOn());
 
                 instance.setMap(map);
 

@@ -1,22 +1,9 @@
 package mountainrangepvp.game.mp;
 
 import mountainrangepvp.game.mp.message.*;
+import mountainrangepvp.game.world.*;
 import mountainrangepvp.util.Log;
 import mountainrangepvp.util.Timer;
-import mountainrangepvp.game.world.Instance;
-import mountainrangepvp.game.world.Map;
-import mountainrangepvp.game.world.ChatLine;
-import mountainrangepvp.game.world.ChatListener;
-import mountainrangepvp.game.world.ChatManager;
-import mountainrangepvp.game.world.PhysicsSystem;
-import mountainrangepvp.game.world.Player;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.ServerPlayerManager;
-import mountainrangepvp.game.world.ServerShotManager;
-import mountainrangepvp.game.world.Shot;
-import mountainrangepvp.game.world.ShotListener;
-import mountainrangepvp.game.world.HillsHeightMap;
-import mountainrangepvp.game.world.Terrain;
 
 import java.io.IOException;
 
@@ -174,8 +161,8 @@ public class GameServer {
 
         final Instance instance = new Instance(playerManager, chatManager);
 
-        ServerShotManager shotManager = new ServerShotManager(instance);
         Terrain terrain = new Terrain(new HillsHeightMap(seed));
+        ShotManager shotManager = new ShotManager(playerManager, terrain, true, teamModeOn);
 
         Map map = new Map(shotManager, terrain, teamModeOn);
         instance.setMap(map);
