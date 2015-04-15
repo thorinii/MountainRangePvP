@@ -1,7 +1,7 @@
 package mountainrangepvp.mp.message;
 
-import mountainrangepvp.chat.ChatLine;
-import mountainrangepvp.player.PlayerManager;
+import mountainrangepvp.world.chat.ChatLine;
+import mountainrangepvp.world.player.PlayerManager;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

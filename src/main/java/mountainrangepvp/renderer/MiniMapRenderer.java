@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.GameWorld;
-import mountainrangepvp.player.Player;
-import mountainrangepvp.terrain.Terrain.Slice;
+import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.player.Player;
+import mountainrangepvp.world.terrain.Terrain.Slice;
 
 /**
  * @author lachlan

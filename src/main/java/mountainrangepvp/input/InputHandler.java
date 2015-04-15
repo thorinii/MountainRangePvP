@@ -3,9 +3,9 @@ package mountainrangepvp.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.chat.ChatLine;
-import mountainrangepvp.game.GameWorld;
-import mountainrangepvp.player.Player;
+import mountainrangepvp.world.chat.ChatLine;
+import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.player.Player;
 
 /**
  * @author lachlan

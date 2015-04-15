@@ -1,6 +1,6 @@
 package mountainrangepvp.mp.message;
 
-import mountainrangepvp.player.Player;
+import mountainrangepvp.world.player.Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

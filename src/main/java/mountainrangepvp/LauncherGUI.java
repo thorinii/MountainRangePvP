@@ -1,8 +1,10 @@
 package mountainrangepvp;
 
+import mountainrangepvp.game.GameConfig;
 import mountainrangepvp.mp.lanping.PingClient;
 import mountainrangepvp.mp.lanping.PingClient.ServerData;
-import mountainrangepvp.player.Player.Team;
+import mountainrangepvp.world.player.Player.Team;
+import mountainrangepvp.util.Log;
 
 import javax.swing.*;
 import javax.swing.Timer;

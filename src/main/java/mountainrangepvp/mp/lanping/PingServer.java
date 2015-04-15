@@ -1,6 +1,6 @@
 package mountainrangepvp.mp.lanping;
 
-import mountainrangepvp.Log;
+import mountainrangepvp.util.Log;
 import mountainrangepvp.mp.MultiplayerConstants;
 
 import java.io.IOException;

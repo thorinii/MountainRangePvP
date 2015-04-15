@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.chat.ChatLine;
-import mountainrangepvp.chat.ChatManager;
-import mountainrangepvp.player.Player;
+import mountainrangepvp.world.chat.ChatLine;
+import mountainrangepvp.world.chat.ChatManager;
+import mountainrangepvp.world.player.Player;
 
 /**
  * @author lachlan
