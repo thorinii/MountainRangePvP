@@ -1,6 +1,6 @@
 package mountainrangepvp.game;
 
-import mountainrangepvp.mp.GameServer;
+import mountainrangepvp.game.mp.GameServer;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.util.Log;
 

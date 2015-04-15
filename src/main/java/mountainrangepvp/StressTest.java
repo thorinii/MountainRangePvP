@@ -1,7 +1,7 @@
 package mountainrangepvp;
 
 import mountainrangepvp.util.Log;
-import mountainrangepvp.mp.GameClient;
+import mountainrangepvp.game.mp.GameClient;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
