@@ -3,12 +3,12 @@ package mountainrangepvp.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.GameConfig;
-import mountainrangepvp.player.Player;
-import mountainrangepvp.player.PlayerManager;
-import mountainrangepvp.shot.Shot;
-import mountainrangepvp.shot.ShotListener;
-import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.game.GameConfig;
+import mountainrangepvp.world.player.Player;
+import mountainrangepvp.world.player.PlayerManager;
+import mountainrangepvp.world.shot.Shot;
+import mountainrangepvp.world.shot.ShotListener;
+import mountainrangepvp.world.shot.ShotManager;
 
 /**
  * @author lachlan

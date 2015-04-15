@@ -1,11 +1,11 @@
 package mountainrangepvp;
 
-import com.badlogic.gdx.Game;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import mountainrangepvp.game.ClientGame;
+import mountainrangepvp.game.GameConfig;
 import mountainrangepvp.game.ServerGame;
-import mountainrangepvp.stress.StressTest;
 
 /**
  * @author lachlan
@@ -57,7 +57,7 @@ public class Main {
     }
 
     public static void startGame(GameConfig gameConfig) {
-        Game game;
+        ApplicationListener game;
         if (gameConfig.server) {
             game = new ServerGame(gameConfig);
         } else {

@@ -1,26 +1,27 @@
 package mountainrangepvp.game;
 
-import com.badlogic.gdx.Game;
+import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import mountainrangepvp.GameConfig;
-import mountainrangepvp.Log;
 import mountainrangepvp.audio.AudioManager;
-import mountainrangepvp.chat.ChatManager;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.GameClient;
 import mountainrangepvp.mp.message.KillConnectionMessage;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.MessageListener;
 import mountainrangepvp.mp.message.NewWorldMessage;
-import mountainrangepvp.physics.PhysicsSystem;
-import mountainrangepvp.player.ClientPlayerManager;
-import mountainrangepvp.player.PlayerManager;
-import mountainrangepvp.shot.ClientShotManager;
-import mountainrangepvp.shot.ShotManager;
-import mountainrangepvp.terrain.HeightMap;
-import mountainrangepvp.terrain.HillsHeightMap;
-import mountainrangepvp.terrain.Terrain;
+import mountainrangepvp.renderer.GameScreen;
+import mountainrangepvp.util.Log;
 import mountainrangepvp.util.Timer;
+import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.chat.ChatManager;
+import mountainrangepvp.world.physics.PhysicsSystem;
+import mountainrangepvp.world.player.ClientPlayerManager;
+import mountainrangepvp.world.player.PlayerManager;
+import mountainrangepvp.world.shot.ClientShotManager;
+import mountainrangepvp.world.shot.ShotManager;
+import mountainrangepvp.world.terrain.HeightMap;
+import mountainrangepvp.world.terrain.HillsHeightMap;
+import mountainrangepvp.world.terrain.Terrain;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.io.IOException;
 /**
  * @author lachlan
  */
-public class ClientGame extends Game {
+public class ClientGame implements ApplicationListener {
 
     private final String serverIP;
     private final GameClient client;
@@ -107,8 +108,6 @@ public class ClientGame extends Game {
 
     @Override
     public void dispose() {
-        super.dispose();
-
         client.stop();
     }
 
@@ -164,8 +163,19 @@ public class ClientGame extends Game {
                 audioManager.loadAudio();
 
                 gameScreen = new GameScreen(world);
-                setScreen(gameScreen);
             }
         }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
     }
 }

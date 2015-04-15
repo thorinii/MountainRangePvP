@@ -1,21 +1,21 @@
 package mountainrangepvp.mp;
 
-import mountainrangepvp.Log;
-import mountainrangepvp.chat.ChatLine;
-import mountainrangepvp.chat.ChatListener;
-import mountainrangepvp.chat.ChatManager;
-import mountainrangepvp.game.GameWorld;
+import mountainrangepvp.util.Log;
+import mountainrangepvp.world.chat.ChatLine;
+import mountainrangepvp.world.chat.ChatListener;
+import mountainrangepvp.world.chat.ChatManager;
+import mountainrangepvp.world.GameWorld;
 import mountainrangepvp.mp.message.*;
-import mountainrangepvp.physics.PhysicsSystem;
-import mountainrangepvp.player.Player;
-import mountainrangepvp.player.PlayerManager;
-import mountainrangepvp.player.ServerPlayerManager;
-import mountainrangepvp.shot.ServerShotManager;
-import mountainrangepvp.shot.Shot;
-import mountainrangepvp.shot.ShotListener;
-import mountainrangepvp.shot.ShotManager;
-import mountainrangepvp.terrain.HillsHeightMap;
-import mountainrangepvp.terrain.Terrain;
+import mountainrangepvp.world.physics.PhysicsSystem;
+import mountainrangepvp.world.player.Player;
+import mountainrangepvp.world.player.PlayerManager;
+import mountainrangepvp.world.player.ServerPlayerManager;
+import mountainrangepvp.world.shot.ServerShotManager;
+import mountainrangepvp.world.shot.Shot;
+import mountainrangepvp.world.shot.ShotListener;
+import mountainrangepvp.world.shot.ShotManager;
+import mountainrangepvp.world.terrain.HillsHeightMap;
+import mountainrangepvp.world.terrain.Terrain;
 import mountainrangepvp.util.Timer;
 
 import java.io.IOException;

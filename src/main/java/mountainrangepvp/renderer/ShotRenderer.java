@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.shot.Shot;
-import mountainrangepvp.shot.ShotManager;
+import mountainrangepvp.world.shot.Shot;
+import mountainrangepvp.world.shot.ShotManager;
 
 /**
  * @author lachlan

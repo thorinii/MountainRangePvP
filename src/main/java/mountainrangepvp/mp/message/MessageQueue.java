@@ -1,6 +1,6 @@
 package mountainrangepvp.mp.message;
 
-import mountainrangepvp.Log;
+import mountainrangepvp.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;

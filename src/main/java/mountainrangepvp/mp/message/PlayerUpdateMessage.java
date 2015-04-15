@@ -1,7 +1,7 @@
 package mountainrangepvp.mp.message;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.player.Player;
+import mountainrangepvp.world.player.Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
