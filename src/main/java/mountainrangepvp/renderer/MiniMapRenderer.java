@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.world.GameWorld;
 import mountainrangepvp.world.player.Player;
+import mountainrangepvp.world.player.PlayerManager;
+import mountainrangepvp.world.terrain.Terrain;
 import mountainrangepvp.world.terrain.Terrain.Slice;
 
 /**
  * @author lachlan
  */
-public class MiniMapRenderer implements Renderer {
+public class MiniMapRenderer {
 
     private static final int WIDTH = 400;
     private static final int HEIGHT = 100;
@@ -19,27 +20,24 @@ public class MiniMapRenderer implements Renderer {
     private static final float H_SCALE = 20;
     private static final float V_SCALE = 20;
 
-    private final GameWorld world;
-
     private final int width, height;
 
     private final SpriteBatch batch;
 
     private final Texture background;
     private final Texture border;
-    private final Texture terrain;
+    private final Texture terrainGradient;
     private final Texture[] headTextures;
 
-    public MiniMapRenderer(SpriteBatch batch, GameWorld world) {
+    public MiniMapRenderer(SpriteBatch batch) {
         this.batch = batch;
-        this.world = world;
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
 
         background = new Texture(Gdx.files.internal("minimap/background.png"));
         border = new Texture(Gdx.files.internal("minimap/border.png"));
-        terrain = new Texture(Gdx.files.internal("minimap/terrain.png"));
+        terrainGradient = new Texture(Gdx.files.internal("minimap/terrain.png"));
 
         headTextures = new Texture[]{
                 new Texture(Gdx.files.internal("minimap/head-orange.png")),
@@ -49,14 +47,13 @@ public class MiniMapRenderer implements Renderer {
         };
     }
 
-    @Override
-    public void render(Vector2 scroll) {
+    public void render(Vector2 scroll, PlayerManager playerManager, Terrain terrain) {
         batch.begin();
         batch.draw(background, width - SHIFT - WIDTH, height - SHIFT - HEIGHT,
                    WIDTH, HEIGHT);
 
-        drawTerrain(scroll);
-        drawPlayers(scroll);
+        drawTerrain(scroll, terrain);
+        drawPlayers(scroll, playerManager);
 
         batch.draw(border, width - SHIFT - 20 - WIDTH,
                    height - SHIFT - 20 - HEIGHT,
@@ -64,8 +61,8 @@ public class MiniMapRenderer implements Renderer {
         batch.end();
     }
 
-    private void drawTerrain(Vector2 scroll) {
-        Slice slice = world.terrain.getSlice(
+    private void drawTerrain(Vector2 scroll, Terrain terrain) {
+        Slice slice = terrain.getSlice(
                 (int) scroll.x + width / 2 - (int) (WIDTH * H_SCALE) / 2,
                 (int) (WIDTH * H_SCALE));
 
@@ -87,14 +84,14 @@ public class MiniMapRenderer implements Renderer {
             if (avg >= HEIGHT)
                 avg = HEIGHT;
 
-            batch.draw(terrain, width - SHIFT - WIDTH + i,
+            batch.draw(terrainGradient, width - SHIFT - WIDTH + i,
                        height - SHIFT - HEIGHT,
                        1, avg);
         }
     }
 
-    private void drawPlayers(Vector2 scroll) {
-        for (Player player : world.playerManager.getPlayers()) {
+    private void drawPlayers(Vector2 scroll, PlayerManager playerManager) {
+        for (Player player : playerManager.getPlayers()) {
             if (!player.isAlive())
                 continue;
 

@@ -8,18 +8,14 @@ import mountainrangepvp.world.terrain.Terrain;
 /**
  * @author lachlan
  */
-public class GameWorld {
+public class Map {
 
-    public final PlayerManager playerManager;
     public final ShotManager shotManager;
-    public final ChatManager chatManager;
     public final Terrain terrain;
     public final boolean teamModeOn;
 
-    public GameWorld(PlayerManager playerManager, ShotManager shotManager, ChatManager chatManager, Terrain terrain, boolean teamModeOn) {
-        this.playerManager = playerManager;
+    public Map(ShotManager shotManager, Terrain terrain, boolean teamModeOn) {
         this.shotManager = shotManager;
-        this.chatManager = chatManager;
         this.terrain = terrain;
         this.teamModeOn = teamModeOn;
     }

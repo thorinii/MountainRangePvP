@@ -12,9 +12,8 @@ import java.util.List;
 /**
  * @author lachlan
  */
-public class LeaderboardRenderer implements Renderer {
+public class LeaderboardRenderer {
 
-    private final PlayerManager playerManager;
     private final SpriteBatch batch;
     private final TextRenderer textRenderer;
 
@@ -22,11 +21,9 @@ public class LeaderboardRenderer implements Renderer {
 
     private final int width, height;
 
-    public LeaderboardRenderer(SpriteBatch batch, TextRenderer textRenderer,
-                               PlayerManager playerManager) {
+    public LeaderboardRenderer(SpriteBatch batch, TextRenderer textRenderer) {
         this.batch = batch;
         this.textRenderer = textRenderer;
-        this.playerManager = playerManager;
 
         bodyTextures = new Texture[]{
                 new Texture(Gdx.files.internal("player/head-orange.png")),
@@ -39,8 +36,7 @@ public class LeaderboardRenderer implements Renderer {
         height = Gdx.graphics.getHeight();
     }
 
-    @Override
-    public void render(Vector2 scroll) {
+    public void render(Vector2 scroll, PlayerManager playerManager) {
         List<Player> topPlayers = playerManager.getPlayersByHits(3);
 
         int x = 20;

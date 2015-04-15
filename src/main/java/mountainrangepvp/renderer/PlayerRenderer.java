@@ -10,9 +10,8 @@ import mountainrangepvp.world.player.PlayerManager;
 /**
  * @author lachlan
  */
-public class PlayerRenderer implements Renderer {
+public class PlayerRenderer {
 
-    private final PlayerManager playerManager;
     private final int width, height;
     private final SpriteBatch batch;
     private final TextRenderer textRenderer;
@@ -20,11 +19,9 @@ public class PlayerRenderer implements Renderer {
     private final Texture armsTexture;
     private final Texture spawnBubbleTexture;
 
-    public PlayerRenderer(SpriteBatch batch, TextRenderer textRenderer,
-                          PlayerManager playerManager) {
+    public PlayerRenderer(SpriteBatch batch, TextRenderer textRenderer) {
         this.batch = batch;
         this.textRenderer = textRenderer;
-        this.playerManager = playerManager;
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -45,8 +42,7 @@ public class PlayerRenderer implements Renderer {
                 "player/spawn-bubble.png"));
     }
 
-    @Override
-    public void render(Vector2 scroll) {
+    public void render(Vector2 scroll, PlayerManager playerManager) {
         batch.begin();
 
         for (Player player : playerManager.getPlayers()) {

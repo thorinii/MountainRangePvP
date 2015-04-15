@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.Instance;
 
 /**
  * @author lachlan
@@ -20,21 +20,23 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
 
-    private GameWorld world;
+    private final Instance instance;
 
-    private BackgroundRenderer backgroundRenderer;
-    private TerrainRenderer terrainRenderer;
-    private PlayerRenderer playerRenderer;
-    private ShotRenderer shotRenderer;
-    private ChatRenderer chatRenderer;
-    private MiniMapRenderer miniMapRenderer;
-    private LeaderboardRenderer leaderboardRenderer;
+    private final TextRenderer textRenderer;
 
-    private TextRenderer textRenderer;
+    private final BackgroundRenderer backgroundRenderer;
+    private final TerrainRenderer terrainRenderer;
+    private final PlayerRenderer playerRenderer;
+    private final ShotRenderer shotRenderer;
+    private final ChatRenderer chatRenderer;
+    private final MiniMapRenderer miniMapRenderer;
+    private final LeaderboardRenderer leaderboardRenderer;
 
     private final Texture crossHairTexture;
 
-    public WorldRenderer() {
+    public WorldRenderer(Instance instance) {
+        this.instance = instance;
+
         screen = new Vector2(Gdx.graphics.getWidth() + 1,
                              Gdx.graphics.getHeight());
 
@@ -46,19 +48,15 @@ public class WorldRenderer {
 
         crossHairTexture = new Texture(Gdx.files.internal("crosshair.png"));
 
-        backgroundRenderer = new BackgroundRenderer(batch);
         textRenderer = new TextRenderer();
-    }
 
-    public void setWorld(GameWorld world) {
-        this.world = world;
-
-        terrainRenderer = new TerrainRenderer(batch, world.terrain);
-        playerRenderer = new PlayerRenderer(batch, textRenderer, world.playerManager);
-        shotRenderer = new ShotRenderer(batch, world.shotManager);
-        chatRenderer = new ChatRenderer(batch, textRenderer, world.chatManager);
-        miniMapRenderer = new MiniMapRenderer(batch, world);
-        leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer, world.playerManager);
+        backgroundRenderer = new BackgroundRenderer(batch);
+        terrainRenderer = new TerrainRenderer(batch);
+        playerRenderer = new PlayerRenderer(batch, textRenderer);
+        shotRenderer = new ShotRenderer(batch);
+        chatRenderer = new ChatRenderer(batch, textRenderer);
+        miniMapRenderer = new MiniMapRenderer(batch);
+        leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer);
     }
 
     public void render(Vector2 scroll) {
@@ -66,12 +64,12 @@ public class WorldRenderer {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         backgroundRenderer.render(scroll);
-        shotRenderer.render(scroll);
-        terrainRenderer.render(scroll);
-        playerRenderer.render(scroll);
-        chatRenderer.render(scroll);
-        leaderboardRenderer.render(scroll);
-        miniMapRenderer.render(scroll);
+        shotRenderer.render(scroll, instance.getMap().shotManager);
+        terrainRenderer.render(scroll, instance.getMap().terrain);
+        playerRenderer.render(scroll, instance.playerManager);
+        chatRenderer.render(instance.chatManager);
+        leaderboardRenderer.render(scroll, instance.playerManager);
+        miniMapRenderer.render(scroll, instance.playerManager, instance.getMap().terrain);
 
         drawCrosshair();
 

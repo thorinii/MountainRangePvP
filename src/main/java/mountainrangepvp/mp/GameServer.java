@@ -3,7 +3,8 @@ package mountainrangepvp.mp;
 import mountainrangepvp.mp.message.*;
 import mountainrangepvp.util.Log;
 import mountainrangepvp.util.Timer;
-import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.Instance;
+import mountainrangepvp.world.Map;
 import mountainrangepvp.world.chat.ChatLine;
 import mountainrangepvp.world.chat.ChatListener;
 import mountainrangepvp.world.chat.ChatManager;
@@ -14,7 +15,6 @@ import mountainrangepvp.world.player.ServerPlayerManager;
 import mountainrangepvp.world.shot.ServerShotManager;
 import mountainrangepvp.world.shot.Shot;
 import mountainrangepvp.world.shot.ShotListener;
-import mountainrangepvp.world.shot.ShotManager;
 import mountainrangepvp.world.terrain.HillsHeightMap;
 import mountainrangepvp.world.terrain.Terrain;
 
@@ -25,17 +25,17 @@ import java.io.IOException;
  */
 public class GameServer {
 
-    private final GameWorld world;
+    private final Instance instance;
     private final MessageServer messageServer;
     private final Timer playerUpdateTimer;
     private int seed;
 
-    public GameServer(GameWorld world) {
-        this(world, MultiplayerConstants.STD_PORT);
+    public GameServer(Instance instance) {
+        this(instance, MultiplayerConstants.STD_PORT);
     }
 
-    public GameServer(GameWorld world, int port) {
-        this.world = world;
+    public GameServer(Instance instance, int port) {
+        this.instance = instance;
         this.messageServer = new MessageServer(port);
         playerUpdateTimer = new Timer();
 
@@ -44,20 +44,14 @@ public class GameServer {
 
     private void setup() {
         messageServer.addMessageListener(new GameServerMessageListener());
-        messageServer.addMessageListener(world.playerManager);
-        messageServer.addMessageListener(world.shotManager);
-        messageServer.addMessageListener(world.chatManager);
+        messageServer.addMessageListener(instance.playerManager);
+        messageServer.addMessageListener(instance.chatManager);
 
-        world.shotManager.addShotListener(new NewShotListener());
-        world.chatManager.addChatListener(new NewChatListener());
+        instance.chatManager.addChatListener(new NewChatListener());
     }
 
     public void addMessageListener(MessageListener listener) {
         messageServer.addMessageListener(listener);
-    }
-
-    public void removeMessageListener(MessageListener listener) {
-        messageServer.removeMessageListener(listener);
     }
 
     public void setSeed(int seed) {
@@ -72,10 +66,18 @@ public class GameServer {
         messageServer.start();
     }
 
+    private Map lastMap = null;
+
     public void update() {
+        if (instance.hasMap() && instance.getMap() != lastMap) {
+            lastMap = instance.getMap();
+            messageServer.addMessageListener(lastMap.shotManager);
+            lastMap.shotManager.addShotListener(new NewShotListener());
+        }
+
         playerUpdateTimer.update();
         if (playerUpdateTimer.getTime() > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-            for (Player player : world.playerManager.getPlayers()) {
+            for (Player player : instance.playerManager.getPlayers()) {
                 PlayerUpdateMessage pum = new PlayerUpdateMessage(player);
                 messageServer.broadcastExcept(pum, player.getID());
             }
@@ -104,18 +106,18 @@ public class GameServer {
             if (message instanceof IntroduceMessage) {
                 IntroduceMessage introduceMessage = (IntroduceMessage) message;
 
-                Player existing = world.playerManager.getPlayer(introduceMessage.getName());
+                Player existing = instance.playerManager.getPlayer(introduceMessage.getName());
                 if (existing != null) {
                     KillConnectionMessage kcm = new KillConnectionMessage(
                             KillConnectionMessage.Reason.DuplicatePlayer);
                     messageServer.send(kcm, id);
                 } else {
                     NewWorldMessage newWorldMessage = new NewWorldMessage(
-                            NewWorldMessage.WorldType.Hills, seed, world.teamModeOn);
+                            NewWorldMessage.WorldType.Hills, seed, instance.getMap().teamModeOn);
                     messageServer.send(newWorldMessage, id);
 
 
-                    for (Player player : world.playerManager.getPlayers()) {
+                    for (Player player : instance.playerManager.getPlayers()) {
                         PlayerConnectMessage pcm = new PlayerConnectMessage(
                                 player);
                         messageServer.send(pcm, id);
@@ -167,20 +169,20 @@ public class GameServer {
     }
 
     public static GameServer startBasicServer(int seed, boolean teamModeOn) throws IOException {
-        Terrain terrain = new Terrain(new HillsHeightMap(seed));
-
         PlayerManager playerManager = new ServerPlayerManager();
-
-        ServerShotManager shotManager = new ServerShotManager();
-
         ChatManager chatManager = new ChatManager(playerManager);
 
-        final GameWorld world = new GameWorld(playerManager, shotManager, chatManager, terrain, teamModeOn);
-        shotManager.setWorld(world);
+        final Instance instance = new Instance(playerManager, chatManager);
+
+        ServerShotManager shotManager = new ServerShotManager(instance);
+        Terrain terrain = new Terrain(new HillsHeightMap(seed));
+
+        Map map = new Map(shotManager, terrain, teamModeOn);
+        instance.setMap(map);
 
         final PhysicsSystem physicsSystem = new PhysicsSystem();
 
-        final GameServer server = new GameServer(world);
+        final GameServer server = new GameServer(instance);
         server.setSeed(seed);
 
         Log.info("Starting server...");
@@ -197,8 +199,8 @@ public class GameServer {
                         Thread.sleep(1000 / 60);
 
                         server.update();
-                        physicsSystem.update(world, 1 / 60f);
-                        world.update(1 / 60f);
+                        physicsSystem.update(instance, 1 / 60f);
+                        instance.update(1 / 60f);
                     }
                 } catch (Exception e) {
                     Log.warn("Server crashed:", e);

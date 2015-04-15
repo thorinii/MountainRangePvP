@@ -3,7 +3,8 @@ package mountainrangepvp.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.Instance;
+import mountainrangepvp.world.Map;
 import mountainrangepvp.world.chat.ChatManager;
 import mountainrangepvp.world.player.Player;
 import mountainrangepvp.world.shot.ShotManager;
@@ -44,7 +45,7 @@ public class InputHandler {
         Gdx.input.setInputProcessor(playerInputHandler);
     }
 
-    public void update(GameWorld world, float dt) {
+    public void update(Instance world, float dt) {
         Player local = world.playerManager.getLocalPlayer();
         if (!local.isAlive()) {
             gun = false;

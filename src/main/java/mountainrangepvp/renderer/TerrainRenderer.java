@@ -11,21 +11,18 @@ import mountainrangepvp.world.terrain.Terrain;
 /**
  * @author lachlan
  */
-public class TerrainRenderer implements Renderer {
+public class TerrainRenderer {
 
     private static final Color BASE_COLOUR = new Color(0.5451f, 0.3686f, 0.2314f,
                                                        1);
 
-    private final Terrain map;
     private final int width, height;
 
     private final ShapeRenderer shapeRenderer;
     private final SpriteBatch batch;
     private final Texture worldSliceTexture;
 
-    public TerrainRenderer(SpriteBatch batch, Terrain map) {
-        this.map = map;
-
+    public TerrainRenderer(SpriteBatch batch) {
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
 
@@ -35,8 +32,7 @@ public class TerrainRenderer implements Renderer {
         worldSliceTexture = new Texture(Gdx.files.internal("terrain/slice.png"));
     }
 
-    @Override
-    public void render(Vector2 scroll) {
+    public void render(Vector2 scroll, Terrain map) {
         Terrain.Slice slice = map.getSlice((int) scroll.x, width);
 
         /*

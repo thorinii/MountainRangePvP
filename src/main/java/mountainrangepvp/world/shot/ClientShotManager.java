@@ -1,7 +1,7 @@
 package mountainrangepvp.world.shot;
 
 import mountainrangepvp.util.Log;
-import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.Instance;
 import mountainrangepvp.world.player.Player;
 
 /**
@@ -9,8 +9,8 @@ import mountainrangepvp.world.player.Player;
  */
 public class ClientShotManager extends AbstractShotManager {
 
-    public ClientShotManager() {
-        super();
+    public ClientShotManager(Instance instance) {
+        super(instance);
     }
 
     @Override

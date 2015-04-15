@@ -5,7 +5,8 @@ import mountainrangepvp.mp.message.*;
 import mountainrangepvp.mp.message.KillConnectionMessage.Reason;
 import mountainrangepvp.util.Log;
 import mountainrangepvp.util.Timer;
-import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.Instance;
+import mountainrangepvp.world.Map;
 import mountainrangepvp.world.chat.ChatLine;
 import mountainrangepvp.world.chat.ChatListener;
 import mountainrangepvp.world.chat.ChatManager;
@@ -22,23 +23,22 @@ import mountainrangepvp.world.terrain.HillsHeightMap;
 import mountainrangepvp.world.terrain.Terrain;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author lachlan
  */
 public class GameClient {
 
-    private final GameWorld world;
+    private final Instance instance;
     private final MessageClient messageClient;
     private final Timer playerUpdateTimer;
 
-    public GameClient(GameWorld world, String host) {
-        this(world, host, MultiplayerConstants.STD_PORT);
+    public GameClient(Instance instance, String host) {
+        this(instance, host, MultiplayerConstants.STD_PORT);
     }
 
-    public GameClient(GameWorld world, String host, int port) {
-        this.world = world;
+    public GameClient(Instance instance, String host, int port) {
+        this.instance = instance;
         messageClient = new MessageClient(host, port);
         playerUpdateTimer = new Timer();
 
@@ -47,12 +47,10 @@ public class GameClient {
 
     private void setup() {
         messageClient.addMessageListener(new GameClientMessageListener());
-        messageClient.addMessageListener(world.playerManager);
-        messageClient.addMessageListener(world.shotManager);
-        messageClient.addMessageListener(world.chatManager);
+        messageClient.addMessageListener(instance.playerManager);
+        messageClient.addMessageListener(instance.chatManager);
 
-        world.shotManager.addShotListener(new NewShotListener());
-        world.chatManager.addChatListener(new NewChatListener());
+        instance.chatManager.addChatListener(new NewChatListener());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -63,11 +61,19 @@ public class GameClient {
         messageClient.start();
     }
 
+    private Map lastMap = null;
+
     public void update() {
+        if (instance.hasMap() && instance.getMap() != lastMap) {
+            lastMap = instance.getMap();
+            messageClient.addMessageListener(lastMap.shotManager);
+            lastMap.shotManager.addShotListener(new NewShotListener());
+        }
+
         playerUpdateTimer.update();
         if (playerUpdateTimer.getTime() > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-            if (world.playerManager.getLocalPlayer() != null) {
-                PlayerUpdateMessage pum = new PlayerUpdateMessage(world.playerManager.getLocalPlayer());
+            if (instance.playerManager.getLocalPlayer() != null) {
+                PlayerUpdateMessage pum = new PlayerUpdateMessage(instance.playerManager.getLocalPlayer());
                 messageClient.send(pum);
 
                 playerUpdateTimer.reset();
@@ -92,7 +98,7 @@ public class GameClient {
         @Override
         public void accept(Message message, int id) throws IOException {
             if (message instanceof ServerHelloMessage) {
-                ClientPlayerManager cpm = (ClientPlayerManager) world.playerManager;
+                ClientPlayerManager cpm = (ClientPlayerManager) instance.playerManager;
 
                 IntroduceMessage introduceMessage = new IntroduceMessage(
                         cpm.getLocalPlayerName(), cpm.getLocalPlayerTeam());
@@ -105,7 +111,7 @@ public class GameClient {
 
         @Override
         public void shotAdd(Shot shot) {
-            if (shot.player == world.playerManager.getLocalPlayer())
+            if (shot.player == instance.playerManager.getLocalPlayer())
                 messageClient.send(new NewShotMessage(shot));
         }
 
@@ -122,7 +128,7 @@ public class GameClient {
 
         @Override
         public void onMessage(ChatLine line) {
-            if (line.getPlayer() == world.playerManager.getLocalPlayer())
+            if (line.getPlayer() == instance.playerManager.getLocalPlayer())
                 messageClient.send(new NewChatMessage(line));
         }
     }
@@ -132,15 +138,12 @@ public class GameClient {
 
         String playerName = "test player " + (int) (Math.random() * 2000 + 2);
         final PlayerManager playerManager = new ClientPlayerManager(playerName, Team.GREEN);
-        final ClientShotManager shotManager = new ClientShotManager();
         final ChatManager chatManager = new ChatManager(playerManager);
         PhysicsSystem physicsSystem = new PhysicsSystem();
 
-        final AtomicReference<GameWorld> worldRef = new AtomicReference<>();
+        final Instance instance = new Instance(playerManager, chatManager);
 
-        if (true)
-            throw new UnsupportedOperationException("Broken implementation");
-        GameClient client = new GameClient(null, host);
+        GameClient client = new GameClient(instance, host);
         client.addMessageListener(new MessageListener() {
             @Override
             public void accept(Message message, int id) throws IOException {
@@ -160,9 +163,9 @@ public class GameClient {
                             heightMap = null;
                     }
 
-                    GameWorld world = new GameWorld(playerManager, shotManager, chatManager, new Terrain(heightMap), newWorldMessage.isTeamModeOn());
-                    shotManager.setWorld(world);
-                    worldRef.set(world);
+                    ClientShotManager shotManager = new ClientShotManager(instance);
+                    Map map = new Map(shotManager, new Terrain(heightMap), newWorldMessage.isTeamModeOn());
+                    instance.setMap(map);
                 }
             }
         });
@@ -171,25 +174,23 @@ public class GameClient {
 
         Player local = null;
         while (client.isConnected()) {
-            GameWorld world = worldRef.get();
-
             Thread.sleep(500 + (int) (Math.random() * 100));
             client.update();
 
-            if (world.terrain != null) {
+            if (instance.hasMap()) {
                 if (local == null)
                     local = playerManager.getLocalPlayer();
 
                 local.getPosition().add(
                         (float) Math.random() * 300 - 100,
                         (float) Math.random() * 300 - 100);
-                shotManager.addShot(local.getCentralPosition(), new Vector2(
-                                            (float) Math.random() * 30 - 15,
-                                            (float) Math.random() * 30 - 15).nor(),
-                                    local);
+                instance.getMap().shotManager.addShot(local.getCentralPosition(), new Vector2(
+                                                              (float) Math.random() * 30 - 15,
+                                                              (float) Math.random() * 30 - 15).nor(),
+                                                      local);
 
-                physicsSystem.update(world, 1 / 60f);
-                world.update(1 / 60f);
+                physicsSystem.update(instance, 1 / 60f);
+                instance.update(1 / 60f);
             }
 
         }
