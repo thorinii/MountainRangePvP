@@ -185,7 +185,7 @@ public class GameServer {
         ChatManager chatManager = new ChatManager(playerManager);
         world.setChatManager(chatManager);
 
-        final PhysicsSystem physicsSystem = new PhysicsSystem(world);
+        final PhysicsSystem physicsSystem = new PhysicsSystem();
 
         final GameServer server = new GameServer(world);
         server.setSeed(seed);
@@ -204,7 +204,7 @@ public class GameServer {
                         Thread.sleep(1000 / 60);
 
                         server.update();
-                        physicsSystem.update(1 / 60f);
+                        physicsSystem.update(world, 1 / 60f);
                         world.update(1 / 60f);
                     }
                 } catch (Exception e) {

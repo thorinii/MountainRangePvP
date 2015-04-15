@@ -1,9 +1,11 @@
 package mountainrangepvp;
 
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import mountainrangepvp.game.ClientGame;
+import mountainrangepvp.game.Game;
 import mountainrangepvp.game.GameConfig;
 import mountainrangepvp.game.ServerGame;
 
@@ -57,13 +59,6 @@ public class Main {
     }
 
     public static void startGame(GameConfig gameConfig) {
-        ApplicationListener game;
-        if (gameConfig.server) {
-            game = new ServerGame(gameConfig);
-        } else {
-            game = new ClientGame(gameConfig);
-        }
-
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
         appConfig.title = "Mountain Range PvP";
         appConfig.forceExit = false;
@@ -75,7 +70,34 @@ public class Main {
         appConfig.height = gameConfig.resolutionHeight;
         appConfig.depth = gameConfig.bitDepth;
 
-        LwjglApplication app = new LwjglApplication(game, appConfig);
+        LwjglApplication app = new LwjglApplication(gameListenerAdaptor(gameConfig), appConfig);
+    }
+
+    private static ApplicationListener gameListenerAdaptor(final GameConfig config) {
+        return new ApplicationAdapter() {
+            Game game;
+
+            @Override
+            public void create() {
+                if (config.server) {
+                    game = new ServerGame(config);
+                } else {
+                    game = new ClientGame(config);
+                }
+
+                game.start();
+            }
+
+            @Override
+            public void render() {
+                game.render();
+            }
+
+            @Override
+            public void dispose() {
+                game.kill();
+            }
+        };
     }
 
     private static void printUsageAndQuit() {

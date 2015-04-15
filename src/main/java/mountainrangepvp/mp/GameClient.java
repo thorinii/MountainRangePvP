@@ -150,7 +150,7 @@ public class GameClient {
         ChatManager chatManager = new ChatManager(playerManager);
         world.setChatManager(chatManager);
 
-        PhysicsSystem physicsSystem = new PhysicsSystem(world);
+        PhysicsSystem physicsSystem = new PhysicsSystem();
 
         GameClient client = new GameClient(world, host);
         client.addMessageListener(new MessageListener() {
@@ -197,7 +197,7 @@ public class GameClient {
                                             (float) Math.random() * 30 - 15).nor(),
                                     local);
 
-                physicsSystem.update(1 / 60f);
+                physicsSystem.update(world, 1 / 60f);
                 world.update(1 / 60f);
             }
 

@@ -15,13 +15,13 @@ import mountainrangepvp.world.shot.ShotManager;
  */
 public class AudioManager {
 
-    private final Player localPlayer;
+    private final PlayerManager playerManager;
     private final GameConfig config;
     private Sound gunShot;
 
 
     public AudioManager(PlayerManager playerManager, ShotManager shotManager, GameConfig config) {
-        localPlayer = playerManager.getLocalPlayer();
+        this.playerManager = playerManager;
         this.config = config;
 
         shotManager.addShotListener(new AudioShotListener());
@@ -38,7 +38,7 @@ public class AudioManager {
 
         @Override
         public void shotAdd(Shot shot) {
-            Vector2 diff = shot.base.cpy().sub(localPlayer.getPosition());
+            Vector2 diff = shot.base.cpy().sub(playerManager.getLocalPlayer().getPosition());
             float volume = Math.min(1, Math.max(0, 1000f / diff.len()));
 
             if (config.audioOn)

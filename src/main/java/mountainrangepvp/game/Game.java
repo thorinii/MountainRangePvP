@@ -25,26 +25,29 @@ import mountainrangepvp.world.terrain.Terrain;
 import java.io.IOException;
 
 /**
- * All the important bits of the game.
+ * The state that lasts between instances.
  */
-public abstract class Game implements ApplicationListener {
+public abstract class Game {
 
-    protected final GameConfig config;
+    private final GameConfig config;
 
     private final GameClient client;
+    private final PhysicsSystem physicsSystem;
+    private final InputHandler inputHandler;
+    private final AudioManager audioManager;
+    private final GameScreen gameScreen;
 
     protected final GameWorld world;
-    protected PhysicsSystem physicsSystem;
-    protected InputHandler inputHandler;
-    protected AudioManager audioManager;
 
-    protected GameScreen gameScreen;
+    private boolean hasMap;
 
     public Game(GameConfig config) {
         this.config = config;
 
         world = new GameWorld();
         world.setTeamModeOn(config.teamModeOn);
+
+        physicsSystem = new PhysicsSystem();
 
         PlayerManager playerManager = new ClientPlayerManager(config.playerName, config.team);
         world.setPlayerManager(playerManager);
@@ -55,12 +58,21 @@ public abstract class Game implements ApplicationListener {
         ChatManager chatManager = new ChatManager(playerManager);
         world.setChatManager(chatManager);
 
+        inputHandler = new InputHandler(chatManager, shotManager);
+        inputHandler.register();
+
+        audioManager = new AudioManager(playerManager, shotManager, config);
+        audioManager.loadAudio();
+
         client = new GameClient(world, config.serverIP);
         client.addMessageListener(new MapChangeListener());
+
+        gameScreen = new GameScreen();
+
+        hasMap = false;
     }
 
-    @Override
-    public void create() {
+    public void start() {
         try {
             client.start();
         } catch (IOException ioe) {
@@ -68,48 +80,33 @@ public abstract class Game implements ApplicationListener {
         }
     }
 
-    @Override
-    public void dispose() {
+    public void kill() {
         client.stop();
     }
 
 
     private float timeSinceLastUpdate = 0;
 
-    @Override
     public void render() {
         float dt = Gdx.graphics.getDeltaTime();
         timeSinceLastUpdate += dt;
 
         if (timeSinceLastUpdate > config.TIMESTEP) {
             client.update();
-            if (gameScreen != null) {
-                inputHandler.update(config.TIMESTEP);
+            if (hasMap) {
+                inputHandler.update(world, config.TIMESTEP);
                 world.update(config.TIMESTEP);
-                physicsSystem.update(config.TIMESTEP);
+                physicsSystem.update(world, config.TIMESTEP);
             }
 
             timeSinceLastUpdate = 0;
 
 
-            if (gameScreen != null) {
+            if (hasMap) {
                 gameScreen.render(dt);
             }
         }
     }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
 
     private class MapChangeListener implements MessageListener {
         @Override
@@ -135,17 +132,9 @@ public abstract class Game implements ApplicationListener {
                 world.setTerrain(new Terrain(heightMap));
                 world.setTeamModeOn(newWorldMessage.isTeamModeOn());
 
-                physicsSystem = new PhysicsSystem(world);
+                gameScreen.setWorld(world);
 
-                inputHandler = new InputHandler(world);
-                inputHandler.register();
-
-                audioManager = new AudioManager(world.getPlayerManager(),
-                                                world.getShotManager(),
-                                                config);
-                audioManager.loadAudio();
-
-                gameScreen = new GameScreen(world);
+                hasMap = true;
             }
         }
     }

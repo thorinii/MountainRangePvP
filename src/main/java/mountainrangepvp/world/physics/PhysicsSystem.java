@@ -14,15 +14,9 @@ public class PhysicsSystem {
     private static final float GRAVITY = -1000f;
     private static final float DAMPING = 0.01f;
 
-    private final GameWorld world;
-
-    public PhysicsSystem(GameWorld world) {
-        this.world = world;
-    }
-
-    public void update(float dt) {
+    public void update(GameWorld world, float dt) {
         for (Player player : world.getPlayerManager().getPlayers()) {
-            updatePlayer(player, dt);
+            updatePlayer(world.getTerrain(), player, dt);
         }
     }
 
@@ -34,13 +28,13 @@ public class PhysicsSystem {
      * @param player
      * @param dt
      */
-    private void updatePlayer(Player player, float dt) {
+    private void updatePlayer(Terrain terrain, Player player, float dt) {
         Vector2 pos = player.getPosition();
         Vector2 vel = player.getVelocity();
 
         //dampenVelocity(vel, dt);
 
-        checkWalkUpSlope(vel, pos, dt);
+        checkWalkUpSlope(terrain, vel, pos, dt);
         //slideDownSlope(player, pos, vel, dt);
 
         vel.y += GRAVITY * dt;
@@ -48,15 +42,13 @@ public class PhysicsSystem {
         pos.x += vel.x * dt;
         pos.y += vel.y * dt;
 
-        checkGroundIntersection(player, pos, vel);
+        checkGroundIntersection(terrain, player, pos, vel);
 
         player.update();
 
     }
 
-    private void checkWalkUpSlope(Vector2 vel, Vector2 pos, float dt) {
-        Terrain terrain = world.getTerrain();
-
+    private void checkWalkUpSlope(Terrain terrain, Vector2 vel, Vector2 pos, float dt) {
         int base, length;
         if (vel.x < 0) {
             base = (int) (pos.x + vel.x * dt);
@@ -77,10 +69,8 @@ public class PhysicsSystem {
         }
     }
 
-    private void slideDownSlope(Player player, Vector2 pos, Vector2 vel,
+    private void slideDownSlope(Terrain terrain, Player player, Vector2 pos, Vector2 vel,
                                 float dt) {
-        Terrain terrain = world.getTerrain();
-
         if (player.isOnGround()) {
             Slice slice = terrain.getSlice((int) pos.x - 1, Player.WIDTH + 3);
 
@@ -105,8 +95,8 @@ public class PhysicsSystem {
         }
     }
 
-    private void checkGroundIntersection(Player player, Vector2 pos, Vector2 vel) {
-        Slice slice = world.getTerrain().getSlice((int) pos.x, Player.WIDTH);
+    private void checkGroundIntersection(Terrain terrain, Player player, Vector2 pos, Vector2 vel) {
+        Slice slice = terrain.getSlice((int) pos.x, Player.WIDTH);
 
         int highestPoint = slice.getHighestPoint();
 
