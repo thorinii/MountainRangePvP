@@ -1,7 +1,7 @@
 package mountainrangepvp.game.settings;
 
-import mountainrangepvp.mp.MultiplayerConstants;
-import mountainrangepvp.world.player.Player.Team;
+import mountainrangepvp.game.mp.MultiplayerConstants;
+import mountainrangepvp.game.world.Player.Team;
 
 /**
  * @author lachlan

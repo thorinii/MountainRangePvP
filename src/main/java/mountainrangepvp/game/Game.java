@@ -1,26 +1,26 @@
 package mountainrangepvp.game;
 
 import com.badlogic.gdx.Gdx;
-import mountainrangepvp.audio.AudioManager;
-import mountainrangepvp.input.InputHandler;
-import mountainrangepvp.mp.GameClient;
-import mountainrangepvp.mp.message.KillConnectionMessage;
-import mountainrangepvp.mp.message.Message;
-import mountainrangepvp.mp.message.MessageListener;
-import mountainrangepvp.mp.message.NewWorldMessage;
-import mountainrangepvp.renderer.GameScreen;
+import mountainrangepvp.game.audio.AudioManager;
+import mountainrangepvp.game.input.InputHandler;
+import mountainrangepvp.game.mp.GameClient;
+import mountainrangepvp.game.mp.message.KillConnectionMessage;
+import mountainrangepvp.game.mp.message.Message;
+import mountainrangepvp.game.mp.message.MessageListener;
+import mountainrangepvp.game.mp.message.NewWorldMessage;
+import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.util.Log;
-import mountainrangepvp.world.Instance;
-import mountainrangepvp.world.Map;
-import mountainrangepvp.world.chat.ChatManager;
-import mountainrangepvp.world.physics.PhysicsSystem;
-import mountainrangepvp.world.player.ClientPlayerManager;
-import mountainrangepvp.world.player.PlayerManager;
-import mountainrangepvp.world.shot.ClientShotManager;
-import mountainrangepvp.world.terrain.HeightMap;
-import mountainrangepvp.world.terrain.HillsHeightMap;
-import mountainrangepvp.world.terrain.Terrain;
+import mountainrangepvp.game.world.Instance;
+import mountainrangepvp.game.world.Map;
+import mountainrangepvp.game.world.ChatManager;
+import mountainrangepvp.game.world.PhysicsSystem;
+import mountainrangepvp.game.world.ClientPlayerManager;
+import mountainrangepvp.game.world.PlayerManager;
+import mountainrangepvp.game.world.ClientShotManager;
+import mountainrangepvp.game.world.HeightMap;
+import mountainrangepvp.game.world.HillsHeightMap;
+import mountainrangepvp.game.world.Terrain;
 
 import java.io.IOException;
 
