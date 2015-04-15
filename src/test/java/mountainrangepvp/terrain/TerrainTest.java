@@ -90,7 +90,7 @@ public class TerrainTest {
     }
 
     @Test
-    public void testHightestPoint() {
+    public void testHighestPoint() {
         Terrain terrain = new Terrain(new TestGenerator());
 
         assertEquals(0, terrain.getHighestPointBetween(0, 5));
