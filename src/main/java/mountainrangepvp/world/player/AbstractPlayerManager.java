@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author lachlan
@@ -13,7 +14,7 @@ public abstract class AbstractPlayerManager implements PlayerManager {
     protected final List<Player> players;
 
     public AbstractPlayerManager() {
-        players = new ArrayList<>();
+        players = new CopyOnWriteArrayList<>();
     }
 
     @Override

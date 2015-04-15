@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author lachlan
@@ -34,7 +35,7 @@ public class MessageServer {
 
     public MessageServer(int port) {
         this.port = port;
-        clients = new LinkedList<>();
+        clients = new CopyOnWriteArrayList<>();
 
         messageQueue = new MessageQueue();
 
