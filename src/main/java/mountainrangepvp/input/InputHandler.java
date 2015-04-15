@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.world.Instance;
-import mountainrangepvp.world.Map;
 import mountainrangepvp.world.chat.ChatManager;
 import mountainrangepvp.world.player.Player;
 import mountainrangepvp.world.shot.ShotManager;
@@ -158,7 +157,7 @@ public class InputHandler {
         gunTimer = 0;
     }
 
-    class PlayerInputHandler extends AbstractInputProcessor {
+    class PlayerInputHandler extends LibGdxInputAdaptor {
 
         @Override
         public boolean keyDown(int keycode) {
@@ -222,7 +221,7 @@ public class InputHandler {
         }
     }
 
-    class ChatInputHandler extends AbstractInputProcessor {
+    class ChatInputHandler extends LibGdxInputAdaptor {
 
         @Override
         public boolean keyUp(int keycode) {

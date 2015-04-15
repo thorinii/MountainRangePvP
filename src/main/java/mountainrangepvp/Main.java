@@ -6,7 +6,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.Game;
-import mountainrangepvp.game.GameConfig;
+import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.ServerGame;
 
 /**
@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) {
         if (args.length > 0) {
-            GameConfig config = new GameConfig();
+            GameSettings config = new GameSettings();
 
             switch (args[0]) {
                 case "client":
@@ -58,22 +58,22 @@ public class Main {
         }
     }
 
-    public static void startGame(GameConfig gameConfig) {
+    public static void startGame(GameSettings gameSettings) {
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
         appConfig.title = "Mountain Range PvP";
         appConfig.forceExit = false;
-        appConfig.fullscreen = gameConfig.fullscreen;
+        appConfig.fullscreen = gameSettings.fullscreen;
         appConfig.resizable = false;
         appConfig.vSyncEnabled = true;
 
-        appConfig.width = gameConfig.resolutionWidth;
-        appConfig.height = gameConfig.resolutionHeight;
-        appConfig.depth = gameConfig.bitDepth;
+        appConfig.width = gameSettings.resolutionWidth;
+        appConfig.height = gameSettings.resolutionHeight;
+        appConfig.depth = gameSettings.bitDepth;
 
-        LwjglApplication app = new LwjglApplication(gameListenerAdaptor(gameConfig), appConfig);
+        LwjglApplication app = new LwjglApplication(gameListenerAdaptor(gameSettings), appConfig);
     }
 
-    private static ApplicationListener gameListenerAdaptor(final GameConfig config) {
+    private static ApplicationListener gameListenerAdaptor(final GameSettings config) {
         return new ApplicationAdapter() {
             Game game;
 
