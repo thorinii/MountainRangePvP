@@ -1,13 +1,12 @@
 package mountainrangepvp.world.player;
 
-import mountainrangepvp.util.Log;
 import mountainrangepvp.mp.message.IntroduceMessage;
 import mountainrangepvp.mp.message.KillConnectionMessage;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.PlayerUpdateMessage;
+import mountainrangepvp.util.Log;
 
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  * @author lachlan
@@ -22,12 +21,9 @@ public class ServerPlayerManager extends AbstractPlayerManager {
     @Override
     public void accept(Message message, int id) throws IOException {
         if (message instanceof KillConnectionMessage) {
-            Iterator<Player> itr = players.iterator();
-
-            while (itr.hasNext()) {
-                Player p = itr.next();
+            for (Player p : players) {
                 if (p.getID() == id) {
-                    itr.remove();
+                    players.remove(p);
 
                     Log.info(p.getName(), "disconnected");
                 }

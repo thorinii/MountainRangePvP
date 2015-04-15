@@ -1,11 +1,12 @@
 package mountainrangepvp.mp;
 
+import mountainrangepvp.mp.message.*;
 import mountainrangepvp.util.Log;
+import mountainrangepvp.util.Timer;
+import mountainrangepvp.world.GameWorld;
 import mountainrangepvp.world.chat.ChatLine;
 import mountainrangepvp.world.chat.ChatListener;
 import mountainrangepvp.world.chat.ChatManager;
-import mountainrangepvp.world.GameWorld;
-import mountainrangepvp.mp.message.*;
 import mountainrangepvp.world.physics.PhysicsSystem;
 import mountainrangepvp.world.player.Player;
 import mountainrangepvp.world.player.PlayerManager;
@@ -16,7 +17,6 @@ import mountainrangepvp.world.shot.ShotListener;
 import mountainrangepvp.world.shot.ShotManager;
 import mountainrangepvp.world.terrain.HillsHeightMap;
 import mountainrangepvp.world.terrain.Terrain;
-import mountainrangepvp.util.Timer;
 
 import java.io.IOException;
 
@@ -169,7 +169,7 @@ public class GameServer {
         }
     }
 
-    public static GameServer startBasicServer(int seed, boolean teamModeOn) {
+    public static GameServer startBasicServer(int seed, boolean teamModeOn) throws IOException {
         final GameWorld world = new GameWorld();
         world.setTeamModeOn(teamModeOn);
 
@@ -190,13 +190,9 @@ public class GameServer {
         final GameServer server = new GameServer(world);
         server.setSeed(seed);
 
-        try {
-            Log.info("Starting server...");
-            server.start();
-        } catch (IOException ex) {
-            Log.warn("Server could not start:", ex);
-            return null;
-        }
+        Log.info("Starting server...");
+        server.start();
+
 
         new Thread(new Runnable() {
             @Override

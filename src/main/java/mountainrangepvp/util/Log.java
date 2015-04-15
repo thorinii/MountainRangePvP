@@ -1,5 +1,8 @@
 package mountainrangepvp.util;
 
+import com.badlogic.gdx.Gdx;
+
+import javax.swing.*;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -42,7 +45,7 @@ public class Log {
     }
 
     public static void setupLog() {
-        setupLog(true);
+        setupLog(false);
     }
 
     public static void info(Object... data) {
@@ -132,5 +135,30 @@ public class Log {
         }
 
         return "localhost";
+    }
+
+    public static void crash(final String message) {
+        Log.warn("Error starting server connection");
+
+        Gdx.app.exit();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null, message, "Mountain Range PvP", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+    public static void crash(final String message, final Exception e) {
+        Log.warn("Error starting server connection", e);
+
+        Gdx.app.exit();
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                JOptionPane.showMessageDialog(null, message + "\n" + e, "Mountain Range PvP", JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 }
