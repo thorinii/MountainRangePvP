@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.util.Log;
-import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.Instance;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -24,10 +24,11 @@ public class GameScreen implements Screen {
     private final WorldRenderer renderer;
     private final int width, height;
 
-    private GameWorld world;
+    private final Instance instance;
 
-    public GameScreen() {
-        renderer = new WorldRenderer();
+    public GameScreen(Instance instance) {
+        this.instance = instance;
+        renderer = new WorldRenderer(instance);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -59,9 +60,9 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (world == null) return;
+        if (!instance.hasMap()) return;
 
-        Vector2 pos = world.playerManager.getLocalPlayer().getCentralPosition();
+        Vector2 pos = instance.playerManager.getLocalPlayer().getCentralPosition();
 
         pos.x = pos.x - width / 2;
         pos.y = pos.y - height / 2;
@@ -69,11 +70,6 @@ public class GameScreen implements Screen {
         cameraPosition.lerp(pos, 0.2f);
 
         renderer.render(cameraPosition);
-    }
-
-    public void setWorld(GameWorld world) {
-        this.world = world;
-        renderer.setWorld(world);
     }
 
     @Override

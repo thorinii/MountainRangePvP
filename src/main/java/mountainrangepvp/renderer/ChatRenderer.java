@@ -12,7 +12,7 @@ import mountainrangepvp.world.player.Player;
 /**
  * @author lachlan
  */
-public class ChatRenderer implements Renderer {
+public class ChatRenderer {
 
     private static final Color[] COLOURS = new Color[]{
             new Color(1, .5f, 0, 1),
@@ -21,30 +21,26 @@ public class ChatRenderer implements Renderer {
             new Color(0, 0, 1, 1)};
     private final SpriteBatch batch;
     private final TextRenderer textRenderer;
-    private final ChatManager chatManager;
 
     private final Texture background;
 
-    public ChatRenderer(SpriteBatch batch, TextRenderer textRenderer,
-                        ChatManager chatManager) {
+    public ChatRenderer(SpriteBatch batch, TextRenderer textRenderer) {
         this.batch = batch;
-        this.chatManager = chatManager;
         this.textRenderer = textRenderer;
 
         background = new Texture(Gdx.files.internal("chat/background.png"));
     }
 
-    @Override
-    public void render(Vector2 scroll) {
+    public void render(ChatManager chatManager) {
         batch.begin();
-        drawChatMessages();
+        drawChatMessages(chatManager);
 
         if (chatManager.isChatting())
-            drawCurrentChat();
+            drawCurrentChat(chatManager);
         batch.end();
     }
 
-    private void drawChatMessages() {
+    private void drawChatMessages(ChatManager chatManager) {
         int i = 0;
 
         for (ChatLine line : chatManager.getLinesHead(20)) {
@@ -74,7 +70,7 @@ public class ChatRenderer implements Renderer {
         textRenderer.setColour(Color.BLACK);
     }
 
-    private void drawCurrentChat() {
+    private void drawCurrentChat(ChatManager chatManager) {
         batch.draw(background, 10, 10, 400, 31);
         textRenderer.drawString(batch, chatManager.getCurrentLine(),
                                 15, 10 + 15 + 8);

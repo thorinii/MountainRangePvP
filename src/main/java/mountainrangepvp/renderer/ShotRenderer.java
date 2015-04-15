@@ -10,22 +10,18 @@ import mountainrangepvp.world.shot.ShotManager;
 /**
  * @author lachlan
  */
-public class ShotRenderer implements Renderer {
+public class ShotRenderer {
 
-
-    private final ShotManager shotManager;
     private final SpriteBatch batch;
     private final Texture shotTexture;
 
-    public ShotRenderer(SpriteBatch batch, ShotManager shotManager) {
+    public ShotRenderer(SpriteBatch batch) {
         this.batch = batch;
-        this.shotManager = shotManager;
 
         shotTexture = new Texture(Gdx.files.internal("shot/shot.png"));
     }
 
-    @Override
-    public void render(Vector2 scroll) {
+    public void render(Vector2 scroll, ShotManager shotManager) {
         batch.begin();
 
         for (Shot shot : shotManager.getShots()) {

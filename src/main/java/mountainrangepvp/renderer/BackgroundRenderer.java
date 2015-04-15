@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * @author lachlan
  */
-public class BackgroundRenderer implements Renderer {
+public class BackgroundRenderer {
 
     private static final float SCROLL_RATE_H = 0.003f;
     private static final float SCROLL_RATE_V = 0.03f;
@@ -27,13 +27,12 @@ public class BackgroundRenderer implements Renderer {
         height = Gdx.graphics.getHeight();
     }
 
-    @Override
     public void render(Vector2 scroll) {
-        float sunx = -scroll.x * SCROLL_RATE_H + width * 3 / 4;
-        float y = -scroll.y * SCROLL_RATE_V + height * 3 / 4;
+        float sunX = -scroll.x * SCROLL_RATE_H + width * 3 / 4;
+        float sunY = -scroll.y * SCROLL_RATE_V + height * 3 / 4;
 
         batch.begin();
-        batch.draw(sunTexture, sunx, y);
+        batch.draw(sunTexture, sunX, sunY);
         batch.end();
     }
 }
