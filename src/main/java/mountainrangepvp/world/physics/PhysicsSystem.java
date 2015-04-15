@@ -15,8 +15,8 @@ public class PhysicsSystem {
     private static final float DAMPING = 0.01f;
 
     public void update(GameWorld world, float dt) {
-        for (Player player : world.getPlayerManager().getPlayers()) {
-            updatePlayer(world.getTerrain(), player, dt);
+        for (Player player : world.playerManager.getPlayers()) {
+            updatePlayer(world.terrain, player, dt);
         }
     }
 

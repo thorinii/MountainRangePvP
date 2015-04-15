@@ -21,7 +21,7 @@ public class ServerGame extends Game {
     @Override
     public void start() {
         try {
-            server = GameServer.startBasicServer(seed, world.isTeamModeOn());
+            server = GameServer.startBasicServer(seed, world.teamModeOn);
         } catch (IOException ioe) {
             Log.crash("Could not start server", ioe);
         }

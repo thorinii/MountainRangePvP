@@ -10,53 +10,17 @@ import mountainrangepvp.world.terrain.Terrain;
  */
 public class GameWorld {
 
-    private Terrain terrain;
-    private PlayerManager playerManager;
-    private ShotManager shotManager;
-    private ChatManager chatManager;
-    private boolean teamModeOn;
+    public final PlayerManager playerManager;
+    public final ShotManager shotManager;
+    public final ChatManager chatManager;
+    public final Terrain terrain;
+    public final boolean teamModeOn;
 
-    public GameWorld() {
-        teamModeOn = false;
-    }
-
-    public Terrain getTerrain() {
-        return terrain;
-    }
-
-    public void setTerrain(Terrain terrain) {
-        this.terrain = terrain;
-    }
-
-    public PlayerManager getPlayerManager() {
-        return playerManager;
-    }
-
-    public void setPlayerManager(PlayerManager playerManager) {
+    public GameWorld(PlayerManager playerManager, ShotManager shotManager, ChatManager chatManager, Terrain terrain, boolean teamModeOn) {
         this.playerManager = playerManager;
-    }
-
-    public ShotManager getShotManager() {
-        return shotManager;
-    }
-
-    public void setShotManager(ShotManager shotManager) {
         this.shotManager = shotManager;
-    }
-
-    public ChatManager getChatManager() {
-        return chatManager;
-    }
-
-    public void setChatManager(ChatManager chatManager) {
         this.chatManager = chatManager;
-    }
-
-    public boolean isTeamModeOn() {
-        return teamModeOn;
-    }
-
-    public void setTeamModeOn(boolean teamModeOn) {
+        this.terrain = terrain;
         this.teamModeOn = teamModeOn;
     }
 

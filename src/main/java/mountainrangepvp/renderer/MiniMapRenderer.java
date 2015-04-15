@@ -65,7 +65,7 @@ public class MiniMapRenderer implements Renderer {
     }
 
     private void drawTerrain(Vector2 scroll) {
-        Slice slice = world.getTerrain().getSlice(
+        Slice slice = world.terrain.getSlice(
                 (int) scroll.x + width / 2 - (int) (WIDTH * H_SCALE) / 2,
                 (int) (WIDTH * H_SCALE));
 
@@ -94,7 +94,7 @@ public class MiniMapRenderer implements Renderer {
     }
 
     private void drawPlayers(Vector2 scroll) {
-        for (Player player : world.getPlayerManager().getPlayers()) {
+        for (Player player : world.playerManager.getPlayers()) {
             if (!player.isAlive())
                 continue;
 

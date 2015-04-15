@@ -53,15 +53,12 @@ public class WorldRenderer {
     public void setWorld(GameWorld world) {
         this.world = world;
 
-        terrainRenderer = new TerrainRenderer(batch, world.getTerrain());
-        playerRenderer = new PlayerRenderer(batch, textRenderer, world.
-                getPlayerManager());
-        shotRenderer = new ShotRenderer(batch, world.getShotManager());
-        chatRenderer = new ChatRenderer(batch, textRenderer, world.
-                getChatManager());
+        terrainRenderer = new TerrainRenderer(batch, world.terrain);
+        playerRenderer = new PlayerRenderer(batch, textRenderer, world.playerManager);
+        shotRenderer = new ShotRenderer(batch, world.shotManager);
+        chatRenderer = new ChatRenderer(batch, textRenderer, world.chatManager);
         miniMapRenderer = new MiniMapRenderer(batch, world);
-        leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer,
-                                                      world.getPlayerManager());
+        leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer, world.playerManager);
     }
 
     public void render(Vector2 scroll) {

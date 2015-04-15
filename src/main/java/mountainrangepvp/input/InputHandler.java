@@ -18,9 +18,10 @@ public class InputHandler {
     private static final int GUN_RATE = 100;
 
     private final ChatManager chatManager;
-    private final ShotManager shotManager;
     private final PlayerInputHandler playerInputHandler;
     private final ChatInputHandler chatInputHandler;
+
+    private ShotManager shotManager;
 
     private boolean up, down, left, right;
     private int doubleJumpTimer;
@@ -28,12 +29,15 @@ public class InputHandler {
     private boolean gun;
     private int gunTimer;
 
-    public InputHandler(ChatManager chatManager, ShotManager shotManager) {
+    public InputHandler(ChatManager chatManager) {
         this.chatManager = chatManager;
-        this.shotManager = shotManager;
 
         playerInputHandler = new PlayerInputHandler();
         chatInputHandler = new ChatInputHandler();
+    }
+
+    public void setShotManager(ShotManager shotManager) {
+        this.shotManager = shotManager;
     }
 
     public void register() {
@@ -41,7 +45,7 @@ public class InputHandler {
     }
 
     public void update(GameWorld world, float dt) {
-        Player local = world.getPlayerManager().getLocalPlayer();
+        Player local = world.playerManager.getLocalPlayer();
         if (!local.isAlive()) {
             gun = false;
             doubleJumpTimer = 0;
