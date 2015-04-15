@@ -5,7 +5,10 @@ import com.badlogic.gdx.Gdx;
 import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.input.InputHandler;
 import mountainrangepvp.mp.GameClient;
+import mountainrangepvp.mp.message.KillConnectionMessage;
+import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.MessageListener;
+import mountainrangepvp.mp.message.NewWorldMessage;
 import mountainrangepvp.renderer.GameScreen;
 import mountainrangepvp.util.Log;
 import mountainrangepvp.world.GameWorld;
@@ -15,14 +18,16 @@ import mountainrangepvp.world.player.ClientPlayerManager;
 import mountainrangepvp.world.player.PlayerManager;
 import mountainrangepvp.world.shot.ClientShotManager;
 import mountainrangepvp.world.shot.ShotManager;
+import mountainrangepvp.world.terrain.HeightMap;
+import mountainrangepvp.world.terrain.HillsHeightMap;
+import mountainrangepvp.world.terrain.Terrain;
 
 import java.io.IOException;
 
 /**
- * Created by lachlan on 15/04/15.
+ * All the important bits of the game.
  */
-public abstract class Game implements ApplicationListener, MessageListener {
-    private final String serverIP;
+public abstract class Game implements ApplicationListener {
 
     protected final GameConfig config;
 
@@ -36,7 +41,6 @@ public abstract class Game implements ApplicationListener, MessageListener {
     protected GameScreen gameScreen;
 
     public Game(GameConfig config) {
-        this.serverIP = config.serverIP;
         this.config = config;
 
         world = new GameWorld();
@@ -51,8 +55,8 @@ public abstract class Game implements ApplicationListener, MessageListener {
         ChatManager chatManager = new ChatManager(playerManager);
         world.setChatManager(chatManager);
 
-        client = new GameClient(world, serverIP);
-        client.addMessageListener(this);
+        client = new GameClient(world, config.serverIP);
+        client.addMessageListener(new MapChangeListener());
     }
 
     @Override
@@ -96,16 +100,53 @@ public abstract class Game implements ApplicationListener, MessageListener {
 
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
     public void pause() {
-
     }
 
     @Override
     public void resume() {
+    }
 
+
+    private class MapChangeListener implements MessageListener {
+        @Override
+        public void accept(Message message, int id) throws IOException {
+            if (message instanceof KillConnectionMessage) {
+                KillConnectionMessage kill = (KillConnectionMessage) message;
+
+                Log.crash("Server disconnected: " + kill.getReason());
+            } else if (message instanceof NewWorldMessage) {
+                NewWorldMessage newWorldMessage = (NewWorldMessage) message;
+
+                Log.info("Received Seed", newWorldMessage.getSeed(), "Changing Map");
+
+                HeightMap heightMap;
+                switch (newWorldMessage.getWorldType()) {
+                    case Hills:
+                        heightMap = new HillsHeightMap(newWorldMessage.getSeed());
+                        break;
+                    default:
+                        heightMap = null;
+                }
+
+                world.setTerrain(new Terrain(heightMap));
+                world.setTeamModeOn(newWorldMessage.isTeamModeOn());
+
+                physicsSystem = new PhysicsSystem(world);
+
+                inputHandler = new InputHandler(world);
+                inputHandler.register();
+
+                audioManager = new AudioManager(world.getPlayerManager(),
+                                                world.getShotManager(),
+                                                config);
+                audioManager.loadAudio();
+
+                gameScreen = new GameScreen(world);
+            }
+        }
     }
 }
