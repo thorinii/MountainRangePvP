@@ -9,8 +9,8 @@ import mountainrangepvp.world.player.Player;
  */
 public class ClientShotManager extends AbstractShotManager {
 
-    public ClientShotManager(GameWorld world) {
-        super(world);
+    public ClientShotManager() {
+        super();
     }
 
     @Override

@@ -61,7 +61,7 @@ public class GameScreen implements Screen {
 
         if (world == null) return;
 
-        Vector2 pos = world.getPlayerManager().getLocalPlayer().getCentralPosition();
+        Vector2 pos = world.playerManager.getLocalPlayer().getCentralPosition();
 
         pos.x = pos.x - width / 2;
         pos.y = pos.y - height / 2;

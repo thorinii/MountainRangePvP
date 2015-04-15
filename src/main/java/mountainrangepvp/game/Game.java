@@ -1,6 +1,5 @@
 package mountainrangepvp.game;
 
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import mountainrangepvp.audio.AudioManager;
 import mountainrangepvp.input.InputHandler;
@@ -17,7 +16,6 @@ import mountainrangepvp.world.physics.PhysicsSystem;
 import mountainrangepvp.world.player.ClientPlayerManager;
 import mountainrangepvp.world.player.PlayerManager;
 import mountainrangepvp.world.shot.ClientShotManager;
-import mountainrangepvp.world.shot.ShotManager;
 import mountainrangepvp.world.terrain.HeightMap;
 import mountainrangepvp.world.terrain.HillsHeightMap;
 import mountainrangepvp.world.terrain.Terrain;
@@ -29,47 +27,38 @@ import java.io.IOException;
  */
 public abstract class Game {
 
-    private final GameConfig config;
+    public final GameConfig config;
 
-    private final GameClient client;
-    private final PhysicsSystem physicsSystem;
-    private final InputHandler inputHandler;
-    private final AudioManager audioManager;
-    private final GameScreen gameScreen;
+    public final GameClient client;
+    public final PhysicsSystem physicsSystem;
+    public final InputHandler inputHandler;
+    public final AudioManager audioManager;
+    public final GameScreen gameScreen;
 
-    protected final GameWorld world;
+    public final PlayerManager playerManager;
+    public final ChatManager chatManager;
 
-    private boolean hasMap;
+    protected GameWorld world;
+    private ClientShotManager shotManager;
 
     public Game(GameConfig config) {
         this.config = config;
 
-        world = new GameWorld();
-        world.setTeamModeOn(config.teamModeOn);
-
         physicsSystem = new PhysicsSystem();
 
-        PlayerManager playerManager = new ClientPlayerManager(config.playerName, config.team);
-        world.setPlayerManager(playerManager);
+        playerManager = new ClientPlayerManager(config.playerName, config.team);
+        chatManager = new ChatManager(playerManager);
 
-        ShotManager shotManager = new ClientShotManager(world);
-        world.setShotManager(shotManager);
-
-        ChatManager chatManager = new ChatManager(playerManager);
-        world.setChatManager(chatManager);
-
-        inputHandler = new InputHandler(chatManager, shotManager);
+        inputHandler = new InputHandler(chatManager);
         inputHandler.register();
 
-        audioManager = new AudioManager(playerManager, shotManager, config);
+        audioManager = new AudioManager(playerManager, config);
         audioManager.loadAudio();
 
         client = new GameClient(world, config.serverIP);
         client.addMessageListener(new MapChangeListener());
 
         gameScreen = new GameScreen();
-
-        hasMap = false;
     }
 
     public void start() {
@@ -93,7 +82,7 @@ public abstract class Game {
 
         if (timeSinceLastUpdate > config.TIMESTEP) {
             client.update();
-            if (hasMap) {
+            if (world != null) {
                 inputHandler.update(world, config.TIMESTEP);
                 world.update(config.TIMESTEP);
                 physicsSystem.update(world, config.TIMESTEP);
@@ -102,7 +91,7 @@ public abstract class Game {
             timeSinceLastUpdate = 0;
 
 
-            if (hasMap) {
+            if (world != null) {
                 gameScreen.render(dt);
             }
         }
@@ -129,12 +118,13 @@ public abstract class Game {
                         heightMap = null;
                 }
 
-                world.setTerrain(new Terrain(heightMap));
-                world.setTeamModeOn(newWorldMessage.isTeamModeOn());
-
+                shotManager = new ClientShotManager();
+                world = new GameWorld(playerManager, shotManager, chatManager, new Terrain(heightMap), config.teamModeOn);
+                shotManager.setWorld(world);
                 gameScreen.setWorld(world);
 
-                hasMap = true;
+                audioManager.listenTo(shotManager);
+                inputHandler.setShotManager(shotManager);
             }
         }
     }

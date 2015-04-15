@@ -20,15 +20,18 @@ public class AudioManager {
     private Sound gunShot;
 
 
-    public AudioManager(PlayerManager playerManager, ShotManager shotManager, GameConfig config) {
+    public AudioManager(PlayerManager playerManager, GameConfig config) {
         this.playerManager = playerManager;
         this.config = config;
 
-        shotManager.addShotListener(new AudioShotListener());
     }
 
     public void loadAudio() {
         gunShot = Gdx.audio.newSound(Gdx.files.internal("shot/fire.ogg"));
+    }
+
+    public void listenTo(ShotManager shotManager) {
+        shotManager.addShotListener(new AudioShotListener());
     }
 
     private class AudioShotListener implements ShotListener {

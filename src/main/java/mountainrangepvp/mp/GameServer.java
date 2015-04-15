@@ -44,12 +44,12 @@ public class GameServer {
 
     private void setup() {
         messageServer.addMessageListener(new GameServerMessageListener());
-        messageServer.addMessageListener(world.getPlayerManager());
-        messageServer.addMessageListener(world.getShotManager());
-        messageServer.addMessageListener(world.getChatManager());
+        messageServer.addMessageListener(world.playerManager);
+        messageServer.addMessageListener(world.shotManager);
+        messageServer.addMessageListener(world.chatManager);
 
-        world.getShotManager().addShotListener(new NewShotListener());
-        world.getChatManager().addChatListener(new NewChatListener());
+        world.shotManager.addShotListener(new NewShotListener());
+        world.chatManager.addChatListener(new NewChatListener());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -75,7 +75,7 @@ public class GameServer {
     public void update() {
         playerUpdateTimer.update();
         if (playerUpdateTimer.getTime() > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-            for (Player player : world.getPlayerManager().getPlayers()) {
+            for (Player player : world.playerManager.getPlayers()) {
                 PlayerUpdateMessage pum = new PlayerUpdateMessage(player);
                 messageServer.broadcastExcept(pum, player.getID());
             }
@@ -104,21 +104,18 @@ public class GameServer {
             if (message instanceof IntroduceMessage) {
                 IntroduceMessage introduceMessage = (IntroduceMessage) message;
 
-                Player existing = world.getPlayerManager().getPlayer(
-                        introduceMessage.
-                                getName());
+                Player existing = world.playerManager.getPlayer(introduceMessage.getName());
                 if (existing != null) {
                     KillConnectionMessage kcm = new KillConnectionMessage(
                             KillConnectionMessage.Reason.DuplicatePlayer);
                     messageServer.send(kcm, id);
                 } else {
                     NewWorldMessage newWorldMessage = new NewWorldMessage(
-                            NewWorldMessage.WorldType.Hills, seed, world.
-                            isTeamModeOn());
+                            NewWorldMessage.WorldType.Hills, seed, world.teamModeOn);
                     messageServer.send(newWorldMessage, id);
 
 
-                    for (Player player : world.getPlayerManager().getPlayers()) {
+                    for (Player player : world.playerManager.getPlayers()) {
                         PlayerConnectMessage pcm = new PlayerConnectMessage(
                                 player);
                         messageServer.send(pcm, id);
@@ -170,20 +167,16 @@ public class GameServer {
     }
 
     public static GameServer startBasicServer(int seed, boolean teamModeOn) throws IOException {
-        final GameWorld world = new GameWorld();
-        world.setTeamModeOn(teamModeOn);
-
         Terrain terrain = new Terrain(new HillsHeightMap(seed));
-        world.setTerrain(terrain);
 
         PlayerManager playerManager = new ServerPlayerManager();
-        world.setPlayerManager(playerManager);
 
-        ShotManager shotManager = new ServerShotManager(world);
-        world.setShotManager(shotManager);
+        ServerShotManager shotManager = new ServerShotManager();
 
         ChatManager chatManager = new ChatManager(playerManager);
-        world.setChatManager(chatManager);
+
+        final GameWorld world = new GameWorld(playerManager, shotManager, chatManager, terrain, teamModeOn);
+        shotManager.setWorld(world);
 
         final PhysicsSystem physicsSystem = new PhysicsSystem();
 

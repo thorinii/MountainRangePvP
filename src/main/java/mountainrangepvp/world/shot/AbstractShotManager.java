@@ -2,9 +2,9 @@ package mountainrangepvp.world.shot;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.world.GameWorld;
 import mountainrangepvp.mp.message.Message;
 import mountainrangepvp.mp.message.NewShotMessage;
+import mountainrangepvp.world.GameWorld;
 import mountainrangepvp.world.player.Player;
 
 import java.awt.geom.Line2D;
@@ -21,12 +21,15 @@ public abstract class AbstractShotManager implements ShotManager {
 
     private final List<ShotListener> listeners;
     private final List<Shot> shots;
-    protected final GameWorld world;
+    protected GameWorld world;
 
-    public AbstractShotManager(GameWorld world) {
+    public AbstractShotManager() {
         listeners = new ArrayList<>();
-        this.world = world;
         shots = new LinkedList<>();
+    }
+
+    public void setWorld(GameWorld world) {
+        this.world = world;
     }
 
     @Override
@@ -79,8 +82,7 @@ public abstract class AbstractShotManager implements ShotManager {
         } else {
             Player hit = testNewRespawnPlayers(shot, pos, npos);
             if (hit != null) {
-                if (world.isTeamModeOn() && hit.getTeam() == shot.player.
-                        getTeam()) {
+                if (world.teamModeOn && hit.getTeam() == shot.player.getTeam()) {
                     // Let it pass
                 } else {
                     Vector2 intersection =
@@ -99,7 +101,7 @@ public abstract class AbstractShotManager implements ShotManager {
             } else {
                 hit = testNonRespawnPlayers(shot, pos, npos);
                 if (hit != null)
-                    if (world.isTeamModeOn() && hit.getTeam() == shot.player.
+                    if (world.teamModeOn && hit.getTeam() == shot.player.
                             getTeam()) {
                         // Let it pass
                     } else {
@@ -118,11 +120,11 @@ public abstract class AbstractShotManager implements ShotManager {
     }
 
     private boolean testTerrain(Vector2 pos, Vector2 npos) {
-        return world.getTerrain().collideLine(pos, npos);
+        return world.terrain.collideLine(pos, npos);
     }
 
     private Player testNewRespawnPlayers(Shot shot, Vector2 lp1, Vector2 lp2) {
-        for (Player player : world.getPlayerManager().getPlayers()) {
+        for (Player player : world.playerManager.getPlayers()) {
             if (!player.isAlive() || player == shot.player || !player.
                     isSpawnBubbleOn()) {
                 continue;
@@ -143,7 +145,7 @@ public abstract class AbstractShotManager implements ShotManager {
         Vector2 shot2 = npos;
 
         Vector2 p1, p2;
-        for (Player player : world.getPlayerManager().getPlayers()) {
+        for (Player player : world.playerManager.getPlayers()) {
             if (!player.isAlive() || player == shot.player || player.
                     isSpawnBubbleOn()) {
                 continue;
@@ -238,7 +240,7 @@ public abstract class AbstractShotManager implements ShotManager {
     public void accept(Message message, int id) throws IOException {
         if (message instanceof NewShotMessage) {
             NewShotMessage nsm = (NewShotMessage) message;
-            addShot(nsm.getShot(world.getPlayerManager()));
+            addShot(nsm.getShot(world.playerManager));
         }
     }
 }
