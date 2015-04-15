@@ -19,19 +19,19 @@ public class ServerGame extends Game {
     }
 
     @Override
-    public void create() {
+    public void start() {
         try {
             server = GameServer.startBasicServer(seed, world.isTeamModeOn());
         } catch (IOException ioe) {
             Log.crash("Could not start server", ioe);
         }
 
-        super.create();
+        super.start();
     }
 
     @Override
-    public void dispose() {
-        super.dispose();
+    public void kill() {
+        super.kill();
         server.stop();
     }
 }

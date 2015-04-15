@@ -5,8 +5,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.world.GameWorld;
 import mountainrangepvp.util.Log;
+import mountainrangepvp.world.GameWorld;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -21,17 +21,13 @@ public class GameScreen implements Screen {
 
     private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
 
-    private Cursor emptyCursor = null;
-
-    private final GameWorld world;
     private final WorldRenderer renderer;
     private final int width, height;
 
-    public GameScreen(GameWorld world) {
-        this.world = world;
+    private GameWorld world;
 
+    public GameScreen() {
         renderer = new WorldRenderer();
-        renderer.setWorld(world);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -43,8 +39,8 @@ public class GameScreen implements Screen {
             try {
                 int min = Cursor.getMinCursorSize();
                 IntBuffer tmp = BufferUtils.createIntBuffer(min * min);
-                emptyCursor = new Cursor(min, min, min / 2, min / 2, 1, tmp,
-                                         null);
+                Cursor emptyCursor = new Cursor(min, min, min / 2, min / 2, 1, tmp,
+                                                null);
 
                 Mouse.setNativeCursor(emptyCursor);
             } catch (LWJGLException ex) {
@@ -63,6 +59,8 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
+        if (world == null) return;
+
         Vector2 pos = world.getPlayerManager().getLocalPlayer().getCentralPosition();
 
         pos.x = pos.x - width / 2;
@@ -71,6 +69,11 @@ public class GameScreen implements Screen {
         cameraPosition.lerp(pos, 0.2f);
 
         renderer.render(cameraPosition);
+    }
+
+    public void setWorld(GameWorld world) {
+        this.world = world;
+        renderer.setWorld(world);
     }
 
     @Override

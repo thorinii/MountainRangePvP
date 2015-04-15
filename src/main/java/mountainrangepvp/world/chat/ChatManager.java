@@ -52,6 +52,10 @@ public class ChatManager implements MessageListener {
         addLine(new ChatLine(player, text));
     }
 
+    public void addLocalLine(String text) {
+        addLine(playerManager.getLocalPlayer(), text);
+    }
+
     public void addLine(ChatLine line) {
         lines.add(0, line);
 

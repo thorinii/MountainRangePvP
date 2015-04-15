@@ -3,9 +3,10 @@ package mountainrangepvp.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.world.chat.ChatLine;
 import mountainrangepvp.world.GameWorld;
+import mountainrangepvp.world.chat.ChatManager;
 import mountainrangepvp.world.player.Player;
+import mountainrangepvp.world.shot.ShotManager;
 
 /**
  * @author lachlan
@@ -16,7 +17,8 @@ public class InputHandler {
     private static final int DOUBLE_JUMP_MAX = 500;
     private static final int GUN_RATE = 100;
 
-    private final GameWorld world;
+    private final ChatManager chatManager;
+    private final ShotManager shotManager;
     private final PlayerInputHandler playerInputHandler;
     private final ChatInputHandler chatInputHandler;
 
@@ -26,8 +28,9 @@ public class InputHandler {
     private boolean gun;
     private int gunTimer;
 
-    public InputHandler(GameWorld world) {
-        this.world = world;
+    public InputHandler(ChatManager chatManager, ShotManager shotManager) {
+        this.chatManager = chatManager;
+        this.shotManager = shotManager;
 
         playerInputHandler = new PlayerInputHandler();
         chatInputHandler = new ChatInputHandler();
@@ -37,7 +40,7 @@ public class InputHandler {
         Gdx.input.setInputProcessor(playerInputHandler);
     }
 
-    public void update(float dt) {
+    public void update(GameWorld world, float dt) {
         Player local = world.getPlayerManager().getLocalPlayer();
         if (!local.isAlive()) {
             gun = false;
@@ -132,9 +135,10 @@ public class InputHandler {
             gunTimer = 0;
 
             Vector2 pos = player.getCentralPosition();
-            world.getShotManager().addShot(pos,
-                                           player.getGunDirection().cpy(),
-                                           player);
+            // TODO: send a message
+            shotManager.addShot(pos,
+                                player.getGunDirection().cpy(),
+                                player);
 
             Vector2 kickback = player.getGunDirection().cpy().scl(-90f);
             player.getVelocity().add(kickback);
@@ -192,7 +196,7 @@ public class InputHandler {
                     break;
                 case Keys.TAB:
                     Gdx.input.setInputProcessor(chatInputHandler);
-                    world.getChatManager().setChatting(true);
+                    chatManager.setChatting(true);
                     reset();
                     break;
             }
@@ -217,16 +221,15 @@ public class InputHandler {
 
         @Override
         public boolean keyUp(int keycode) {
-            String line = world.getChatManager().getCurrentLine();
+            String line = chatManager.getCurrentLine();
             switch (keycode) {
                 case Keys.ENTER:
                     if (!line.isEmpty())
-                        world.getChatManager().addLine(new ChatLine(world.
-                                getPlayerManager().getLocalPlayer(), line));
+                        chatManager.addLocalLine(line);
                 case Keys.ESCAPE:
                 case Keys.TAB:
                     Gdx.input.setInputProcessor(playerInputHandler);
-                    world.getChatManager().setChatting(false);
+                    chatManager.setChatting(false);
                     break;
                 case Keys.BACKSPACE:
                     if (!line.isEmpty())
@@ -234,7 +237,7 @@ public class InputHandler {
                     break;
             }
 
-            world.getChatManager().setCurrentLine(line);
+            chatManager.setCurrentLine(line);
             return true;
         }
 
@@ -246,9 +249,9 @@ public class InputHandler {
             if (!acceptable)
                 return true;
 
-            String line = world.getChatManager().getCurrentLine();
+            String line = chatManager.getCurrentLine();
             line += character;
-            world.getChatManager().setCurrentLine(line);
+            chatManager.setCurrentLine(line);
 
             return true;
         }
