@@ -3,24 +3,10 @@ package mountainrangepvp.game.mp;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.mp.message.*;
 import mountainrangepvp.game.mp.message.KillConnectionMessage.Reason;
+import mountainrangepvp.game.world.*;
+import mountainrangepvp.game.world.Player.Team;
 import mountainrangepvp.util.Log;
 import mountainrangepvp.util.Timer;
-import mountainrangepvp.game.world.Instance;
-import mountainrangepvp.game.world.Map;
-import mountainrangepvp.game.world.ChatLine;
-import mountainrangepvp.game.world.ChatListener;
-import mountainrangepvp.game.world.ChatManager;
-import mountainrangepvp.game.world.PhysicsSystem;
-import mountainrangepvp.game.world.ClientPlayerManager;
-import mountainrangepvp.game.world.Player;
-import mountainrangepvp.game.world.Player.Team;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.ClientShotManager;
-import mountainrangepvp.game.world.Shot;
-import mountainrangepvp.game.world.ShotListener;
-import mountainrangepvp.game.world.HeightMap;
-import mountainrangepvp.game.world.HillsHeightMap;
-import mountainrangepvp.game.world.Terrain;
 
 import java.io.IOException;
 
@@ -163,8 +149,9 @@ public class GameClient {
                             heightMap = null;
                     }
 
-                    ClientShotManager shotManager = new ClientShotManager(instance);
-                    Map map = new Map(shotManager, new Terrain(heightMap), newWorldMessage.isTeamModeOn());
+                    Terrain terrain = new Terrain(heightMap);
+                    ShotManager shotManager = new ShotManager(playerManager, terrain, false, newWorldMessage.isTeamModeOn());
+                    Map map = new Map(shotManager, terrain, newWorldMessage.isTeamModeOn());
                     instance.setMap(map);
                 }
             }
