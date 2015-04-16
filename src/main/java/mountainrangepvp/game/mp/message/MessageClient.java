@@ -1,7 +1,7 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.util.Log;
 import mountainrangepvp.game.mp.MultiplayerConstants;
+import mountainrangepvp.util.Log;
 
 import java.io.IOException;
 import java.net.Socket;

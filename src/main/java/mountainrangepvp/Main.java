@@ -6,8 +6,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.Game;
-import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.ServerGame;
+import mountainrangepvp.game.settings.GameSettings;
 
 /**
  * @author lachlan
