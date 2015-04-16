@@ -1,3 +1,6 @@
+import sbtprotobuf.{ProtobufPlugin=>PB}
+
+
 organization := "me.lachlanap"
 
 name := "mountainrangepvp"
@@ -6,6 +9,7 @@ version := "1.0"
 
 
 scalaVersion := "2.11.5"
+
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.2.1",
@@ -43,3 +47,6 @@ mainClass in (Compile, run) := Some("mountainrangepvp.Main")
 
 mainClass in assembly := Some("mountainrangepvp.Main")
 
+
+
+Seq(PB.protobufSettings: _*)
