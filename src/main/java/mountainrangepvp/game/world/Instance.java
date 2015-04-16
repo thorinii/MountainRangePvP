@@ -31,7 +31,7 @@ public class Instance {
     }
 
     public void update(float dt) {
-        if(hasMap())
+        if (hasMap())
             map.update(dt);
     }
 }

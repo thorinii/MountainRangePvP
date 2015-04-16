@@ -5,11 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.settings.GameSettings;
-import mountainrangepvp.game.world.Player;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Shot;
-import mountainrangepvp.game.world.ShotListener;
-import mountainrangepvp.game.world.ShotManager;
+import mountainrangepvp.game.world.*;
 
 import java.util.HashMap;
 import java.util.Map;

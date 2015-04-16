@@ -149,6 +149,7 @@ public class Log {
             }
         });
     }
+
     public static void crash(final String message, final Exception e) {
         Log.warn("Error starting server connection", e);
 
