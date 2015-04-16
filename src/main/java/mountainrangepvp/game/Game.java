@@ -2,6 +2,8 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.Gdx;
 import mountainrangepvp.engine.AudioManager;
+import mountainrangepvp.engine.util.EventBus;
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.mp.GameClient;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
@@ -11,7 +13,8 @@ import mountainrangepvp.game.mp.message.NewWorldMessage;
 import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.world.*;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.net.Client;
+import mountainrangepvp.net.ServerInterface;
 
 import java.io.IOException;
 
@@ -22,7 +25,9 @@ public abstract class Game {
 
     public final GameSettings config;
 
-    public final GameClient client;
+    public final EventBus eventbus;
+    public final Client client;
+    public final GameClient client_OLD;
     public final PhysicsSystem physicsSystem;
     public final InputHandler inputHandler;
     public final AudioManager audioManager;
@@ -30,8 +35,12 @@ public abstract class Game {
 
     public final Instance instance;
 
-    public Game(GameSettings config) {
+    public Game(GameSettings config, ServerInterface server) {
         this.config = config;
+
+        eventbus = new EventBus();
+
+        client = Client.newClient(eventbus, server);
 
         physicsSystem = new PhysicsSystem();
 
@@ -40,28 +49,29 @@ public abstract class Game {
 
         instance = new Instance(playerManager, chatManager);
 
-        inputHandler = new InputHandler(chatManager);
+        inputHandler = new InputHandler(eventbus, chatManager);
         inputHandler.register();
 
         audioManager = new AudioManager();
         audioManager.loadAudio(Sounds.SOUNDS);
+        audioManager.setMuted(true);
 
-        client = new GameClient(instance, config.serverIP);
-        client.addMessageListener(new MapChangeListener());
+        client_OLD = new GameClient(instance, config.serverIP);
+        client_OLD.addMessageListener(new MapChangeListener());
 
         gameScreen = new GameScreen(instance);
     }
 
     public void start() {
         try {
-            client.start();
+            client_OLD.start();
         } catch (IOException ioe) {
             Log.crash("Error connecting to server", ioe);
         }
     }
 
     public void kill() {
-        client.stop();
+        client_OLD.stop();
     }
 
 
@@ -72,7 +82,7 @@ public abstract class Game {
         timeSinceLastUpdate += dt;
 
         if (timeSinceLastUpdate > config.TIMESTEP) {
-            client.update();
+            client_OLD.update();
             if (instance.hasMap()) {
                 inputHandler.update(instance, config.TIMESTEP);
                 instance.update(config.TIMESTEP);

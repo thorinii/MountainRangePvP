@@ -8,6 +8,7 @@ import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.Game;
 import mountainrangepvp.game.ServerGame;
 import mountainrangepvp.game.settings.GameSettings;
+import mountainrangepvp.net.Server;
 
 /**
  * @author lachlan
@@ -80,9 +81,9 @@ public class Main {
             @Override
             public void create() {
                 if (config.server) {
-                    game = new ServerGame(config);
+                    game = new ServerGame(config, new Server());
                 } else {
-                    game = new ClientGame(config);
+                    game = new ClientGame(config, null);
                 }
 
                 game.start();

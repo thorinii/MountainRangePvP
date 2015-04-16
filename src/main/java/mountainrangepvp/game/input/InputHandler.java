@@ -3,6 +3,8 @@ package mountainrangepvp.game.input;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.engine.util.EventBus;
+import mountainrangepvp.game.event.PlayerFiredEvent;
 import mountainrangepvp.game.world.ChatManager;
 import mountainrangepvp.game.world.Instance;
 import mountainrangepvp.game.world.Player;
@@ -17,6 +19,7 @@ public class InputHandler {
     private static final int DOUBLE_JUMP_MAX = 500;
     private static final int GUN_RATE = 100;
 
+    private final EventBus eventbus;
     private final ChatManager chatManager;
     private final PlayerInputHandler playerInputHandler;
     private final ChatInputHandler chatInputHandler;
@@ -29,7 +32,8 @@ public class InputHandler {
     private boolean gun;
     private int gunTimer;
 
-    public InputHandler(ChatManager chatManager) {
+    public InputHandler(EventBus eventbus, ChatManager chatManager) {
+        this.eventbus = eventbus;
         this.chatManager = chatManager;
 
         playerInputHandler = new PlayerInputHandler();
@@ -139,10 +143,8 @@ public class InputHandler {
             gunTimer = 0;
 
             Vector2 pos = player.getCentralPosition();
-            // TODO: send a message
-            shotManager.addShot(pos,
-                                player.getGunDirection().cpy(),
-                                player);
+
+            eventbus.send(new PlayerFiredEvent(player, pos, player.getGunDirection().cpy()));
 
             Vector2 kickback = player.getGunDirection().cpy().scl(-90f);
             player.getVelocity().add(kickback);
