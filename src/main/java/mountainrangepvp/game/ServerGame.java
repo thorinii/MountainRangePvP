@@ -2,7 +2,7 @@ package mountainrangepvp.game;
 
 import mountainrangepvp.game.mp.GameServer;
 import mountainrangepvp.game.settings.GameSettings;
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
 
 import java.io.IOException;
 

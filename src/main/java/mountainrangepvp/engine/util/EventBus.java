@@ -1,4 +1,4 @@
-package mountainrangepvp.util;
+package mountainrangepvp.engine.util;
 
 /**
  * Created by lachlan on 15/04/15.

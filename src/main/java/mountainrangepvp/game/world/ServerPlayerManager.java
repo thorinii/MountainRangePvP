@@ -4,7 +4,7 @@ import mountainrangepvp.game.mp.message.IntroduceMessage;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
 import mountainrangepvp.game.mp.message.Message;
 import mountainrangepvp.game.mp.message.PlayerUpdateMessage;
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
 
 import java.io.IOException;
 

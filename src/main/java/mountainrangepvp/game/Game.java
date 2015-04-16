@@ -11,7 +11,7 @@ import mountainrangepvp.game.mp.message.NewWorldMessage;
 import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.world.*;
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
 
 import java.io.IOException;
 
