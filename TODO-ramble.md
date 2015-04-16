@@ -15,3 +15,5 @@ Record old video
 Split Player into player and player entity
 
 Player and shot should be an Entity (manual component based)
+
+Calculate network lag.
