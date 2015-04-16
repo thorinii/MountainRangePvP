@@ -1,4 +1,5 @@
 Separate game and engine. Actually split into two separate packages.
+  split InputHandler into raw interface, action mapping, and game actions
 
 Use in-game message pipe for cohosted server/client.
 
