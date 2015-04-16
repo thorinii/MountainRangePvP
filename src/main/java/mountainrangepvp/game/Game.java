@@ -1,7 +1,7 @@
 package mountainrangepvp.game;
 
 import com.badlogic.gdx.Gdx;
-import mountainrangepvp.game.audio.AudioManager;
+import mountainrangepvp.engine.AudioManager;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.mp.GameClient;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
@@ -43,8 +43,8 @@ public abstract class Game {
         inputHandler = new InputHandler(chatManager);
         inputHandler.register();
 
-        audioManager = new AudioManager(playerManager, config);
-        audioManager.loadAudio();
+        audioManager = new AudioManager();
+        audioManager.loadAudio(Sounds.SOUNDS);
 
         client = new GameClient(instance, config.serverIP);
         client.addMessageListener(new MapChangeListener());
@@ -112,7 +112,7 @@ public abstract class Game {
 
                 instance.setMap(map);
 
-                audioManager.listenTo(shotManager);
+                shotManager.addShotListener(new AudioShotListener(instance.playerManager, audioManager));
                 inputHandler.setShotManager(shotManager);
             }
         }
