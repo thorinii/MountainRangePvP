@@ -14,10 +14,12 @@
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/resource_managed/main" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/resources" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/resource_managed/test" type="java-test-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/src_managed/main/compiled_protobuf" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/src_managed/main/compiled_protobuf" isTestSource="false" generated="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../project/target" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target/depgraph" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/protobuf_external" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/resolution-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target/scala-2.11/cache" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/streams" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/test-reports" />
     </content>
