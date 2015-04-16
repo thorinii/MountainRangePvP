@@ -5,8 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.Instance;
+import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.game.world.Instance;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -26,9 +27,9 @@ public class GameScreen implements Screen {
 
     private final Instance instance;
 
-    public GameScreen(Instance instance) {
+    public GameScreen(EventBus eventbus, Instance instance) {
         this.instance = instance;
-        renderer = new WorldRenderer(instance);
+        renderer = new WorldRenderer(eventbus, instance);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
+import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.game.world.Instance;
 
 /**
@@ -21,6 +22,7 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
 
+    private final EventBus eventbus;
     private final Instance instance;
 
     private final TextRenderer textRenderer;
@@ -35,7 +37,8 @@ public class WorldRenderer {
 
     private final Texture crossHairTexture;
 
-    public WorldRenderer(Instance instance) {
+    public WorldRenderer(EventBus eventbus, Instance instance) {
+        this.eventbus = eventbus;
         this.instance = instance;
 
         screen = new Vector2(Gdx.graphics.getWidth() + 1,
@@ -77,6 +80,7 @@ public class WorldRenderer {
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);
         textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
+        textRenderer.drawString(batch, eventbus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
         textRenderer.setColour(Color.BLACK);
     }
 

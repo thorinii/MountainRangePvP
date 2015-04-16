@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A pub/sub message passing system.
@@ -11,8 +12,11 @@ import java.util.Map;
 public class EventBus {
     private final Map<Class<? extends Event>, Dispatcher> dispatchers;
 
+    private final AtomicInteger messagesPerFrame;
+
     public EventBus() {
         dispatchers = new HashMap<>();
+        messagesPerFrame = new AtomicInteger(0);
     }
 
     @SuppressWarnings("unchecked")
@@ -30,6 +34,16 @@ public class EventBus {
         Dispatcher<?> d = dispatchers.get(event.getClass());
         if (d != null)
             d.dispatch(event);
+
+        messagesPerFrame.incrementAndGet();
+    }
+
+    public void flush() {
+        messagesPerFrame.set(0);
+    }
+
+    public int getMessagesPerFrame() {
+        return messagesPerFrame.get();
     }
 
     private static class Dispatcher<T extends Event> {

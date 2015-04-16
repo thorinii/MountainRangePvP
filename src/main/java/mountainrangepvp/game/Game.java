@@ -59,7 +59,7 @@ public abstract class Game {
         client_OLD = new GameClient(instance, config.serverIP);
         client_OLD.addMessageListener(new MapChangeListener());
 
-        gameScreen = new GameScreen(instance);
+        gameScreen = new GameScreen(eventbus, instance);
     }
 
     public void start() {
@@ -81,18 +81,23 @@ public abstract class Game {
         float dt = Gdx.graphics.getDeltaTime();
         timeSinceLastUpdate += dt;
 
-        if (timeSinceLastUpdate > config.TIMESTEP) {
-            client_OLD.update();
-            if (instance.hasMap()) {
-                inputHandler.update(instance, config.TIMESTEP);
-                instance.update(config.TIMESTEP);
-                physicsSystem.update(instance, config.TIMESTEP);
-            }
+        if (timeSinceLastUpdate > config.TIMESTEP)
+            update(dt);
+    }
 
-            timeSinceLastUpdate = 0;
+    private void update(float dt) {
+        eventbus.flush();
 
-            gameScreen.render(dt);
+        client_OLD.update();
+        if (instance.hasMap()) {
+            inputHandler.update(instance, config.TIMESTEP);
+            instance.update(config.TIMESTEP);
+            physicsSystem.update(instance, config.TIMESTEP);
         }
+
+        timeSinceLastUpdate = 0;
+
+        gameScreen.render(dt);
     }
 
     private class MapChangeListener implements MessageListener {
