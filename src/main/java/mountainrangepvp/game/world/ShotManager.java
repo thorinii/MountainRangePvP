@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.mp.message.Message;
 import mountainrangepvp.game.mp.message.MessageListener;
 import mountainrangepvp.game.mp.message.NewShotMessage;
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
 
 import java.awt.geom.Line2D;
 import java.io.IOException;

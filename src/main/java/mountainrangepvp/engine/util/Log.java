@@ -1,4 +1,4 @@
-package mountainrangepvp.util;
+package mountainrangepvp.engine.util;
 
 import com.badlogic.gdx.Gdx;
 
@@ -28,7 +28,7 @@ public class Log {
         LOG.setUseParentHandlers(false);
 
         LOG.addHandler(makeConsoleHandler());
-        LOG.addHandler(makeFileHandler());
+        //LOG.addHandler(makeFileHandler());
 
         Thread.setDefaultUncaughtExceptionHandler(
                 new Thread.UncaughtExceptionHandler() {

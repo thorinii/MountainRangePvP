@@ -2,7 +2,7 @@ package mountainrangepvp.game.mp.message;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
 import mountainrangepvp.game.mp.lanping.PingServer;
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
 
 import java.io.IOException;
 import java.net.ServerSocket;

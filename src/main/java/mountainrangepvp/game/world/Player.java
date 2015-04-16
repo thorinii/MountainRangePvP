@@ -1,7 +1,7 @@
 package mountainrangepvp.game.world;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.util.Timer;
+import mountainrangepvp.engine.util.Timer;
 
 /**
  * @author lachlan

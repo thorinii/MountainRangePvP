@@ -1,6 +1,6 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
 
 import java.io.*;
 import java.net.Socket;
