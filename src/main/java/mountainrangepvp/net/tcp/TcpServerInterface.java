@@ -1,6 +1,7 @@
 package mountainrangepvp.net.tcp;
 
 import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.net.ClientId;
 import mountainrangepvp.net.ServerInterface;
 
 /**
@@ -12,7 +13,14 @@ public class TcpServerInterface implements ServerInterface {
     }
 
     @Override
-    public void connect(int checkCode, int version, String nickname) {
+    public ClientId connect() {
         Log.todo();
+        return null;
+    }
+
+    @Override
+    public void login(ClientId client, int checkCode, int version, String nickname) {
+        Log.todo();
+
     }
 }
