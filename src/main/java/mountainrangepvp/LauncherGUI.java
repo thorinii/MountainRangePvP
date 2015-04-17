@@ -1,10 +1,10 @@
 package mountainrangepvp;
 
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.mp.lanping.PingClient;
 import mountainrangepvp.game.mp.lanping.PingClient.ServerData;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.world.Player.Team;
-import mountainrangepvp.engine.util.Log;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -468,11 +468,11 @@ public class LauncherGUI extends javax.swing.JFrame {
                     getSelectedItem());
         }
 
-        config.server = mpTypeServerBtn.isSelected();
+        config.hosting = mpTypeServerBtn.isSelected();
         config.serverIP = serverIPTxt.getText();
 
-        config.playerName = playerNameTxt.getText();
-        config.teamModeOn = (config.server) ? gameTypeTeamBtn.isSelected() : true;
+        config.nickname = playerNameTxt.getText();
+        config.teamModeOn = (config.hosting) ? gameTypeTeamBtn.isSelected() : true;
 
         switch ((String) teamBox.getSelectedItem()) {
             case "Blue":
@@ -489,7 +489,7 @@ public class LauncherGUI extends javax.swing.JFrame {
                 break;
         }
 
-        Main.startGame(config);
+        new Main(config).startGame();
     }
 
     private void fullscreenBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fullscreenBtnItemStateChanged

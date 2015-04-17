@@ -13,7 +13,7 @@ import mountainrangepvp.game.mp.message.NewWorldMessage;
 import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.world.*;
-import mountainrangepvp.net.Client;
+import mountainrangepvp.net.client.Client;
 import mountainrangepvp.net.ServerInterface;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * Container of game systems.
  */
-public abstract class Game {
+public class Game {
 
     public final GameSettings config;
 
@@ -40,11 +40,11 @@ public abstract class Game {
 
         eventbus = new EventBus();
 
-        client = Client.newClient(eventbus, server);
+        client = Client.newClient(eventbus, server, config.nickname);
 
         physicsSystem = new PhysicsSystem();
 
-        PlayerManager playerManager = new ClientPlayerManager(config.playerName, config.team);
+        PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
         ChatManager chatManager = new ChatManager(playerManager);
 
         instance = new Instance(playerManager, chatManager);
@@ -64,7 +64,10 @@ public abstract class Game {
 
     public void start() {
         try {
+            client.start();
             client_OLD.start();
+
+            // TODO: go to loading screen here
         } catch (IOException ioe) {
             Log.crash("Error connecting to server", ioe);
         }

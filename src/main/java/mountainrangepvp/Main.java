@@ -4,35 +4,46 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.Game;
-import mountainrangepvp.game.ServerGame;
 import mountainrangepvp.game.settings.GameSettings;
-import mountainrangepvp.net.Server;
+import mountainrangepvp.net.server.Server;
+import mountainrangepvp.net.tcp.TcpServerInterface;
+import mountainrangepvp.net.tcp.TcpWrapper;
 
 /**
  * @author lachlan
  */
 public class Main {
 
+    private static String USAGE = "Usage:\n" +
+            "\tjava -jar mountainrangepvp.jar\n" +
+            "\tjava -jar mountainrangepvp.jar client <server ip> <username>\n" +
+            "\tjava -jar mountainrangepvp.jar server <username>\n" +
+            "\tjava -jar mountainrangepvp.jar stress <server ip> <number of clients>";
+
+    private static void printUsageAndQuit() {
+        System.err.println(USAGE);
+        System.exit(0);
+    }
+
     public static void main(String[] args) {
         if (args.length > 0) {
-            GameSettings config = new GameSettings();
+            GameSettings settings = new GameSettings();
 
             switch (args[0]) {
                 case "client":
                     if (args.length == 3) {
-                        config.server = false;
-                        config.serverIP = args[1];
-                        config.playerName = args[2];
+                        settings.hosting = false;
+                        settings.serverIP = args[1];
+                        settings.nickname = args[2];
                     } else
                         printUsageAndQuit();
                     break;
 
                 case "server":
                     if (args.length == 2) {
-                        config.server = true;
-                        config.playerName = args[1];
+                        settings.hosting = true;
+                        settings.nickname = args[1];
                     } else
                         printUsageAndQuit();
                     break;
@@ -50,7 +61,7 @@ public class Main {
                     break;
             }
 
-            startGame(config);
+            new Main(settings).startGame();
         } else {
             LauncherGUI.laf();
 
@@ -59,33 +70,72 @@ public class Main {
         }
     }
 
-    public static void startGame(GameSettings gameSettings) {
+
+    private final GameSettings settings;
+
+    public Main(GameSettings settings) {
+        this.settings = settings;
+    }
+
+    public void startGame() {
         LwjglApplicationConfiguration appConfig = new LwjglApplicationConfiguration();
         appConfig.title = "Mountain Range PvP";
         appConfig.forceExit = false;
-        appConfig.fullscreen = gameSettings.fullscreen;
+        appConfig.fullscreen = settings.fullscreen;
         appConfig.resizable = false;
         appConfig.vSyncEnabled = true;
 
-        appConfig.width = gameSettings.resolutionWidth;
-        appConfig.height = gameSettings.resolutionHeight;
-        appConfig.depth = gameSettings.bitDepth;
+        appConfig.width = settings.resolutionWidth;
+        appConfig.height = settings.resolutionHeight;
+        appConfig.depth = settings.bitDepth;
 
-        LwjglApplication app = new LwjglApplication(gameListenerAdaptor(gameSettings), appConfig);
+        LwjglApplication app = new LwjglApplication(gameAdapter(), appConfig);
     }
 
-    private static ApplicationListener gameListenerAdaptor(final GameSettings config) {
+    private ApplicationListener gameAdapter() {
+        if (settings.hosting)
+            return hostingAdapter();
+        else
+            return joiningAdapter();
+    }
+
+
+    private ApplicationListener hostingAdapter() {
+        return new ApplicationAdapter() {
+            TcpWrapper tcpWrapper;
+            Game game;
+
+            @Override
+            public void create() {
+                Server server = new Server();
+                tcpWrapper = TcpWrapper.start(server);
+
+                game = new Game(settings, server);
+                game.start();
+            }
+
+            @Override
+            public void render() {
+                game.render();
+            }
+
+            @Override
+            public void dispose() {
+                game.kill();
+                tcpWrapper.kill();
+            }
+        };
+    }
+
+    private ApplicationListener joiningAdapter() {
         return new ApplicationAdapter() {
             Game game;
 
             @Override
             public void create() {
-                if (config.server) {
-                    game = new ServerGame(config, new Server());
-                } else {
-                    game = new ClientGame(config, null);
-                }
+                TcpServerInterface server = TcpServerInterface.start(settings.serverIP, settings.port);
 
+                game = new Game(settings, server);
                 game.start();
             }
 
@@ -100,15 +150,4 @@ public class Main {
             }
         };
     }
-
-    private static void printUsageAndQuit() {
-        System.err.println(USAGE);
-        System.exit(0);
-    }
-
-    private static String USAGE = "Usage:\n" +
-            "\tjava -jar mountainrangepvp.jar\n" +
-            "\tjava -jar mountainrangepvp.jar client <server ip> <username>\n" +
-            "\tjava -jar mountainrangepvp.jar server <username>\n" +
-            "\tjava -jar mountainrangepvp.jar stress <server ip> <number of clients>";
 }
