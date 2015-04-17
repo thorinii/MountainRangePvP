@@ -7,7 +7,7 @@ import mountainrangepvp.net.server.Server;
  */
 public class TcpWrapper {
     public static TcpWrapper start(Server server) {
-        return null;
+        return new TcpWrapper();
     }
 
     public void kill() {

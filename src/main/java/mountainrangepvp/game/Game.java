@@ -5,7 +5,6 @@ import mountainrangepvp.engine.AudioManager;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.input.InputHandler;
-import mountainrangepvp.game.mp.GameClient;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
 import mountainrangepvp.game.mp.message.Message;
 import mountainrangepvp.game.mp.message.MessageListener;
@@ -13,8 +12,8 @@ import mountainrangepvp.game.mp.message.NewWorldMessage;
 import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.world.*;
-import mountainrangepvp.net.client.Client;
 import mountainrangepvp.net.ServerInterface;
+import mountainrangepvp.net.client.Client;
 
 import java.io.IOException;
 
@@ -27,7 +26,6 @@ public class Game {
 
     public final EventBus eventbus;
     public final Client client;
-    public final GameClient client_OLD;
     public final PhysicsSystem physicsSystem;
     public final InputHandler inputHandler;
     public final AudioManager audioManager;
@@ -56,25 +54,17 @@ public class Game {
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
 
-        client_OLD = new GameClient(instance, config.serverIP);
-        client_OLD.addMessageListener(new MapChangeListener());
-
         gameScreen = new GameScreen(eventbus, instance);
     }
 
     public void start() {
-        try {
-            client.start();
-            client_OLD.start();
+        client.start();
 
-            // TODO: go to loading screen here
-        } catch (IOException ioe) {
-            Log.crash("Error connecting to server", ioe);
-        }
+        // TODO: go to loading screen here (and wait for connection)
     }
 
     public void kill() {
-        client_OLD.stop();
+        // TODO: client.stop();
     }
 
 
@@ -90,8 +80,8 @@ public class Game {
 
     private void update(float dt) {
         eventbus.flush();
+        // TODO: client.update();
 
-        client_OLD.update();
         if (instance.hasMap()) {
             inputHandler.update(instance, config.TIMESTEP);
             instance.update(config.TIMESTEP);
