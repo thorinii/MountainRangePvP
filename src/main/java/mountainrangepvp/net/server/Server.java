@@ -1,13 +1,26 @@
 package mountainrangepvp.net.server;
 
+import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.net.ClientId;
 import mountainrangepvp.net.ServerInterface;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
- * Created by lachlan on 16/04/15.
+ * The network-protocol agnostic thing that runs the world.
  */
 public class Server implements ServerInterface {
+    private final AtomicLong nextClientId = new AtomicLong(0L);
+
     @Override
-    public void connect(int checkCode, int version, String nickname) {
-        System.out.println(checkCode + "," + version + " " + nickname + " connected");
+    public ClientId connect() {
+        ClientId id = new ClientId(nextClientId.getAndIncrement());
+        Log.info(id + " connected");
+        return id;
+    }
+
+    @Override
+    public void login(ClientId client, int checkCode, int version, String nickname) {
+        Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected");
     }
 }
