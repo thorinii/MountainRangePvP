@@ -10,6 +10,9 @@ public class TcpWrapper {
         return new TcpWrapper();
     }
 
+    private TcpWrapper() {
+    }
+
     public void kill() {
 
     }
