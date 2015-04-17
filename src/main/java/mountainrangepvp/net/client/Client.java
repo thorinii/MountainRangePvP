@@ -5,6 +5,7 @@ import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.event.PlayerFiredEvent;
 import mountainrangepvp.net.ClientId;
+import mountainrangepvp.net.ClientInterface;
 import mountainrangepvp.net.NetworkConstants;
 import mountainrangepvp.net.ServerInterface;
 
@@ -39,7 +40,14 @@ public class Client {
     }
 
     public void start() {
-        id = server.connect();
-        server.login(id, NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname);
+        server.connect(new ClientInterfaceImpl());
+    }
+
+    private class ClientInterfaceImpl implements ClientInterface {
+        @Override
+        public void connected(ClientId id) {
+            Client.this.id = id;
+            server.login(id, NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname);
+        }
     }
 }
