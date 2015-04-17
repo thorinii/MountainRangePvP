@@ -1,7 +1,8 @@
 package mountainrangepvp.net;
 
 /**
- * Created by lachlan on 16/04/15.
+ * The interface the server responds to, either in-process or over the network.
  */
 public interface ServerInterface {
+    public void connect(int checkCode, int version, String nickname);
 }

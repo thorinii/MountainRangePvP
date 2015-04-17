@@ -14,11 +14,11 @@ public class GameSettings {
     public int resolutionWidth, resolutionHeight;
     public int bitDepth;
 
-    public String playerName;
+    public String nickname;
     public Team team;
     public boolean teamModeOn;
 
-    public boolean server;
+    public boolean hosting;
     public int port;
 
     public String serverIP;
@@ -32,11 +32,11 @@ public class GameSettings {
         resolutionWidth = 1000;
         resolutionHeight = 800;
 
-        playerName = null;
+        nickname = null;
         team = Team.BLUE;
         teamModeOn = false;
 
-        server = false;
+        hosting = false;
         port = MultiplayerConstants.STD_PORT;
 
         serverIP = "localhost";

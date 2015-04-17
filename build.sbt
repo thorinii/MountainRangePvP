@@ -18,6 +18,7 @@ libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx-freetype" % "1.5.3",
   "com.badlogicgames.gdx" % "gdx-freetype-platform" % "1.5.3" classifier "natives-desktop",
   "com.badlogicgames.gdx" % "gdx-platform" % "1.5.3" classifier "natives-desktop",
+  "io.netty" % "netty-all" % "4.0.27.Final",
   "com.novocode" % "junit-interface" % "0.11" % "test"
 )
 

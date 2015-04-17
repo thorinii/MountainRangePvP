@@ -162,4 +162,16 @@ public class Log {
             }
         });
     }
+
+    public static void todo() {
+        String caller = getCaller();
+    }
+
+    private static String getCaller() {
+        StackTraceElement e = Thread.currentThread().getStackTrace()[0];
+        info(Thread.currentThread().getStackTrace()[0].toString());
+        info(Thread.currentThread().getStackTrace()[1].toString());
+        info(Thread.currentThread().getStackTrace()[2].toString());
+        return e.toString();
+    }
 }
