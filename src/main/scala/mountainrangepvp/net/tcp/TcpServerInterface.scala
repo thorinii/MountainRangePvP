@@ -8,15 +8,6 @@ import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
 import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
 
-/**
- * Delegates the server interface to a remote server via TCP.
- */
-object TcpServerInterface {
-  def start(host: String, port: Int): TcpServerInterface = {
-    new TcpServerInterface(host, port)
-  }
-}
-
 class TcpServerInterface(host: String, port: Int) extends ServerInterface {
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private var channel: ChannelFuture = null
