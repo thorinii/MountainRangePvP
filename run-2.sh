@@ -1,8 +1,9 @@
 #!/bin/sh
 
-sbt "run server ServerUser" &
+JAR=target/scala-2.11/mountainrangepvp-assembly-1.0.jar
+java -jar $JAR server ServerUser &
 
 sleep 1
 
-sbt "run client localhost ClientUser"
+java -jar $JAR client localhost ClientUser
 

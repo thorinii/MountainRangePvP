@@ -4,11 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.Game;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.net.server.Server;
 import mountainrangepvp.net.tcp.TcpServerInterface;
-import mountainrangepvp.net.tcp.TcpWrapper;
+import mountainrangepvp.net.tcp.TcpServerWrapper;
 
 /**
  * @author lachlan
@@ -88,6 +89,7 @@ public class Main {
         appConfig.width = settings.resolutionWidth;
         appConfig.height = settings.resolutionHeight;
         appConfig.depth = settings.bitDepth;
+        appConfig.forceExit = true;
 
         LwjglApplication app = new LwjglApplication(gameAdapter(), appConfig);
     }
@@ -102,13 +104,19 @@ public class Main {
 
     private ApplicationListener hostingAdapter() {
         return new ApplicationAdapter() {
-            TcpWrapper tcpWrapper;
+            TcpServerWrapper wrapper;
             Game game;
 
             @Override
             public void create() {
                 Server server = new Server();
-                tcpWrapper = TcpWrapper.start(server);
+                wrapper = TcpServerWrapper.start(server, settings.port);
+                try {
+                    wrapper.start();
+                } catch (InterruptedException e) {
+                    Log.crash("Couldn't start server", e);
+                    return;
+                }
 
                 game = new Game(settings, server);
                 game.start();
@@ -122,18 +130,19 @@ public class Main {
             @Override
             public void dispose() {
                 game.kill();
-                tcpWrapper.kill();
+                wrapper.shutdown();
             }
         };
     }
 
     private ApplicationListener joiningAdapter() {
         return new ApplicationAdapter() {
+            TcpServerInterface server;
             Game game;
 
             @Override
             public void create() {
-                TcpServerInterface server = TcpServerInterface.start(settings.serverIP, settings.port);
+                server = TcpServerInterface.start(settings.serverIP, settings.port);
 
                 game = new Game(settings, server);
                 game.start();
@@ -147,6 +156,7 @@ public class Main {
             @Override
             public void dispose() {
                 game.kill();
+                server.shutdown();
             }
         };
     }

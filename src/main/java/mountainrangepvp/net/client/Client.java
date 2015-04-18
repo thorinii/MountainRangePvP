@@ -39,7 +39,7 @@ public class Client {
         });
     }
 
-    public void start() {
+    public void start() throws InterruptedException {
         server.connect(new ClientInterfaceImpl());
     }
 

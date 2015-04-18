@@ -58,13 +58,18 @@ public class Game {
     }
 
     public void start() {
-        client.start();
+        try {
+            client.start();
+        } catch (InterruptedException e) {
+            Log.crash("Could not connect to server", e);
+            return;
+        }
 
         // TODO: go to loading screen here (and wait for connection)
     }
 
     public void kill() {
-        // TODO: client.stop();
+        /// TODO: client.shutdown();
     }
 
 
