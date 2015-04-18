@@ -148,9 +148,14 @@ public class Log {
                 JOptionPane.showMessageDialog(null, message, "Mountain Range PvP", JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        throw new ThreadDeath();
     }
 
     public static void crash(final String message, final Throwable e) {
+        if(e instanceof ThreadDeath)
+            throw (ThreadDeath) e;
+
         LOG.log(Level.WARNING, "Error starting server connection", e);
 
         Gdx.app.exit();
@@ -161,11 +166,18 @@ public class Log {
                 JOptionPane.showMessageDialog(null, message + "\n" + e, "Mountain Range PvP", JOptionPane.ERROR_MESSAGE);
             }
         });
+
+        throw new ThreadDeath();
     }
 
     public static void todo() {
         String caller = getCaller();
         LOG.log(Level.WARNING, "TODO: " + caller);
+    }
+
+    public static void todoCrash() {
+        String caller = getCaller();
+        crash("TODO: " + caller);
     }
 
     public static void todo(String msg) {

@@ -26,8 +26,11 @@ class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInb
     super.channelInactive(ctx)
   }
 
-  override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
-    Log.crash("Error in ClientSideMessageHandler", cause)
-    super.exceptionCaught(ctx, cause)
+  override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = cause match {
+    case e: Exception =>
+      Log.crash("Error in ClientSideMessageHandler", cause)
+      super.exceptionCaught(ctx, cause)
+
+    case _ =>
   }
 }

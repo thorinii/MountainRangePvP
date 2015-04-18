@@ -54,7 +54,6 @@ public class TcpServerInterface implements ServerInterface {
 
     @Override
     public void login(ClientId client, int checkCode, int version, String nickname) {
-        Log.todo();
         send(new LoginMessage(checkCode, version, nickname));
     }
 
