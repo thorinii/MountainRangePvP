@@ -65,13 +65,13 @@ public class Log {
         for (Object d : data) {
             if (d instanceof String) {
                 builder.append((String) d);
-            } else if (d instanceof Exception) {
+            } else if (d instanceof Throwable) {
                 builder.append(d.getClass().getName());
                 builder.append(": ");
-                builder.append(((Exception) d).getMessage());
+                builder.append(((Throwable) d).getMessage());
                 builder.append("\n");
 
-                StackTraceElement[] traces = ((Exception) d).getStackTrace();
+                StackTraceElement[] traces = ((Throwable) d).getStackTrace();
 
                 for (StackTraceElement ste : traces) {
                     builder.append("\tat ");
@@ -138,7 +138,7 @@ public class Log {
     }
 
     public static void crash(final String message) {
-        Log.warn("Error starting server connection");
+        LOG.log(Level.WARNING, "Error starting server connection");
 
         Gdx.app.exit();
 
@@ -150,8 +150,8 @@ public class Log {
         });
     }
 
-    public static void crash(final String message, final Exception e) {
-        Log.warn("Error starting server connection", e);
+    public static void crash(final String message, final Throwable e) {
+        LOG.log(Level.WARNING, "Error starting server connection", e);
 
         Gdx.app.exit();
 
@@ -165,7 +165,12 @@ public class Log {
 
     public static void todo() {
         String caller = getCaller();
-        Log.warn("TODO: " + caller);
+        LOG.log(Level.WARNING, "TODO: " + caller);
+    }
+
+    public static void todo(String msg) {
+        String caller = getCaller();
+        LOG.log(Level.WARNING, "TODO: " + caller + "(" + msg + ")");
     }
 
     private static String getCaller() {

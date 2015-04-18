@@ -2,6 +2,7 @@ package mountainrangepvp.game.settings;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
 import mountainrangepvp.game.world.Player.Team;
+import mountainrangepvp.net.NetworkConstants;
 
 /**
  * @author lachlan
@@ -37,7 +38,7 @@ public class GameSettings {
         teamModeOn = false;
 
         hosting = false;
-        port = MultiplayerConstants.STD_PORT;
+        port = NetworkConstants.DEFAULT_PORT;
 
         serverIP = "localhost";
 

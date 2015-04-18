@@ -48,6 +48,3 @@ mainClass in (Compile, run) := Some("mountainrangepvp.Main")
 
 mainClass in assembly := Some("mountainrangepvp.Main")
 
-
-
-Seq(PB.protobufSettings: _*)
