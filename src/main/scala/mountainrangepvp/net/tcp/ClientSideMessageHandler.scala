@@ -9,10 +9,9 @@ import mountainrangepvp.net.ClientInterface
  * Decodes messages from the server.
  */
 class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInboundHandler[ByteBuf]() {
-  @throws(classOf[Exception])
+
   protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) {
     val m = Message.decode(buf)
-    Log.info("Receiving " + m)
     handle(m)
   }
 

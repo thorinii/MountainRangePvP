@@ -4,12 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.Game;
 import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.net.server.Server;
 import mountainrangepvp.net.tcp.TcpServerInterface;
 import mountainrangepvp.net.tcp.TcpServerWrapper;
+import mountainrangepvp.net.tcp.TcpServerWrapper$;
 
 /**
  * @author lachlan
@@ -110,13 +110,8 @@ public class Main {
             @Override
             public void create() {
                 Server server = new Server();
-                wrapper = TcpServerWrapper.start(server, settings.port);
-                try {
-                    wrapper.start();
-                } catch (InterruptedException e) {
-                    Log.crash("Couldn't start server", e);
-                    return;
-                }
+                wrapper = TcpServerWrapper$.MODULE$.start(server, settings.port);
+                wrapper.start();
 
                 game = new Game(settings, server);
                 game.start();

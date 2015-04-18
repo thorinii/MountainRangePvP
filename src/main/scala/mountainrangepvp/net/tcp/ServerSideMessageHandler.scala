@@ -15,7 +15,6 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
     server.connect(new TcpClientInterface(ctx))
   }
 
-  @throws(classOf[Exception])
   protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) {
     val m = Message.decode(buf)
     handle(idOf(ctx), m)
@@ -46,5 +45,4 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
       Message.send(ctx, ConnectedMessage(id))
     }
   }
-
 }
