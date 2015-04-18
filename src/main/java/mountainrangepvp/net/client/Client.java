@@ -43,6 +43,10 @@ public class Client {
         server.connect(new ClientInterfaceImpl());
     }
 
+    public void shutdown() {
+        server.shutdown();
+    }
+
     private class ClientInterfaceImpl implements ClientInterface {
         @Override
         public void connected(ClientId id) {

@@ -89,7 +89,7 @@ public class Main {
         appConfig.width = settings.resolutionWidth;
         appConfig.height = settings.resolutionHeight;
         appConfig.depth = settings.bitDepth;
-        appConfig.forceExit = true;
+        //appConfig.forceExit = true;
 
         LwjglApplication app = new LwjglApplication(gameAdapter(), appConfig);
     }
@@ -109,7 +109,7 @@ public class Main {
 
             @Override
             public void create() {
-                Server server = new Server();
+                Server server = Server.startServer();
                 wrapper = TcpServerWrapper$.MODULE$.start(server, settings.port);
                 wrapper.start();
 
@@ -137,7 +137,7 @@ public class Main {
 
             @Override
             public void create() {
-                server = TcpServerInterface.start(settings.serverIP, settings.port);
+                server = new TcpServerInterface(settings.serverIP, settings.port);
 
                 game = new Game(settings, server);
                 game.start();
@@ -151,7 +151,6 @@ public class Main {
             @Override
             public void dispose() {
                 game.kill();
-                server.shutdown();
             }
         };
     }

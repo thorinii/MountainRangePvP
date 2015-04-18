@@ -68,8 +68,9 @@ public class Game {
         // TODO: go to loading screen here (and wait for connection)
     }
 
+
     public void kill() {
-        /// TODO: client.shutdown();
+        client.shutdown();
     }
 
 

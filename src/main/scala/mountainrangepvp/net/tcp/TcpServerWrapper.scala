@@ -47,6 +47,5 @@ class TcpServerWrapper(server: Server, port: Int) {
     channel.channel.closeFuture.syncUninterruptibly
     workerGroup.shutdownGracefully.syncUninterruptibly
     bossGroup.shutdownGracefully.syncUninterruptibly
-    Log.info("server shutdown")
   }
 }
