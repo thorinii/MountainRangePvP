@@ -11,7 +11,7 @@ import mountainrangepvp.net.ClientInterface
 class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInboundHandler[ByteBuf]() {
 
   protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) {
-    val m = Message.decode(buf)
+    val m = MessageCodec.decode(buf)
     handle(m)
   }
 
