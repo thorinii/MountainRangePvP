@@ -43,7 +43,7 @@ class TcpServerInterface(host: String, port: Int) extends ServerInterface {
   }
 
   private def send(msg: Message) {
-    Message.send(ctx, msg)
+    MessageCodec.send(ctx, msg)
   }
 
   private class ConnectionListener extends ChannelInboundHandlerAdapter {

@@ -16,7 +16,7 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
   }
 
   protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) {
-    val m = Message.decode(buf)
+    val m = MessageCodec.decode(buf)
     handle(idOf(ctx), m)
   }
 
@@ -42,7 +42,7 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
     override def connected(id: ClientId): Unit = {
       ctx.attr(idAttrKey).set(id)
 
-      Message.send(ctx, ConnectedMessage(id))
+      MessageCodec.send(ctx, ConnectedMessage(id))
     }
   }
 }

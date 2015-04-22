@@ -16,9 +16,13 @@ object Server {
     val thread = new Thread(new Runnable {
       override def run(): Unit = {
         while (s.going) {
+          s.update()
+
           try {
-            s.update()
             Thread.sleep(updateIntervalMillis)
+          } catch {
+            case _: InterruptedException =>
+              // do nothing; the while loop will stop when it's time
           }
         }
       }
@@ -62,7 +66,9 @@ class Server(val thread: Thread) extends ServerInterface {
   private class ClientHandler(id: ClientId, interface: ClientInterface) {
     var update: () => Unit = connected
 
-    def login() = update = nil // TODO: send instance info message; move to send map info
+    def login() = {
+      update = nil
+    } // TODO: send instance info message; move to send map info
 
     private def connected(): Unit = {
       interface.connected(id)
