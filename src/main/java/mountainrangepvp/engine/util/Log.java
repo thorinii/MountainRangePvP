@@ -34,7 +34,10 @@ public class Log {
                 new Thread.UncaughtExceptionHandler() {
                     @Override
                     public void uncaughtException(Thread t, Throwable e) {
-                        LOG.log(Level.SEVERE, "Uncaught Exception", e);
+                        if (!(e instanceof ThreadDeath)) {
+                            LOG.log(Level.SEVERE, "Uncaught exception on thread " + t.getName(), e);
+                        }
+
                         System.exit(1);
                     }
                 });
@@ -138,7 +141,7 @@ public class Log {
     }
 
     public static void crash(final String message) {
-        LOG.log(Level.WARNING, "Error starting server connection");
+        LOG.log(Level.SEVERE, message);
 
         Gdx.app.exit();
 
@@ -153,10 +156,10 @@ public class Log {
     }
 
     public static void crash(final String message, final Throwable e) {
-        if(e instanceof ThreadDeath)
+        if (e instanceof ThreadDeath)
             throw (ThreadDeath) e;
 
-        LOG.log(Level.WARNING, "Error starting server connection", e);
+        LOG.log(Level.SEVERE, message, e);
 
         Gdx.app.exit();
 

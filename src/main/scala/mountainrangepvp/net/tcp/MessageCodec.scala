@@ -34,6 +34,9 @@ object MessageCodec {
       buf.writeInt(version)
       writeString(buf, nickname)
 
+    case InstanceInfoMessage() =>
+      buf.writeInt(3)
+
     case _ =>
       Log.todoCrash()
       throw new UnsupportedOperationException
@@ -49,6 +52,9 @@ object MessageCodec {
         LoginMessage(buf.readInt(),
                      buf.readInt(),
                      readString(buf))
+
+      case 3 =>
+        InstanceInfoMessage()
 
       case _ =>
         Log.todoCrash()

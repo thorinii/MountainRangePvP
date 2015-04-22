@@ -2,8 +2,15 @@ package mountainrangepvp.net.tcp
 
 import mountainrangepvp.net.ClientId
 
-trait Message
 
-case class ConnectedMessage(id: ClientId) extends Message
+sealed trait Message
 
-case class LoginMessage(checkCode: Int, version: Int, nickname: String) extends Message
+sealed trait ToServerMessage extends Message
+sealed trait ToClientMessage extends Message
+
+
+case class ConnectedMessage(id: ClientId) extends ToClientMessage
+
+case class LoginMessage(checkCode: Int, version: Int, nickname: String) extends ToServerMessage
+
+case class InstanceInfoMessage() extends ToClientMessage

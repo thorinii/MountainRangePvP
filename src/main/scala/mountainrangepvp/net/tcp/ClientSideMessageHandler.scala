@@ -10,13 +10,14 @@ import mountainrangepvp.net.ClientInterface
  */
 class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInboundHandler[ByteBuf]() {
 
-  protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) {
+  protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) = {
     val m = MessageCodec.decode(buf)
-    handle(m)
+    handle(m.asInstanceOf[ToClientMessage])
   }
 
-  private def handle(m: Message) = m match {
+  private def handle(m: ToClientMessage) = m match {
     case ConnectedMessage(id) => client.connected(id)
+    case InstanceInfoMessage() => client.instanceInfo()
   }
 
 

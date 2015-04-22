@@ -8,4 +8,9 @@ public interface ClientInterface {
      * Tells a client that they've successfully connected.
      */
     public void connected(ClientId id);
+
+    /**
+     * Instance settings
+     */
+    public void instanceInfo();
 }

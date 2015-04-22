@@ -6,7 +6,6 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.{ChannelFuture, ChannelInitializer, ChannelOption, EventLoopGroup}
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
-import mountainrangepvp.engine.util.Log
 import mountainrangepvp.net.server.Server
 
 /**
@@ -23,7 +22,7 @@ class TcpServerWrapper(server: Server, port: Int) {
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private var channel: ChannelFuture = null
 
-  def start() {
+  def start() = {
     val b = new ServerBootstrap()
             .group(bossGroup, workerGroup)
             .channel(classOf[NioServerSocketChannel])
@@ -34,7 +33,7 @@ class TcpServerWrapper(server: Server, port: Int) {
   }
 
   private val channelInitializer = new ChannelInitializer[SocketChannel] {
-    def initChannel(ch: SocketChannel) {
+    def initChannel(ch: SocketChannel) = {
       ch.pipeline.addLast(new LengthFieldPrepender(4))
 
       ch.pipeline.addLast(new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4))
@@ -42,7 +41,7 @@ class TcpServerWrapper(server: Server, port: Int) {
     }
   }
 
-  def shutdown() {
+  def shutdown() = {
     channel.channel.close
     channel.channel.closeFuture.syncUninterruptibly
     workerGroup.shutdownGracefully.syncUninterruptibly

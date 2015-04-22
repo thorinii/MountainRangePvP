@@ -15,12 +15,12 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
     server.connect(new TcpClientInterface(ctx))
   }
 
-  protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) {
+  protected def channelRead0(ctx: ChannelHandlerContext, buf: ByteBuf) = {
     val m = MessageCodec.decode(buf)
-    handle(idOf(ctx), m)
+    handle(idOf(ctx), m.asInstanceOf[ToServerMessage])
   }
 
-  private def handle(client: ClientId, m: Message) = m match {
+  private def handle(client: ClientId, m: ToServerMessage) = m match {
     case LoginMessage(c, v, n) => server.login(client, c, v, n)
     case _ => Log.todo(m.toString)
   }
@@ -43,6 +43,10 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
       ctx.attr(idAttrKey).set(id)
 
       MessageCodec.send(ctx, ConnectedMessage(id))
+    }
+
+    override def instanceInfo(): Unit = {
+      MessageCodec.send(ctx, InstanceInfoMessage())
     }
   }
 }

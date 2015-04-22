@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicLong
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
 
+import scala.collection.immutable.Queue
+
 /**
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
@@ -21,8 +23,7 @@ object Server {
           try {
             Thread.sleep(updateIntervalMillis)
           } catch {
-            case _: InterruptedException =>
-              // do nothing; the while loop will stop when it's time
+            case _: InterruptedException => // do nothing; the while loop will stop when it's time
           }
         }
       }
@@ -42,19 +43,19 @@ class Server(val thread: Thread) extends ServerInterface {
   @volatile
   private var going: Boolean = true
 
-  def connect(client: ClientInterface) {
+  def connect(client: ClientInterface) = {
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
     Log.info(id + " connected")
 
-    clientHandlers += id -> new ClientHandler(id, client)
+    clientHandlers += id -> new ClientHandler(id, client).sendConnected()
   }
 
-  def login(client: ClientId, checkCode: Int, version: Int, nickname: String) {
+  def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
-    clientHandlers(client).login()
+    clientHandlers(client).sendInstanceInfo()
   }
 
-  def shutdown() {
+  def shutdown() = {
     going = false
     thread.interrupt()
   }
@@ -64,19 +65,26 @@ class Server(val thread: Thread) extends ServerInterface {
   }
 
   private class ClientHandler(id: ClientId, interface: ClientInterface) {
-    var update: () => Unit = connected
+    type UpdateFunction = () => Unit
+    private var queue: Queue[UpdateFunction] = Queue.empty
 
-    def login() = {
-      update = nil
-    } // TODO: send instance info message; move to send map info
-
-    private def connected(): Unit = {
-      interface.connected(id)
-
-      update = nil
+    def update() = {
+      queue.foreach(_.apply())
+      queue = Queue.empty
     }
 
-    private def nil(): Unit = {}
+    def sendConnected() = pushSend {
+      interface.connected(id)
+    }
+
+    def sendInstanceInfo() = pushSend {
+      interface.instanceInfo()
+    }
+
+    private def pushSend(a: => Unit) = {
+      queue = queue.enqueue(() => a)
+      this
+    }
   }
 
 }
