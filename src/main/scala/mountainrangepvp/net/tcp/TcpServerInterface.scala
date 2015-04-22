@@ -13,7 +13,7 @@ class TcpServerInterface(host: String, port: Int) extends ServerInterface {
   private var channel: ChannelFuture = null
   private var ctx: ChannelHandlerContext = null
 
-  def connect(client: ClientInterface) {
+  def connect(client: ClientInterface) = {
     val b = new Bootstrap()
             .group(workerGroup)
             .channel(classOf[NioSocketChannel])
@@ -23,7 +23,7 @@ class TcpServerInterface(host: String, port: Int) extends ServerInterface {
   }
 
   private def channelInitializer(client: ClientInterface) = new ChannelInitializer[SocketChannel] {
-    def initChannel(ch: SocketChannel) {
+    def initChannel(ch: SocketChannel) = {
       ch.pipeline.addLast("frameEncoder", new LengthFieldPrepender(4))
 
       ch.pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4))
@@ -32,24 +32,25 @@ class TcpServerInterface(host: String, port: Int) extends ServerInterface {
     }
   }
 
-  def login(client: ClientId, checkCode: Int, version: Int, nickname: String) {
+  def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     send(new LoginMessage(checkCode, version, nickname))
   }
 
-  def shutdown() {
+  def shutdown() = {
     channel.channel.close
     channel.channel.closeFuture.syncUninterruptibly
     workerGroup.shutdownGracefully.syncUninterruptibly
   }
 
-  private def send(msg: Message) {
+  private def send(msg: Message) = {
     MessageCodec.send(ctx, msg)
   }
 
   private class ConnectionListener extends ChannelInboundHandlerAdapter {
     @throws(classOf[Exception])
-    override def channelActive(ctx: ChannelHandlerContext) {
+    override def channelActive(ctx: ChannelHandlerContext) = {
       TcpServerInterface.this.ctx = ctx
     }
   }
+
 }

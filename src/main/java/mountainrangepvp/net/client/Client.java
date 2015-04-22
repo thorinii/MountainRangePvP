@@ -53,5 +53,10 @@ public class Client {
             Client.this.id = id;
             server.login(id, NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname);
         }
+
+        @Override
+        public void instanceInfo() {
+            // TODO: eventbus message
+        }
     }
 }
