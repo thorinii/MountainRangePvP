@@ -26,7 +26,6 @@ libraryDependencies ++= Seq(
 scalacOptions ++= Seq(
   "-Xlint",
   "-Ywarn-dead-code",
-  "-Ywarn-value-discard",
   "-unchecked",
   "-deprecation",
   "-feature",
