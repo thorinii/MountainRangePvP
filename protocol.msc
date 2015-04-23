@@ -1,0 +1,21 @@
+msc {
+  arcgradient = 10;
+
+  client, server, clients;
+
+  client >> server [label="connect"];
+  client <= server [label="connected"];
+
+  client => server [label="login"];
+  client <= server [label="instance info"];
+
+  client box client [label="connected"];
+
+  client <= server [label="new players"];
+  server => clients [label="new player"];
+
+  |||;
+
+  client <= server [label="map info"];
+  client box client [label="playing"];
+}
