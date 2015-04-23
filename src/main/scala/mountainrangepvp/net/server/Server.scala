@@ -1,6 +1,7 @@
 package mountainrangepvp.net.server
 
 import java.util.concurrent.atomic.AtomicLong
+import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
@@ -39,24 +40,27 @@ object Server {
 
 class Server(val thread: Thread) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
-  private val clients: mutable.Map[ClientId, ClientSendQueue] = TrieMap.empty
-
-  @volatile
-  private var going: Boolean = true
+  private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
+  private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
 
   // TODO: make this a setting on an InstanceConfig
   private val teamsOn = false
 
+  @volatile
+  private var going: Boolean = true
+
+
   def connect(client: ClientInterface) = {
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
-    Log.info(id + " connected")
+    interfaces += id -> client
 
-    clients += id -> new ClientSendQueue(id, client).sendConnected()
+    send(client)(_.connected(id))
   }
 
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
-    clients(client).sendInstanceInfo(teamsOn)
+
+    send(client)(_.instanceInfo(teamsOn))
   }
 
   def shutdown() = {
@@ -64,7 +68,24 @@ class Server(val thread: Thread) extends ServerInterface {
     thread.interrupt()
   }
 
+
   private def update(): Unit = {
-    clients.values.foreach(_.update())
+    while (!sendQueue.isEmpty) {
+      val msg = sendQueue.take()
+      msg()
+    }
   }
+
+
+  private def send(interface: ClientInterface)(action: SendAction): Unit = {
+    sendQueue.offer(() => action(interface))
+  }
+
+  private def send(id: ClientId)(action: SendAction): Unit = {
+    send(interfaces(id))(action)
+  }
+
+
+  private type Action = () => Unit
+  private type SendAction = ClientInterface => Unit
 }
