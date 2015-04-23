@@ -5,8 +5,6 @@ import java.util.concurrent.atomic.AtomicLong
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
 
-import scala.collection.immutable.Queue
-
 /**
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
@@ -38,7 +36,7 @@ object Server {
 
 class Server(val thread: Thread) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
-  private var clientHandlers: Map[ClientId, ClientHandler] = Map.empty
+  private var clients: Map[ClientId, ClientSendQueue] = Map.empty
 
   @volatile
   private var going: Boolean = true
@@ -47,12 +45,12 @@ class Server(val thread: Thread) extends ServerInterface {
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
     Log.info(id + " connected")
 
-    clientHandlers += id -> new ClientHandler(id, client).sendConnected()
+    clients += id -> new ClientSendQueue(id, client).sendConnected()
   }
 
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
-    clientHandlers(client).sendInstanceInfo()
+    clients(client).sendInstanceInfo()
   }
 
   def shutdown() = {
@@ -61,30 +59,6 @@ class Server(val thread: Thread) extends ServerInterface {
   }
 
   private def update(): Unit = {
-    clientHandlers.values.foreach(_.update())
+    clients.values.foreach(_.update())
   }
-
-  private class ClientHandler(id: ClientId, interface: ClientInterface) {
-    type UpdateFunction = () => Unit
-    private var queue: Queue[UpdateFunction] = Queue.empty
-
-    def update() = {
-      queue.foreach(_.apply())
-      queue = Queue.empty
-    }
-
-    def sendConnected() = pushSend {
-      interface.connected(id)
-    }
-
-    def sendInstanceInfo() = pushSend {
-      interface.instanceInfo()
-    }
-
-    private def pushSend(a: => Unit) = {
-      queue = queue.enqueue(() => a)
-      this
-    }
-  }
-
 }
