@@ -45,8 +45,8 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
       MessageCodec.send(ctx, ConnectedMessage(id))
     }
 
-    override def instanceInfo(): Unit = {
-      MessageCodec.send(ctx, InstanceInfoMessage())
+    override def instanceInfo(teamsOn: Boolean): Unit = {
+      MessageCodec.send(ctx, InstanceInfoMessage(teamsOn))
     }
   }
 }

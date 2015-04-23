@@ -12,5 +12,5 @@ public interface ClientInterface {
     /**
      * Instance settings
      */
-    public void instanceInfo();
+    public void instanceInfo(boolean teamsOn);
 }

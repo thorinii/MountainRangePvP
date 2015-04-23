@@ -13,4 +13,4 @@ case class ConnectedMessage(id: ClientId) extends ToClientMessage
 
 case class LoginMessage(checkCode: Int, version: Int, nickname: String) extends ToServerMessage
 
-case class InstanceInfoMessage() extends ToClientMessage
+case class InstanceInfoMessage(teamsOn: Boolean) extends ToClientMessage
