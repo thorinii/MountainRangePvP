@@ -1,19 +1,21 @@
 package mountainrangepvp.net.server
 
-import mountainrangepvp.net.{ClientId, ClientInterface}
+import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import scala.collection.immutable.Queue
+import mountainrangepvp.net.{ClientId, ClientInterface}
 
 /**
  * Asynchronously sends messages to the client.
  */
 private class ClientSendQueue(id: ClientId, interface: ClientInterface) {
   type UpdateFunction = () => Unit
-  private var queue: Queue[UpdateFunction] = Queue.empty
+  private val queue: BlockingQueue[UpdateFunction] = new LinkedBlockingQueue[UpdateFunction]()
 
   def update() = {
-    queue.foreach(_.apply())
-    queue = Queue.empty
+    while (!queue.isEmpty) {
+      val msg = queue.take()
+      msg()
+    }
   }
 
   def sendConnected() = pushSend {
@@ -25,7 +27,9 @@ private class ClientSendQueue(id: ClientId, interface: ClientInterface) {
   }
 
   private def pushSend(a: => Unit) = {
-    queue = queue.enqueue(() => a)
+    queue.offer(() => {
+      a
+    })
     this
   }
 }

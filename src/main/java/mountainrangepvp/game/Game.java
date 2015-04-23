@@ -3,7 +3,9 @@ package mountainrangepvp.game;
 import com.badlogic.gdx.Gdx;
 import mountainrangepvp.engine.AudioManager;
 import mountainrangepvp.engine.util.EventBus;
+import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.game.event.NewInstanceEvent;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
 import mountainrangepvp.game.mp.message.Message;
@@ -22,39 +24,46 @@ import java.io.IOException;
  */
 public class Game {
 
-    public final GameSettings config;
+    private final GameSettings config;
 
-    public final EventBus eventbus;
-    public final Client client;
-    public final PhysicsSystem physicsSystem;
-    public final InputHandler inputHandler;
-    public final AudioManager audioManager;
-    public final GameScreen gameScreen;
+    private final EventBus eventbus;
+    private final Client client;
+    private final PhysicsSystem physicsSystem;
+    private final AudioManager audioManager;
 
-    public final Instance instance;
+    private InputHandler inputHandler;
+    private Instance instance;
+    private GameScreen gameScreen;
 
-    public Game(GameSettings config, ServerInterface server) {
+    public Game(final GameSettings config, ServerInterface server) {
         this.config = config;
 
-        eventbus = new EventBus();
+        eventbus = new EventBus(Thread.currentThread());
 
         client = Client.newClient(eventbus, server, config.nickname);
 
         physicsSystem = new PhysicsSystem();
 
-        PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
-        ChatManager chatManager = new ChatManager(playerManager);
-
-        instance = new Instance(playerManager, chatManager);
-
-        inputHandler = new InputHandler(eventbus, chatManager);
-        inputHandler.register();
-
         audioManager = new AudioManager();
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
 
-        gameScreen = new GameScreen(eventbus, instance);
+        eventbus.subscribe(NewInstanceEvent.class, new EventHandler<NewInstanceEvent>() {
+            @Override
+            public void receive(NewInstanceEvent event) {
+                Log.info("InstanceInfo: teamsOn " + event.teamsOn());
+
+                PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
+                ChatManager chatManager = new ChatManager(playerManager);
+
+                instance = new Instance(playerManager, chatManager);
+
+                inputHandler = new InputHandler(eventbus, null);// chatManager);
+                inputHandler.register();
+
+                gameScreen = new GameScreen(eventbus, instance);
+            }
+        });
     }
 
     public void start() {
@@ -85,10 +94,10 @@ public class Game {
     }
 
     private void update(float dt) {
-        eventbus.flush();
+        eventbus.flushPendingMessages();
         // TODO: client.update();
 
-        if (instance.hasMap()) {
+        if (instance != null && instance.hasMap()) {
             inputHandler.update(instance, config.TIMESTEP);
             instance.update(config.TIMESTEP);
             physicsSystem.update(instance, config.TIMESTEP);
@@ -96,7 +105,9 @@ public class Game {
 
         timeSinceLastUpdate = 0;
 
-        gameScreen.render(dt);
+        if (gameScreen != null) gameScreen.render(dt);
+
+        eventbus.resetMessagesPerFrame();
     }
 
     private class MapChangeListener implements MessageListener {

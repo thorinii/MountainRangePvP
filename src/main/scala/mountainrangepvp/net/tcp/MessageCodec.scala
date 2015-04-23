@@ -14,7 +14,6 @@ object MessageCodec {
 
   def send(ctx: ChannelHandlerContext, msg: Message): Unit = {
     ctx.writeAndFlush(encode(ctx, msg)).sync
-    Log.info("Sent " + msg)
   }
 
   def encode(ctx: ChannelHandlerContext, msg: Message): ByteBuf = {

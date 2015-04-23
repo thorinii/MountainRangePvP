@@ -48,7 +48,7 @@ public class Log {
     }
 
     public static void setupLog() {
-        setupLog(false);
+        setupLog(true);
     }
 
     public static void info(Object... data) {
