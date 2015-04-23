@@ -34,8 +34,9 @@ object MessageCodec {
       buf.writeInt(version)
       writeString(buf, nickname)
 
-    case InstanceInfoMessage() =>
+    case InstanceInfoMessage(teamsOn) =>
       buf.writeInt(3)
+      buf.writeBoolean(teamsOn)
 
     case _ =>
       Log.todoCrash()
@@ -54,7 +55,7 @@ object MessageCodec {
                      readString(buf))
 
       case 3 =>
-        InstanceInfoMessage()
+        InstanceInfoMessage(buf.readBoolean())
 
       case _ =>
         Log.todoCrash()

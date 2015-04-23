@@ -55,7 +55,8 @@ public class Client {
         }
 
         @Override
-        public void instanceInfo() {
+        public void instanceInfo(boolean teamsOn) {
+            Log.info("InstanceInfo: teamsOn " + teamsOn);
             // TODO: eventbus message
         }
     }

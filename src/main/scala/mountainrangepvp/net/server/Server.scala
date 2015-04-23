@@ -41,6 +41,9 @@ class Server(val thread: Thread) extends ServerInterface {
   @volatile
   private var going: Boolean = true
 
+  // TODO: make this a setting on an InstanceConfig
+  private val teamsOn = false
+
   def connect(client: ClientInterface) = {
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
     Log.info(id + " connected")
@@ -50,7 +53,7 @@ class Server(val thread: Thread) extends ServerInterface {
 
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
-    clients(client).sendInstanceInfo()
+    clients(client).sendInstanceInfo(teamsOn)
   }
 
   def shutdown() = {

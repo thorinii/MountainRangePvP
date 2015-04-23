@@ -20,8 +20,8 @@ private class ClientSendQueue(id: ClientId, interface: ClientInterface) {
     interface.connected(id)
   }
 
-  def sendInstanceInfo() = pushSend {
-    interface.instanceInfo()
+  def sendInstanceInfo(teamsOn: Boolean) = pushSend {
+    interface.instanceInfo(teamsOn)
   }
 
   private def pushSend(a: => Unit) = {
