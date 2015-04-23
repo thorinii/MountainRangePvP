@@ -1,21 +1,23 @@
 package mountainrangepvp.engine.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A pub/sub message passing system.
  */
 public class EventBus {
+    private final Thread dispatchThread;
     private final Map<Class<? extends Event>, Dispatcher> dispatchers;
+    private final Queue<Event> pendingMessages;
 
     private final AtomicInteger messagesPerFrame;
 
-    public EventBus() {
+    public EventBus(Thread dispatchThread) {
+        this.dispatchThread = dispatchThread;
         dispatchers = new HashMap<>();
+        pendingMessages = new LinkedBlockingQueue<>();
         messagesPerFrame = new AtomicInteger(0);
     }
 
@@ -31,14 +33,31 @@ public class EventBus {
     }
 
     public void send(Event event) {
+        if (Thread.currentThread() == dispatchThread)
+            dispatch(event);
+        else
+            pendingMessages.offer(event);
+    }
+
+    private void dispatch(Event event) {
         Dispatcher<?> d = dispatchers.get(event.getClass());
-        if (d != null)
+        if (d == null)
+            Log.fine("No handlers subscribed to " + event);
+        else
             d.dispatch(event);
 
         messagesPerFrame.incrementAndGet();
     }
 
-    public void flush() {
+    /**
+     * Assumes running on the dispatch thread.
+     */
+    public void flushPendingMessages() {
+        while (!pendingMessages.isEmpty())
+            dispatch(pendingMessages.remove());
+    }
+
+    public void resetMessagesPerFrame() {
         messagesPerFrame.set(0);
     }
 

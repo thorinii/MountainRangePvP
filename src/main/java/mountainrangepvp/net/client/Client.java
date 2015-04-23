@@ -3,6 +3,7 @@ package mountainrangepvp.net.client;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.game.event.NewInstanceEvent;
 import mountainrangepvp.game.event.PlayerFiredEvent;
 import mountainrangepvp.net.ClientId;
 import mountainrangepvp.net.ClientInterface;
@@ -56,8 +57,7 @@ public class Client {
 
         @Override
         public void instanceInfo(boolean teamsOn) {
-            Log.info("InstanceInfo: teamsOn " + teamsOn);
-            // TODO: eventbus message
+            eventbus.send(new NewInstanceEvent(teamsOn));
         }
     }
 }

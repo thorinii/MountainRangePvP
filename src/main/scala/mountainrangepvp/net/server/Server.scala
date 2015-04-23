@@ -5,6 +5,9 @@ import java.util.concurrent.atomic.AtomicLong
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
 
+import scala.collection.concurrent.TrieMap
+import scala.collection.mutable
+
 /**
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
@@ -36,7 +39,7 @@ object Server {
 
 class Server(val thread: Thread) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
-  private var clients: Map[ClientId, ClientSendQueue] = Map.empty
+  private val clients: mutable.Map[ClientId, ClientSendQueue] = TrieMap.empty
 
   @volatile
   private var going: Boolean = true
