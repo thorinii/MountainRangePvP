@@ -5,7 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import mountainrangepvp.game.Game;
-import mountainrangepvp.game.settings.GameSettings;
+import mountainrangepvp.game.GameSettings;
 import mountainrangepvp.net.server.Server;
 import mountainrangepvp.net.tcp.TcpServerInterface;
 import mountainrangepvp.net.tcp.TcpServerWrapper;
