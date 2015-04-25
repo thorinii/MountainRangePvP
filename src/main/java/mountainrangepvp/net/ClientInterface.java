@@ -1,5 +1,7 @@
 package mountainrangepvp.net;
 
+import mountainrangepvp.net.server.PlayerStats;
+
 /**
  * The interface the server talks to, either in-process or over the network.
  */
@@ -12,4 +14,6 @@ public interface ClientInterface {
     public void sessionInfo(boolean teamsOn);
 
     public void newMap(int seed);
+
+    public void playerStats(PlayerStats stats);
 }

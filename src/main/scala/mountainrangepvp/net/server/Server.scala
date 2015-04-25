@@ -41,9 +41,10 @@ object Server {
 class Server(val thread: Thread) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
-  private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
+  private val asyncQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
+  private var playerStats = new PlayerStats
 
-  // TODO: make this a setting on an SessionConfig
+  // TODO: make this a setting on a SessionConfig
   private val teamsOn = false
 
   // TODO: make this a setting in current map
@@ -65,6 +66,7 @@ class Server(val thread: Thread) extends ServerInterface {
 
     send(client)(_.sessionInfo(teamsOn))
     send(client)(_.newMap(seed))
+    stats(_.joined(client, nickname))
   }
 
   def shutdown() = {
@@ -74,19 +76,40 @@ class Server(val thread: Thread) extends ServerInterface {
 
 
   private def update(): Unit = {
-    while (!sendQueue.isEmpty) {
-      val msg = sendQueue.take()
+    val oldStats = playerStats
+
+    while (!asyncQueue.isEmpty) {
+      val msg = asyncQueue.take()
       msg()
     }
+
+    if (playerStats.changedSince(oldStats))
+      sendToAll(_.playerStats(playerStats))
   }
 
 
+  private def async(action: Action): Unit = {
+    asyncQueue.offer(action)
+  }
+
+  private def stats(action: PlayerStats => PlayerStats): Unit = {
+    async(() => playerStats = action(playerStats))
+  }
+
   private def send(interface: ClientInterface)(action: SendAction): Unit = {
-    sendQueue.offer(() => action(interface))
+    async(() => action(interface))
   }
 
   private def send(id: ClientId)(action: SendAction): Unit = {
     send(interfaces(id))(action)
+  }
+
+  private def sendToAll(action: SendAction): Unit = {
+    interfaces.values.foreach(i => send(i)(action))
+  }
+
+  private def sendToAllExcept(id: ClientId)(action: SendAction): Unit = {
+    interfaces.filterKeys(_ != id).values.foreach(i => send(i)(action))
   }
 
 
