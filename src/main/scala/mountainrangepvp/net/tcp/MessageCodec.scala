@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.net.ClientId
+import mountainrangepvp.net.server.PlayerStats
 
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
@@ -40,6 +41,17 @@ object MessageCodec {
     case NewMapMessage(seed) =>
       buf.writeInt(4)
       buf.writeInt(seed)
+
+    case PlayerStatsMessage(stats) =>
+      buf.writeInt(5)
+
+      val players = stats.players
+      buf.writeInt(players.size)
+
+      players.foreach { case (id, nickname) =>
+        buf.writeLong(id.id)
+        writeString(buf, nickname)
+      }
   }
 
   def decode(buf: ByteBuf): Message = {
@@ -58,6 +70,18 @@ object MessageCodec {
 
       case 4 =>
         NewMapMessage(buf.readInt())
+
+      case 5 =>
+        val playerCount = buf.readInt()
+        var players = Map.empty[ClientId, String]
+
+        for (_ <- 1 to playerCount) {
+          val id = buf.readLong()
+          val nickname = readString(buf)
+          players += (new ClientId(id) -> nickname)
+        }
+
+        PlayerStatsMessage(new PlayerStats(players))
 
       case _ =>
         Log.todoCrash()

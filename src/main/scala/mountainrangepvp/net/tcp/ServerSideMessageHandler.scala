@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
 import mountainrangepvp.engine.util.Log
+import mountainrangepvp.net.server.PlayerStats
 import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
 
 /**
@@ -51,6 +52,10 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
 
     override def newMap(seed: Int): Unit = {
       MessageCodec.send(ctx, NewMapMessage(seed))
+    }
+
+    override def playerStats(stats: PlayerStats): Unit = {
+      MessageCodec.send(ctx, PlayerStatsMessage(stats))
     }
   }
 }
