@@ -3,13 +3,13 @@ package mountainrangepvp.game.world;
 /**
  * State that doesn't change between maps.
  */
-public class Instance {
+public class Session {
     public final PlayerManager playerManager;
     public final ChatManager chatManager;
 
     private Map map;
 
-    public Instance(PlayerManager playerManager, ChatManager chatManager) {
+    public Session(PlayerManager playerManager, ChatManager chatManager) {
         this.playerManager = playerManager;
         this.chatManager = chatManager;
 
