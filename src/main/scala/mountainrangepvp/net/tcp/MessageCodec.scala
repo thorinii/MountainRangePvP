@@ -37,9 +37,9 @@ object MessageCodec {
       buf.writeInt(3)
       buf.writeBoolean(teamsOn)
 
-    case _ =>
-      Log.todoCrash()
-      throw new UnsupportedOperationException
+    case NewMapMessage(seed) =>
+      buf.writeInt(4)
+      buf.writeInt(seed)
   }
 
   def decode(buf: ByteBuf): Message = {
@@ -55,6 +55,9 @@ object MessageCodec {
 
       case 3 =>
         SessionInfoMessage(buf.readBoolean())
+
+      case 4 =>
+        NewMapMessage(buf.readInt())
 
       case _ =>
         Log.todoCrash()

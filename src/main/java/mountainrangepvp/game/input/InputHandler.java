@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.game.event.PlayerFiredEvent;
 import mountainrangepvp.game.world.ChatManager;
-import mountainrangepvp.game.world.Session;
 import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Session;
 import mountainrangepvp.game.world.ShotManager;
 
 /**
@@ -49,26 +49,28 @@ public class InputHandler {
     }
 
     public void update(Session world, float dt) {
-        Player local = world.playerManager.getLocalPlayer();
-        if (!local.isAlive()) {
-            gun = false;
-            doubleJumpTimer = 0;
-            gunTimer = 0;
-            return;
-        }
+        // TODO: fix this
 
-        Vector2 vel = local.getVelocity();
-
-        doPlayerWalking(local, vel, dt);
-        doGunControl(local);
-
-        if (gun) {
-            doShooting(local);
-
-            gun = false;
-        }
-
-        gunTimer += (int) (1000 * dt);
+//        Player local = world.playerManager.getLocalPlayer();
+//        if (!local.isAlive()) {
+//            gun = false;
+//            doubleJumpTimer = 0;
+//            gunTimer = 0;
+//            return;
+//        }
+//
+//        Vector2 vel = local.getVelocity();
+//
+//        doPlayerWalking(local, vel, dt);
+//        doGunControl(local);
+//
+//        if (gun) {
+//            doShooting(local);
+//
+//            gun = false;
+//        }
+//
+//        gunTimer += (int) (1000 * dt);
     }
 
     private void doPlayerWalking(Player local, Vector2 vel, float dt) {

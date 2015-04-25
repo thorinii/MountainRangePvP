@@ -18,6 +18,7 @@ class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInb
   private def handle(m: ToClientMessage) = m match {
     case ConnectedMessage(id) => client.connected(id)
     case SessionInfoMessage(teamsOn) => client.sessionInfo(teamsOn)
+    case NewMapMessage(seed) => client.newMap(seed)
   }
 
 
