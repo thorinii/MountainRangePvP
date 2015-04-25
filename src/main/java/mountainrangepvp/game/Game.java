@@ -8,7 +8,6 @@ import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.world.NewSessionEvent;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.renderer.GameScreen;
-import mountainrangepvp.game.settings.GameSettings;
 import mountainrangepvp.game.world.*;
 import mountainrangepvp.net.ServerInterface;
 import mountainrangepvp.net.client.Client;
