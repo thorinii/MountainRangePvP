@@ -46,6 +46,9 @@ class Server(val thread: Thread) extends ServerInterface {
   // TODO: make this a setting on an SessionConfig
   private val teamsOn = false
 
+  // TODO: make this a setting in current map
+  private val seed = 34
+
   @volatile
   private var going: Boolean = true
 
@@ -61,6 +64,7 @@ class Server(val thread: Thread) extends ServerInterface {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
     send(client)(_.sessionInfo(teamsOn))
+    send(client)(_.newMap(seed))
   }
 
   def shutdown() = {

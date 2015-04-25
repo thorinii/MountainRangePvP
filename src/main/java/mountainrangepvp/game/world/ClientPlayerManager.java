@@ -16,6 +16,7 @@ public class ClientPlayerManager extends AbstractPlayerManager {
     public ClientPlayerManager(String localName, Player.Team localTeam) {
         localPlayerName = localName;
         localPlayerTeam = localTeam;
+        localPlayer = new Player(localName, 0, localTeam);
     }
 
     @Override

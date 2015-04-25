@@ -9,8 +9,7 @@ public interface ClientInterface {
      */
     public void connected(ClientId id);
 
-    /**
-     * Session settings
-     */
     public void sessionInfo(boolean teamsOn);
+
+    public void newMap(int seed);
 }

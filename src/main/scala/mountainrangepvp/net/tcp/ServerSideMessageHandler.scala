@@ -48,5 +48,9 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
     override def sessionInfo(teamsOn: Boolean): Unit = {
       MessageCodec.send(ctx, SessionInfoMessage(teamsOn))
     }
+
+    override def newMap(seed: Int): Unit = {
+      MessageCodec.send(ctx, NewMapMessage(seed))
+    }
   }
 }

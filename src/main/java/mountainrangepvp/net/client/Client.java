@@ -3,6 +3,7 @@ package mountainrangepvp.net.client;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.game.event.NewMapEvent;
 import mountainrangepvp.game.event.NewSessionEvent;
 import mountainrangepvp.game.event.PlayerFiredEvent;
 import mountainrangepvp.net.ClientId;
@@ -58,6 +59,11 @@ public class Client {
         @Override
         public void sessionInfo(boolean teamsOn) {
             eventbus.send(new NewSessionEvent(teamsOn));
+        }
+
+        @Override
+        public void newMap(int seed) {
+            eventbus.send(new NewMapEvent(seed));
         }
     }
 }
