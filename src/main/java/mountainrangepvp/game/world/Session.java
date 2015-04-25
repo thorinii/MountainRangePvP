@@ -3,7 +3,6 @@ package mountainrangepvp.game.world;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.world.NewMapEvent;
 
 /**
  * State that doesn't change between maps.
