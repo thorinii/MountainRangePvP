@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
-import mountainrangepvp.game.event.PlayerFiredEvent;
+import mountainrangepvp.game.world.PlayerFiredEvent;
 import mountainrangepvp.game.world.ChatManager;
 import mountainrangepvp.game.world.Player;
 import mountainrangepvp.game.world.Session;

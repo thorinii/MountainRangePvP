@@ -1,8 +1,7 @@
-package mountainrangepvp.game.event
+package mountainrangepvp.game.world
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.Event
-import mountainrangepvp.game.world.Player
 
 
 case class NewSessionEvent(teamsOn: Boolean) extends Event
