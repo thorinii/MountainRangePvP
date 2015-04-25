@@ -5,7 +5,7 @@ import mountainrangepvp.engine.AudioManager;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.event.NewSessionEvent;
+import mountainrangepvp.game.world.NewSessionEvent;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.renderer.GameScreen;
 import mountainrangepvp.game.settings.GameSettings;
