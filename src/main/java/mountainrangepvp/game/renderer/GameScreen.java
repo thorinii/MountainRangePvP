@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.world.Instance;
+import mountainrangepvp.game.world.Session;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Cursor;
@@ -25,11 +25,11 @@ public class GameScreen implements Screen {
     private final WorldRenderer renderer;
     private final int width, height;
 
-    private final Instance instance;
+    private final Session session;
 
-    public GameScreen(EventBus eventbus, Instance instance) {
-        this.instance = instance;
-        renderer = new WorldRenderer(eventbus, instance);
+    public GameScreen(EventBus eventbus, Session session) {
+        this.session = session;
+        renderer = new WorldRenderer(eventbus, session);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
@@ -61,9 +61,9 @@ public class GameScreen implements Screen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (!instance.hasMap()) return;
+        if (!session.hasMap()) return;
 
-        Vector2 pos = instance.playerManager.getLocalPlayer().getCentralPosition();
+        Vector2 pos = session.playerManager.getLocalPlayer().getCentralPosition();
 
         pos.x = pos.x - width / 2;
         pos.y = pos.y - height / 2;

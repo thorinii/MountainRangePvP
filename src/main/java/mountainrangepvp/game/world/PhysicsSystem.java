@@ -10,7 +10,7 @@ public class PhysicsSystem {
     private static final float GRAVITY = -1000f;
     private static final float DAMPING = 0.01f;
 
-    public void update(Instance world, float dt) {
+    public void update(Session world, float dt) {
         for (Player player : world.playerManager.getPlayers()) {
             updatePlayer(world.getMap().terrain, player, dt);
         }

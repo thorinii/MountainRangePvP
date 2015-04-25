@@ -10,7 +10,7 @@ public interface ClientInterface {
     public void connected(ClientId id);
 
     /**
-     * Instance settings
+     * Session settings
      */
-    public void instanceInfo(boolean teamsOn);
+    public void sessionInfo(boolean teamsOn);
 }

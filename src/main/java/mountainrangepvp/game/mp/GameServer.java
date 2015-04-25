@@ -12,17 +12,17 @@ import java.io.IOException;
  */
 public class GameServer {
 
-    private final Instance instance;
+    private final Session session;
     private final MessageServer messageServer;
     private final Timer playerUpdateTimer;
     private int seed;
 
-    public GameServer(Instance instance) {
-        this(instance, MultiplayerConstants.STD_PORT);
+    public GameServer(Session session) {
+        this(session, MultiplayerConstants.STD_PORT);
     }
 
-    public GameServer(Instance instance, int port) {
-        this.instance = instance;
+    public GameServer(Session session, int port) {
+        this.session = session;
         this.messageServer = new MessageServer(port);
         playerUpdateTimer = new Timer();
 
@@ -31,10 +31,10 @@ public class GameServer {
 
     private void setup() {
         messageServer.addMessageListener(new GameServerMessageListener());
-        messageServer.addMessageListener(instance.playerManager);
-        messageServer.addMessageListener(instance.chatManager);
+        messageServer.addMessageListener(session.playerManager);
+        messageServer.addMessageListener(session.chatManager);
 
-        instance.chatManager.addChatListener(new NewChatListener());
+        session.chatManager.addChatListener(new NewChatListener());
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -56,15 +56,15 @@ public class GameServer {
     private Map lastMap = null;
 
     public void update() {
-        if (instance.hasMap() && instance.getMap() != lastMap) {
-            lastMap = instance.getMap();
+        if (session.hasMap() && session.getMap() != lastMap) {
+            lastMap = session.getMap();
             messageServer.addMessageListener(lastMap.shotManager);
             lastMap.shotManager.addShotListener(new NewShotListener());
         }
 
         playerUpdateTimer.update();
         if (playerUpdateTimer.getTime() > MultiplayerConstants.PLAYER_UPDATE_TIMER) {
-            for (Player player : instance.playerManager.getPlayers()) {
+            for (Player player : session.playerManager.getPlayers()) {
                 PlayerUpdateMessage pum = new PlayerUpdateMessage(player);
                 messageServer.broadcastExcept(pum, player.getID());
             }
@@ -93,18 +93,18 @@ public class GameServer {
             if (message instanceof IntroduceMessage) {
                 IntroduceMessage introduceMessage = (IntroduceMessage) message;
 
-                Player existing = instance.playerManager.getPlayer(introduceMessage.getName());
+                Player existing = session.playerManager.getPlayer(introduceMessage.getName());
                 if (existing != null) {
                     KillConnectionMessage kcm = new KillConnectionMessage(
                             KillConnectionMessage.Reason.DuplicatePlayer);
                     messageServer.send(kcm, id);
                 } else {
                     NewWorldMessage newWorldMessage = new NewWorldMessage(
-                            NewWorldMessage.WorldType.Hills, seed, instance.getMap().teamModeOn);
+                            NewWorldMessage.WorldType.Hills, seed, session.getMap().teamModeOn);
                     messageServer.send(newWorldMessage, id);
 
 
-                    for (Player player : instance.playerManager.getPlayers()) {
+                    for (Player player : session.playerManager.getPlayers()) {
                         PlayerConnectMessage pcm = new PlayerConnectMessage(
                                 player);
                         messageServer.send(pcm, id);
@@ -159,17 +159,17 @@ public class GameServer {
         PlayerManager playerManager = new ServerPlayerManager();
         ChatManager chatManager = new ChatManager(playerManager);
 
-        final Instance instance = new Instance(playerManager, chatManager);
+        final Session session = new Session(playerManager, chatManager);
 
         Terrain terrain = new Terrain(new HillsHeightMap(seed));
         ShotManager shotManager = new ShotManager(playerManager, terrain, true, teamModeOn);
 
         Map map = new Map(shotManager, terrain, teamModeOn);
-        instance.setMap(map);
+        session.setMap(map);
 
         final PhysicsSystem physicsSystem = new PhysicsSystem();
 
-        final GameServer server = new GameServer(instance);
+        final GameServer server = new GameServer(session);
         server.setSeed(seed);
 
         Log.info("Starting server...");
@@ -186,8 +186,8 @@ public class GameServer {
                         Thread.sleep(1000 / 60);
 
                         server.update();
-                        physicsSystem.update(instance, 1 / 60f);
-                        instance.update(1 / 60f);
+                        physicsSystem.update(session, 1 / 60f);
+                        session.update(1 / 60f);
                     }
                 } catch (Exception e) {
                     Log.warn("Server crashed:", e);

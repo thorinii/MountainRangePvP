@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.engine.util.EventBus;
-import mountainrangepvp.game.world.Instance;
+import mountainrangepvp.game.world.Session;
 
 /**
  * @author lachlan
@@ -23,7 +23,7 @@ public class WorldRenderer {
     private final OrthographicCamera camera;
 
     private final EventBus eventbus;
-    private final Instance instance;
+    private final Session session;
 
     private final TextRenderer textRenderer;
 
@@ -37,9 +37,9 @@ public class WorldRenderer {
 
     private final Texture crossHairTexture;
 
-    public WorldRenderer(EventBus eventbus, Instance instance) {
+    public WorldRenderer(EventBus eventbus, Session session) {
         this.eventbus = eventbus;
-        this.instance = instance;
+        this.session = session;
 
         screen = new Vector2(Gdx.graphics.getWidth() + 1,
                              Gdx.graphics.getHeight());
@@ -68,12 +68,12 @@ public class WorldRenderer {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         backgroundRenderer.render(scroll);
-        shotRenderer.render(scroll, instance.getMap().shotManager);
-        terrainRenderer.render(scroll, instance.getMap().terrain);
-        playerRenderer.render(scroll, instance.playerManager);
-        chatRenderer.render(instance.chatManager);
-        leaderboardRenderer.render(scroll, instance.playerManager);
-        miniMapRenderer.render(scroll, instance.playerManager, instance.getMap().terrain);
+        shotRenderer.render(scroll, session.getMap().shotManager);
+        terrainRenderer.render(scroll, session.getMap().terrain);
+        playerRenderer.render(scroll, session.playerManager);
+        chatRenderer.render(session.chatManager);
+        leaderboardRenderer.render(scroll, session.playerManager);
+        miniMapRenderer.render(scroll, session.playerManager, session.getMap().terrain);
 
         drawCrosshair();
 

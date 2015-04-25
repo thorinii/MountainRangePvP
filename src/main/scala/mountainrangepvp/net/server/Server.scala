@@ -43,7 +43,7 @@ class Server(val thread: Thread) extends ServerInterface {
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
   private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
 
-  // TODO: make this a setting on an InstanceConfig
+  // TODO: make this a setting on an SessionConfig
   private val teamsOn = false
 
   @volatile
@@ -60,7 +60,7 @@ class Server(val thread: Thread) extends ServerInterface {
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
-    send(client)(_.instanceInfo(teamsOn))
+    send(client)(_.sessionInfo(teamsOn))
   }
 
   def shutdown() = {

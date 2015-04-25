@@ -5,7 +5,7 @@ import mountainrangepvp.engine.AudioManager;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.event.NewInstanceEvent;
+import mountainrangepvp.game.event.NewSessionEvent;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
 import mountainrangepvp.game.mp.message.Message;
@@ -32,7 +32,7 @@ public class Game {
     private final AudioManager audioManager;
 
     private InputHandler inputHandler;
-    private Instance instance;
+    private Session session;
     private GameScreen gameScreen;
 
     public Game(final GameSettings config, ServerInterface server) {
@@ -48,20 +48,20 @@ public class Game {
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
 
-        eventbus.subscribe(NewInstanceEvent.class, new EventHandler<NewInstanceEvent>() {
+        eventbus.subscribe(NewSessionEvent.class, new EventHandler<NewSessionEvent>() {
             @Override
-            public void receive(NewInstanceEvent event) {
-                Log.info("InstanceInfo: teamsOn " + event.teamsOn());
+            public void receive(NewSessionEvent event) {
+                Log.info("SessionInfo: teamsOn " + event.teamsOn());
 
                 PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
                 ChatManager chatManager = new ChatManager(playerManager);
 
-                instance = new Instance(playerManager, chatManager);
+                session = new Session(playerManager, chatManager);
 
                 inputHandler = new InputHandler(eventbus, null);// chatManager);
                 inputHandler.register();
 
-                gameScreen = new GameScreen(eventbus, instance);
+                gameScreen = new GameScreen(eventbus, session);
             }
         });
     }
@@ -97,10 +97,10 @@ public class Game {
         eventbus.flushPendingMessages();
         // TODO: client.update();
 
-        if (instance != null && instance.hasMap()) {
-            inputHandler.update(instance, config.TIMESTEP);
-            instance.update(config.TIMESTEP);
-            physicsSystem.update(instance, config.TIMESTEP);
+        if (session != null && session.hasMap()) {
+            inputHandler.update(session, config.TIMESTEP);
+            session.update(config.TIMESTEP);
+            physicsSystem.update(session, config.TIMESTEP);
         }
 
         timeSinceLastUpdate = 0;
@@ -132,12 +132,12 @@ public class Game {
                 }
 
                 Terrain terrain = new Terrain(heightMap);
-                ShotManager shotManager = new ShotManager(instance.playerManager, terrain, false, newWorldMessage.isTeamModeOn());
+                ShotManager shotManager = new ShotManager(session.playerManager, terrain, false, newWorldMessage.isTeamModeOn());
                 Map map = new Map(shotManager, terrain, newWorldMessage.isTeamModeOn());
 
-                instance.setMap(map);
+                session.setMap(map);
 
-                shotManager.addShotListener(new AudioShotListener(instance.playerManager, audioManager));
+                shotManager.addShotListener(new AudioShotListener(session.playerManager, audioManager));
                 inputHandler.setShotManager(shotManager);
             }
         }
