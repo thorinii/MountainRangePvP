@@ -41,7 +41,8 @@ object Server {
 class Server(val thread: Thread) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
-  private val asyncQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
+  private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
+  private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
   private var playerStats = new PlayerStats
 
   // TODO: make this a setting on a SessionConfig
@@ -78,26 +79,31 @@ class Server(val thread: Thread) extends ServerInterface {
   private def update(): Unit = {
     val oldStats = playerStats
 
-    while (!asyncQueue.isEmpty) {
-      val msg = asyncQueue.take()
-      msg()
+    while (!taskQueue.isEmpty) {
+      val task = taskQueue.take()
+      task()
     }
 
     if (playerStats.changedSince(oldStats))
       sendToAll(_.playerStats(playerStats))
+
+    while (!sendQueue.isEmpty) {
+      val msg = sendQueue.take()
+      msg()
+    }
   }
 
 
-  private def async(action: Action): Unit = {
-    asyncQueue.offer(action)
+  private def async(queue: BlockingQueue[Action])(action: Action): Unit = {
+    queue.offer(action)
   }
 
   private def stats(action: PlayerStats => PlayerStats): Unit = {
-    async(() => playerStats = action(playerStats))
+    async(taskQueue)(() => playerStats = action(playerStats))
   }
 
   private def send(interface: ClientInterface)(action: SendAction): Unit = {
-    async(() => action(interface))
+    async(sendQueue)(() => action(interface))
   }
 
   private def send(id: ClientId)(action: SendAction): Unit = {
