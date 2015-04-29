@@ -3,7 +3,7 @@ package mountainrangepvp.net.tcp
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.util.LegacyLog
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
@@ -23,12 +23,12 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
 
   private def handle(client: ClientId, m: ToServerMessage) = m match {
     case LoginMessage(c, v, n) => server.login(client, c, v, n)
-    case _ => Log.todo(m.toString)
+    case _ => LegacyLog.todo(m.toString)
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = cause match {
     case e: Exception =>
-      Log.crash("Error in ServerSideMessageHandler", cause)
+      LegacyLog.crash("Error in ServerSideMessageHandler", cause)
       super.exceptionCaught(ctx, cause)
 
     case _ =>

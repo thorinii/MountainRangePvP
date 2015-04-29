@@ -1,6 +1,6 @@
 package mountainrangepvp.net.client
 
-import mountainrangepvp.engine.util.{EventBus, Log}
+import mountainrangepvp.engine.util.{EventBus, LegacyLog}
 import mountainrangepvp.game.world._
 import mountainrangepvp.net._
 
@@ -19,7 +19,7 @@ class Client(eventbus: EventBus, server: ServerInterface, nickname: String) {
   private var id: ClientId = null
 
   private def subscribe() = {
-    eventbus.subscribe((e: PlayerFiredEvent) => Log.todo())
+    eventbus.subscribe((e: PlayerFiredEvent) => LegacyLog.todo())
   }
 
   @throws(classOf[InterruptedException])
@@ -47,7 +47,7 @@ class Client(eventbus: EventBus, server: ServerInterface, nickname: String) {
     }
 
     override def playerStats(stats: PlayerStats): Unit = {
-      Log.info("Received stats " + stats)
+      LegacyLog.info("Received stats " + stats)
       // TODO: store this somewhere
       eventbus.send(PlayerStatsUpdatedEvent(stats))
     }

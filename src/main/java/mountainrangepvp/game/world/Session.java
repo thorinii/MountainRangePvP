@@ -2,7 +2,7 @@ package mountainrangepvp.game.world;
 
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 /**
  * State that doesn't change between maps.
@@ -43,7 +43,7 @@ public class Session {
     private class NewMapHandler implements EventHandler<NewMapEvent> {
         @Override
         public void receive(NewMapEvent event) {
-            Log.info("Received Seed", event.seed(), "Changing Map");
+            LegacyLog.info("Received seed " + event.seed() + "; changing map");
 
             HeightMap heightMap = new HillsHeightMap(event.seed());
 

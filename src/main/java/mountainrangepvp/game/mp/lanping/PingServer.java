@@ -1,7 +1,7 @@
 package mountainrangepvp.game.mp.lanping;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -29,7 +29,7 @@ public class PingServer {
                         Thread.sleep(1000 / MultiplayerConstants.PING_RATE);
                     }
                 } catch (InterruptedException ex) {
-                    Log.info("Ping Server shutting down", ex);
+                    // shut down
                 }
             }
         }, "Ping Server");
@@ -53,7 +53,7 @@ public class PingServer {
         try {
             socket.send(packet);
         } catch (IOException ioe) {
-            Log.info("Could not send ping", ioe);
+            LegacyLog.warn("Could not send ping", ioe);
             Thread.currentThread().interrupt();
         }
     }

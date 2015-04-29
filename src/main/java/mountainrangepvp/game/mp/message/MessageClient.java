@@ -1,7 +1,7 @@
 package mountainrangepvp.game.mp.message;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -40,7 +40,7 @@ public class MessageClient {
         try {
             proxy.kill();
         } catch (IOException ex) {
-            Log.warn("Could not kill server connection:", ex);
+            LegacyLog.warn("Could not kill server connection:", ex);
         }
     }
 
@@ -48,7 +48,7 @@ public class MessageClient {
         try {
             proxy.update();
         } catch (IOException ex) {
-            Log.warn("Error processing messages:", ex);
+            LegacyLog.warn("Error processing messages:", ex);
             stop();
         }
     }
@@ -132,7 +132,7 @@ public class MessageClient {
             if (m instanceof KillConnectionMessage) {
                 KillConnectionMessage kill = (KillConnectionMessage) m;
 
-                Log.info("Server disconnected: " + kill.getReason());
+                LegacyLog.info("Server disconnected: " + kill.getReason());
 
                 kill();
             }

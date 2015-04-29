@@ -3,7 +3,7 @@ package mountainrangepvp.net.server
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.util.LegacyLog
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
@@ -61,7 +61,7 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
   }
 
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
-    Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
+    LegacyLog.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
     send(client)(_.sessionInfo(sessionConfig.teamsOn))
     send(client)(_.newMap(seed))

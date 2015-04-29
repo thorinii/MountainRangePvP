@@ -4,7 +4,7 @@ import mountainrangepvp.game.mp.message.IntroduceMessage;
 import mountainrangepvp.game.mp.message.KillConnectionMessage;
 import mountainrangepvp.game.mp.message.Message;
 import mountainrangepvp.game.mp.message.PlayerUpdateMessage;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 
@@ -25,7 +25,7 @@ public class ServerPlayerManager extends AbstractPlayerManager {
                 if (p.getID() == id) {
                     players.remove(p);
 
-                    Log.info(p.getName(), "disconnected");
+                    LegacyLog.info(p.getName() + " disconnected");
                 }
             }
 
@@ -34,7 +34,7 @@ public class ServerPlayerManager extends AbstractPlayerManager {
             players.add(new Player(introduceMessage.getName(), id,
                                    introduceMessage.getTeam()));
 
-            Log.info(introduceMessage.getName(), "connected");
+            LegacyLog.info(introduceMessage.getName() + " connected");
 
         } else if (message instanceof PlayerUpdateMessage) {
             PlayerUpdateMessage pum = (PlayerUpdateMessage) message;

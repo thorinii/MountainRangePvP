@@ -2,7 +2,7 @@ package mountainrangepvp.net.tcp
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.util.LegacyLog
 import mountainrangepvp.net.ClientInterface
 
 /**
@@ -24,13 +24,13 @@ class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInb
 
 
   override def channelInactive(ctx: ChannelHandlerContext): Unit = {
-    Log.info("Disconnected from server")
+    LegacyLog.info("Disconnected from server")
     super.channelInactive(ctx)
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = cause match {
     case e: Exception =>
-      Log.crash("Error in ClientSideMessageHandler", cause)
+      LegacyLog.crash("Error in ClientSideMessageHandler", cause)
       super.exceptionCaught(ctx, cause)
 
     case _ =>

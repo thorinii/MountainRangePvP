@@ -1,6 +1,6 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.*;
 import java.net.Socket;
@@ -67,7 +67,7 @@ public class MessageIO {
 
             return klass.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            Log.warn("Could not find message for class: ", messageClass, e);
+            LegacyLog.warn("Could not find message for class: " + messageClass, e);
             return null;
         }
     }
