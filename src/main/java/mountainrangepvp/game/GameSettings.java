@@ -38,7 +38,7 @@ public class GameSettings {
         teamModeOn = false;
 
         hosting = false;
-        port = NetworkConstants.DEFAULT_PORT;
+        port = NetworkConstants.DEFAULT_PORT();
 
         serverIP = "localhost";
 

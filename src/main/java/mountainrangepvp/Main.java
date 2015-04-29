@@ -9,7 +9,6 @@ import mountainrangepvp.game.GameSettings;
 import mountainrangepvp.net.server.Server;
 import mountainrangepvp.net.tcp.TcpServerInterface;
 import mountainrangepvp.net.tcp.TcpServerWrapper;
-import mountainrangepvp.net.tcp.TcpServerWrapper$;
 
 /**
  * @author lachlan
@@ -110,7 +109,7 @@ public class Main {
             @Override
             public void create() {
                 Server server = Server.startServer();
-                wrapper = TcpServerWrapper$.MODULE$.start(server, settings.port);
+                wrapper = new TcpServerWrapper(server, settings.port);
                 wrapper.start();
 
                 game = new Game(settings, server);
