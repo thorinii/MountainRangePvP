@@ -55,6 +55,6 @@ public class NewWorldMessage implements Message {
 
     @Override
     public String toString() {
-        return "NewWorldMessage{worldType=" + worldType + ", seed=" + seed + ", teamModeOn=" + teamModeOn + "}";
+        return "NewWorldMessage{worldType=" + worldType + ", seed=" + seed + ", teamsOn=" + teamModeOn + "}";
     }
 }

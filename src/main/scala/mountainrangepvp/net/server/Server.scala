@@ -13,7 +13,7 @@ import scala.collection.mutable
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
 object Server {
-  def startServer: Server = {
+  def startServer(sessionConfig: SessionConfig): Server = {
     val updateIntervalMillis = 100
 
     var s: Server = null
@@ -31,22 +31,19 @@ object Server {
       }
     }, "Server Update")
 
-    s = new Server(() => thread.interrupt())
+    s = new Server(sessionConfig, () => thread.interrupt())
     thread.start()
     s
   }
 }
 
 
-class Server(shutdownHook: () => Unit) extends ServerInterface {
+class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
   private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
   private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
   private var playerStats = new PlayerStats
-
-  // TODO: make this a setting on a SessionConfig
-  private val teamsOn = false
 
   // TODO: make this a setting in current map
   private val seed = 34
@@ -65,7 +62,7 @@ class Server(shutdownHook: () => Unit) extends ServerInterface {
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     Log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
-    send(client)(_.sessionInfo(teamsOn))
+    send(client)(_.sessionInfo(sessionConfig.teamsOn))
     send(client)(_.newMap(seed))
     stats(_.joined(client, nickname))
   }
