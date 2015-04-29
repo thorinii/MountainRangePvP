@@ -1,6 +1,6 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class MessageQueue {
                     listener.accept(m, id);
                 }
             } catch (IOException ioe) {
-                Log.warn("Error while direct-processing messages", ioe);
+                LegacyLog.warn("Error while direct-processing messages", ioe);
             }
         }
     }

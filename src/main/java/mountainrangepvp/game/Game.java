@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import mountainrangepvp.engine.AudioManager;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 import mountainrangepvp.game.world.NewSessionEvent;
 import mountainrangepvp.game.input.InputHandler;
 import mountainrangepvp.game.renderer.GameScreen;
@@ -48,7 +48,7 @@ public class Game {
         try {
             client.start();
         } catch (InterruptedException e) {
-            Log.crash("Could not connect to server", e);
+            LegacyLog.crash("Could not connect to server", e);
             return;
         }
 
@@ -91,7 +91,7 @@ public class Game {
     private class NewSessionHandler implements EventHandler<NewSessionEvent> {
         @Override
         public void receive(NewSessionEvent event) {
-            Log.info("SessionInfo: teamsOn " + event.teamsOn());
+            LegacyLog.info("SessionInfo: teamsOn " + event.teamsOn());
 
             PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);

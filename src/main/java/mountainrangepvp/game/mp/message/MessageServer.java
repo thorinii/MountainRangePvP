@@ -2,7 +2,7 @@ package mountainrangepvp.game.mp.message;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
 import mountainrangepvp.game.mp.lanping.PingServer;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -59,14 +59,14 @@ public class MessageServer {
 
             pingServer.stop();
         } catch (IOException ioe) {
-            Log.warn("Error stopping server", ioe);
+            LegacyLog.warn("Error stopping server", ioe);
         }
 
         for (ClientProxy client : clients) {
             try {
                 client.kill();
             } catch (IOException ioe) {
-                Log.warn("Error stopping client connection", ioe);
+                LegacyLog.warn("Error stopping client connection", ioe);
             }
         }
 
@@ -114,12 +114,12 @@ public class MessageServer {
             try {
                 proxy.update();
             } catch (IOException ex) {
-                Log.warn("Error processing client:", ex);
+                LegacyLog.warn("Error processing client:", ex);
 
                 try {
                     proxy.kill();
                 } catch (IOException ioe) {
-                    Log.warn("Error killing client connection", ioe);
+                    LegacyLog.warn("Error killing client connection", ioe);
                 }
             }
         }
@@ -162,7 +162,7 @@ public class MessageServer {
                     new Thread(crr).start();
                 }
             } catch (IOException ioe) {
-                Log.warn("Error accepting clients:", ioe);
+                LegacyLog.warn("Error accepting clients:", ioe);
             }
         }
     }
@@ -222,7 +222,7 @@ public class MessageServer {
         protected void onMessage(Message m) throws IOException {
             if (m instanceof KillConnectionMessage) {
                 KillConnectionMessage kill = (KillConnectionMessage) m;
-                Log.info(id + " disconnected: " + kill.getReason());
+                LegacyLog.info(id + " disconnected: " + kill.getReason());
 
                 kill();
             }

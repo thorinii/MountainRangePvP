@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.mp.message.Message;
 import mountainrangepvp.game.mp.message.MessageListener;
 import mountainrangepvp.game.mp.message.NewShotMessage;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.awt.geom.Line2D;
 import java.io.IOException;
@@ -212,7 +212,7 @@ public class ShotManager implements MessageListener {
     }
 
     protected void handlePlayerHit(Shot shot, Player hit) {
-        Log.fine(hit + " was shot");
+        LegacyLog.fine(hit + " was shot");
         hit.kill();
         if (addPoints)
             shot.player.addHit();

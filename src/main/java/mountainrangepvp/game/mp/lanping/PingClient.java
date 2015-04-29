@@ -1,7 +1,7 @@
 package mountainrangepvp.game.mp.lanping;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -39,7 +39,7 @@ public class PingClient {
                         Thread.sleep(1000 / MultiplayerConstants.PING_RATE);
                     }
                 } catch (InterruptedException ex) {
-                    Log.fine("Ping Client shutting down");
+                    LegacyLog.fine("Ping Client shutting down");
                 }
             }
         }, "Ping Client");
@@ -62,7 +62,7 @@ public class PingClient {
             socket.receive(packet);
         } catch (IOException ioe) {
             if (!socket.isClosed())
-                Log.info("Could not read ping", ioe);
+                LegacyLog.warn("Could not read ping", ioe);
             Thread.currentThread().interrupt();
         }
     }

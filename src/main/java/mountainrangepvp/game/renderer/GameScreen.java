@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 import mountainrangepvp.game.world.Session;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
 
                 Mouse.setNativeCursor(emptyCursor);
             } catch (LWJGLException ex) {
-                Log.warn("Error hiding mouse:", ex);
+                LegacyLog.warn("Error hiding mouse:", ex);
             }
         }
     }

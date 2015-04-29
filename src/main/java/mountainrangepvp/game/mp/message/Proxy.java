@@ -1,6 +1,6 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public abstract class Proxy implements Runnable {
                 socket.close();
         } catch (IOException ioe) {
             if (!socket.isClosed())
-                Log.warn("Error reading messages:", ioe);
+                LegacyLog.warn("Error reading messages:", ioe);
         }
     }
 
@@ -71,7 +71,7 @@ public abstract class Proxy implements Runnable {
                 onMessage(message);
             }
         } catch (EOFException e) {
-            Log.info("Disconnect");
+            LegacyLog.info("Disconnect");
         } catch (IOException ioe) {
             errorInConnection();
             throw ioe;

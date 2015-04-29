@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.util.LegacyLog
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 /**
@@ -83,7 +83,7 @@ object MessageCodec {
         PlayerStatsMessage(new PlayerStats(players))
 
       case _ =>
-        Log.todoCrash()
+        LegacyLog.todoCrash()
         throw new UnsupportedOperationException
     }
   }
