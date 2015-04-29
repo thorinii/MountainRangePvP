@@ -31,14 +31,14 @@ object Server {
       }
     }, "Server Update")
 
-    s = new Server(thread)
+    s = new Server(() => thread.interrupt())
     thread.start()
     s
   }
 }
 
 
-class Server(val thread: Thread) extends ServerInterface {
+class Server(shutdownHook: () => Unit) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
   private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
@@ -72,7 +72,7 @@ class Server(val thread: Thread) extends ServerInterface {
 
   def shutdown() = {
     going = false
-    thread.interrupt()
+    shutdownHook()
   }
 
 
