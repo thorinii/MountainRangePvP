@@ -8,15 +8,6 @@ import io.netty.channel.{ChannelFuture, ChannelInitializer, ChannelOption, Event
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
 import mountainrangepvp.net.server.Server
 
-/**
- * Exposes the server interface over TCP.
- */
-object TcpServerWrapper {
-  def start(server: Server, port: Int): TcpServerWrapper = {
-    new TcpServerWrapper(server, port)
-  }
-}
-
 class TcpServerWrapper(server: Server, port: Int) {
   private final val bossGroup: EventLoopGroup = new NioEventLoopGroup
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
