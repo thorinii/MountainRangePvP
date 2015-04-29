@@ -3,48 +3,29 @@ package mountainrangepvp.engine.util;
 import com.badlogic.gdx.Gdx;
 
 import javax.swing.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.logging.*;
+import java.util.logging.Level;
 
 /**
- * @author lachlan
+ * The old static logging system. Did not track types of consumer.
+ *
+ * @deprecated switch to {@link mountainrangepvp.engine.util.Log}
  */
+@Deprecated
 public class LegacyLog {
 
-    private static final Logger LOG = Logger.getLogger("mountainrangepvp.legacy");
-
-    static {
-        setupLog(Level.FINE);
-    }
+    private static final Log LOG = new Log("legacy");
 
     public static void setupLog(Level level) {
-        LOG.setLevel(level);
-        LOG.setUseParentHandlers(false);
-        for (Handler h : LOG.getHandlers())
-            LOG.removeHandler(h);
-
-        LOG.addHandler(makeConsoleHandler());
-        //LOG.addHandler(makeFileHandler());
-
         Thread.setDefaultUncaughtExceptionHandler(
                 new Thread.UncaughtExceptionHandler() {
                     @Override
                     public void uncaughtException(Thread t, Throwable e) {
                         if (!(e instanceof ThreadDeath)) {
-                            LOG.log(Level.SEVERE, "Uncaught exception on thread " + t.getName(), e);
+                            LOG.crash("Uncaught exception on thread " + t.getName(), e);
+                            System.exit(1);
                         }
-
-                        System.exit(1);
                     }
                 });
-    }
-
-    private static ConsoleHandler makeConsoleHandler() {
-        ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.FINE);
-        handler.setFormatter(new LogFormatter());
-        return handler;
     }
 
     public static void info(String message) {
@@ -56,16 +37,16 @@ public class LegacyLog {
     }
 
     public static void warn(String message) {
-        LOG.warning(message);
+        LOG.warn(message);
     }
 
     public static void warn(String message, Exception e) {
-        LOG.log(Level.WARNING, message, e);
+        LOG.warn(message, e);
     }
 
 
     public static void crash(final String message) {
-        LOG.log(Level.SEVERE, message);
+        LOG.crash(message);
 
         Gdx.app.exit();
 
@@ -83,7 +64,7 @@ public class LegacyLog {
         if (e instanceof ThreadDeath)
             throw (ThreadDeath) e;
 
-        LOG.log(Level.SEVERE, message, e);
+        LOG.crash(message, e);
 
         Gdx.app.exit();
 
@@ -117,29 +98,4 @@ public class LegacyLog {
         return e.toString();
     }
 
-    private static final class LogFormatter extends Formatter {
-        @Override
-        public String format(LogRecord record) {
-            StringBuilder sb = new StringBuilder();
-
-            sb.append(record.getLevel().getName())
-                    .append(": ")
-                    .append(formatMessage(record))
-                    .append('\n');
-
-            if (record.getThrown() != null) {
-                try {
-                    StringWriter sw = new StringWriter();
-                    PrintWriter pw = new PrintWriter(sw);
-                    record.getThrown().printStackTrace(pw);
-                    pw.close();
-                    sb.append(sw.toString());
-                } catch (Exception ex) {
-                    // ignore
-                }
-            }
-
-            return sb.toString();
-        }
-    }
 }
