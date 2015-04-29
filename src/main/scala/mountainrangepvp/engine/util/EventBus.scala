@@ -18,7 +18,8 @@ trait EventHandler[T <: Event] {
  * A pub/sub message passing system.
  */
 class EventBus(dispatchThread: Thread) {
-  private val dispatchers: mutable.Map[Class[_ <: Event], Dispatcher[_ <: Event]] = new TrieMap[Class[_ <: Event], Dispatcher[_ <: Event]]
+  private val dispatchers: mutable.Map[Class[_ <: Event], Dispatcher[_ <: Event]] = TrieMap.empty
+  private val allDispatchers: mutable.ListBuffer[EventHandler[Event]] = mutable.ListBuffer.empty
   private val pendingMessages: util.Queue[Event] = new LinkedBlockingQueue[Event]
   private val messagesPerFrame: AtomicInteger = new AtomicInteger(0)
 
@@ -38,6 +39,16 @@ class EventBus(dispatchThread: Thread) {
     })
   }
 
+  def subscribeAll(handler: EventHandler[Event]): Unit = {
+    allDispatchers += handler
+  }
+
+  def subscribeAll(handler: Event => Unit): Unit = {
+    subscribeAll(new EventHandler[Event] {
+      override def receive(event: Event): Unit = handler(event)
+    })
+  }
+
   def send(event: Event) = {
     if (Thread.currentThread eq dispatchThread) dispatch(event)
     else pendingMessages.offer(event)
@@ -46,9 +57,10 @@ class EventBus(dispatchThread: Thread) {
   private def dispatch(event: Event) = {
     messagesPerFrame.incrementAndGet
 
+    allDispatchers.foreach(_.receive(event))
     dispatchers.get(event.getClass) match {
       case Some(d) => d.dispatch(event)
-      case _ => Log.fine("No handlers subscribed to " + event)
+      case _ =>
     }
   }
 

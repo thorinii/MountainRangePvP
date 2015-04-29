@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 
 import javax.swing.*;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -26,6 +28,8 @@ public class Log {
     public static void setupLog(Level level) {
         LOG.setLevel(level);
         LOG.setUseParentHandlers(false);
+        for (Handler h : LOG.getHandlers())
+            LOG.removeHandler(h);
 
         LOG.addHandler(makeConsoleHandler());
         //LOG.addHandler(makeFileHandler());
@@ -101,6 +105,7 @@ public class Log {
     private static ConsoleHandler makeConsoleHandler() {
         ConsoleHandler handler = new ConsoleHandler();
         handler.setLevel(Level.FINE);
+        handler.setFormatter(new LogFormatter());
         return handler;
     }
 
@@ -191,5 +196,31 @@ public class Log {
     private static String getCaller() {
         StackTraceElement e = Thread.currentThread().getStackTrace()[3];
         return e.toString();
+    }
+
+    private static final class LogFormatter extends Formatter {
+        @Override
+        public String format(LogRecord record) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append(record.getLevel().getName())
+                    .append(": ")
+                    .append(formatMessage(record))
+                    .append('\n');
+
+            if (record.getThrown() != null) {
+                try {
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    record.getThrown().printStackTrace(pw);
+                    pw.close();
+                    sb.append(sw.toString());
+                } catch (Exception ex) {
+                    // ignore
+                }
+            }
+
+            return sb.toString();
+        }
     }
 }

@@ -73,7 +73,7 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
   }
 
 
-  private def update(): Unit = {
+  def update(): Unit = {
     val oldStats = playerStats
 
     while (!taskQueue.isEmpty) {
@@ -81,13 +81,20 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
       task()
     }
 
-    if (playerStats.changedSince(oldStats))
+    if (playerStats.changedSince(oldStats)) {
       sendToAll(_.playerStats(playerStats))
+    }
 
     while (!sendQueue.isEmpty) {
       val msg = sendQueue.take()
       msg()
     }
+  }
+
+  def updateTillDone() = {
+    do {
+      update()
+    } while (!taskQueue.isEmpty || !sendQueue.isEmpty)
   }
 
 
