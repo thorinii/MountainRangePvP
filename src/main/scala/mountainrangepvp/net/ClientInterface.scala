@@ -1,6 +1,6 @@
 package mountainrangepvp.net
 
-import mountainrangepvp.net.server.PlayerStats
+import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 /**
  * The interface the server talks to, either in-process or over the network.

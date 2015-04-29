@@ -1,7 +1,6 @@
 package mountainrangepvp.net.tcp
 
-import mountainrangepvp.net.ClientId
-import mountainrangepvp.net.server.PlayerStats
+import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 
 sealed trait Message

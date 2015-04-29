@@ -6,7 +6,8 @@ import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
-import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
+import mountainrangepvp.game.world.ClientId
+import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
 class TcpServerInterface(host: String, port: Int) extends ServerInterface {
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
