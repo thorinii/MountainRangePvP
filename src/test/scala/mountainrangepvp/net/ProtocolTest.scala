@@ -1,7 +1,7 @@
 package mountainrangepvp.net
 
 import junit.framework.AssertionFailedError
-import mountainrangepvp.engine.util.{Event, EventHandler, EventBus}
+import mountainrangepvp.engine.util.{Log, Event, EventHandler, EventBus}
 import mountainrangepvp.game.world.{PlayerStatsUpdatedEvent, NewMapEvent, NewSessionEvent}
 import mountainrangepvp.net.client.Client
 import mountainrangepvp.net.server.{Server, SessionConfig}
@@ -12,7 +12,7 @@ class ProtocolTest {
   def connectionTest() = {
     val eventbus = new EventBus(Thread.currentThread())
     val server = new Server(SessionConfig(teamsOn = false), () => {})
-    val client = new Client(eventbus, server, "protocol test subject")
+    val client = new Client(new Log("test"), eventbus, server, "protocol test subject")
     val recorder = new EventRecorder(eventbus)
 
     client.start()
