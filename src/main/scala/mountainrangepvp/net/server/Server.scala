@@ -4,7 +4,8 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import mountainrangepvp.engine.util.Log
-import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
+import mountainrangepvp.game.world.{ClientId, PlayerStats}
+import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable

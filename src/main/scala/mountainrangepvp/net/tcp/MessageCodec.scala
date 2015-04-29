@@ -5,8 +5,7 @@ import java.nio.charset.StandardCharsets
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import mountainrangepvp.engine.util.Log
-import mountainrangepvp.net.ClientId
-import mountainrangepvp.net.server.PlayerStats
+import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 /**
  * De/encodes messages into Netty {@link ByteBuf}s

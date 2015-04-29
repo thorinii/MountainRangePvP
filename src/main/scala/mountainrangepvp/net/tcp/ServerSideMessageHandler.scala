@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
 import mountainrangepvp.engine.util.Log
-import mountainrangepvp.net.server.PlayerStats
-import mountainrangepvp.net.{ClientId, ClientInterface, ServerInterface}
+import mountainrangepvp.game.world.{ClientId, PlayerStats}
+import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
 /**
  * Decodes messages from the client

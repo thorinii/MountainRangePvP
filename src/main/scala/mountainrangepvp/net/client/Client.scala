@@ -1,9 +1,8 @@
 package mountainrangepvp.net.client
 
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{NewMapEvent, NewSessionEvent, PlayerFiredEvent}
-import mountainrangepvp.net.server.PlayerStats
-import mountainrangepvp.net.{ClientId, ClientInterface, NetworkConstants, ServerInterface}
+import mountainrangepvp.game.world._
+import mountainrangepvp.net._
 
 /**
  * That which talks to the server, whether by the network or in-process calls.
@@ -40,16 +39,17 @@ class Client(eventbus: EventBus, server: ServerInterface, nickname: String) {
     }
 
     override def sessionInfo(teamsOn: Boolean) = {
-      eventbus.send(new NewSessionEvent(teamsOn))
+      eventbus.send(NewSessionEvent(teamsOn))
     }
 
     override def newMap(seed: Int) = {
-      eventbus.send(new NewMapEvent(seed))
+      eventbus.send(NewMapEvent(seed))
     }
 
     override def playerStats(stats: PlayerStats): Unit = {
-      // TODO: store this somewhere
       Log.info("Received stats " + stats)
+      // TODO: store this somewhere
+      eventbus.send(PlayerStatsUpdatedEvent(stats))
     }
   }
 

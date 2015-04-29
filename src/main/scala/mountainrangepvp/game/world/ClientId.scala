@@ -1,4 +1,4 @@
-package mountainrangepvp.net
+package mountainrangepvp.game.world
 
 /**
  * Unique identifiers for connected clients.
