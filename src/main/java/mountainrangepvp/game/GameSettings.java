@@ -1,6 +1,5 @@
 package mountainrangepvp.game;
 
-import mountainrangepvp.game.mp.MultiplayerConstants;
 import mountainrangepvp.game.world.Player.Team;
 import mountainrangepvp.net.NetworkConstants;
 
@@ -17,7 +16,7 @@ public class GameSettings {
 
     public String nickname;
     public Team team;
-    public boolean teamModeOn;
+    public boolean teamsOn;
 
     public boolean hosting;
     public int port;
@@ -35,7 +34,7 @@ public class GameSettings {
 
         nickname = null;
         team = Team.BLUE;
-        teamModeOn = false;
+        teamsOn = false;
 
         hosting = false;
         port = NetworkConstants.DEFAULT_PORT();
