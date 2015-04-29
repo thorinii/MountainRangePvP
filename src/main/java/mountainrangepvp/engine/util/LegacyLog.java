@@ -15,19 +15,6 @@ public class LegacyLog {
 
     private static final Log LOG = new Log("legacy");
 
-    public static void setupLog(Level level) {
-        Thread.setDefaultUncaughtExceptionHandler(
-                new Thread.UncaughtExceptionHandler() {
-                    @Override
-                    public void uncaughtException(Thread t, Throwable e) {
-                        if (!(e instanceof ThreadDeath)) {
-                            LOG.crash("Uncaught exception on thread " + t.getName(), e);
-                            System.exit(1);
-                        }
-                    }
-                });
-    }
-
     public static void info(String message) {
         LOG.info(message);
     }

@@ -1,9 +1,5 @@
 package mountainrangepvp;
 
-import mountainrangepvp.engine.util.LegacyLog;
-
-import java.util.logging.Level;
-
 /**
  * @author lachlan
  */
@@ -12,8 +8,6 @@ public class StressTest {
     private static final int DEFAULT_CLIENTS_TO_SPAWN = 30;
 
     public static void main(String[] args) throws InterruptedException {
-        LegacyLog.setupLog(Level.WARNING);
-
         String host = "localhost";
         int num = DEFAULT_CLIENTS_TO_SPAWN;
 
