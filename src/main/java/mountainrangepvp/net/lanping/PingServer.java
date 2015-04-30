@@ -1,4 +1,4 @@
-package mountainrangepvp.game.mp.lanping;
+package mountainrangepvp.net.lanping;
 
 import mountainrangepvp.game.mp.MultiplayerConstants;
 import mountainrangepvp.engine.util.LegacyLog;
