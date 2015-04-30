@@ -1,10 +1,10 @@
 package mountainrangepvp;
 
 import mountainrangepvp.engine.util.LegacyLog;
-import mountainrangepvp.game.mp.lanping.PingClient;
-import mountainrangepvp.game.mp.lanping.PingClient.ServerData;
 import mountainrangepvp.game.GameSettings;
 import mountainrangepvp.game.world.Player.Team;
+import mountainrangepvp.net.lanping.PingClient;
+import mountainrangepvp.net.lanping.PingClient.ServerData;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -541,9 +541,6 @@ public class LauncherGUI extends javax.swing.JFrame {
         return graphicsDevice.getDisplayModes();
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void laf() {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*
