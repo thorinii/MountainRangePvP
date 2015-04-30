@@ -23,8 +23,8 @@ public class Game {
     private final Client client;
     private final PhysicsSystem physicsSystem;
     private final AudioManager audioManager;
+    private final InputHandler inputHandler;
 
-    private InputHandler inputHandler;
     private Session session;
     private GameScreen gameScreen;
 
@@ -41,6 +41,9 @@ public class Game {
         audioManager = new AudioManager();
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
+
+        inputHandler = new InputHandler(eventbus);
+        inputHandler.register();
 
         eventbus.subscribe(NewSessionEvent.class, new NewSessionHandler());
     }
@@ -77,7 +80,7 @@ public class Game {
         // TODO: client.update();
 
         if (session != null && session.hasMap()) {
-            inputHandler.update(session, config.TIMESTEP);
+            inputHandler.update(config.TIMESTEP);
             session.update(config.TIMESTEP);
             physicsSystem.update(session, config.TIMESTEP);
         }
@@ -98,9 +101,6 @@ public class Game {
             ChatManager chatManager = new ChatManager(playerManager);
 
             session = new Session(eventbus, event.teamsOn(), playerManager, chatManager);
-
-            inputHandler = new InputHandler(eventbus, null);// chatManager);
-            inputHandler.register();
 
             gameScreen = new GameScreen(eventbus, session);
         }
