@@ -13,6 +13,7 @@ public class Session {
     public final ChatManager chatManager;
 
     private Map map;
+    private PlayerStats stats;
 
     public Session(EventBus eventbus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
         this.teamsOn = teamsOn;
@@ -20,8 +21,19 @@ public class Session {
         this.chatManager = chatManager;
 
         this.map = null;
+        this.stats = new PlayerStats();
 
+        subscribeTo(eventbus);
+    }
+
+    private void subscribeTo(EventBus eventbus) {
         eventbus.subscribe(NewMapEvent.class, new NewMapHandler());
+        eventbus.subscribe(PlayerStatsUpdatedEvent.class, new EventHandler<PlayerStatsUpdatedEvent>() {
+            @Override
+            public void receive(PlayerStatsUpdatedEvent event) {
+                stats = event.stats();
+            }
+        });
     }
 
     public Map getMap() {
@@ -32,6 +44,10 @@ public class Session {
 
     public boolean hasMap() {
         return map != null;
+    }
+
+    public PlayerStats getStats() {
+        return stats;
     }
 
     public void update(float dt) {

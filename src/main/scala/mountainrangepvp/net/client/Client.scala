@@ -48,8 +48,6 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
     }
 
     override def playerStats(stats: PlayerStats): Unit = {
-      log.info("Received stats " + stats)
-      // TODO: store this somewhere
       eventbus.send(PlayerStatsUpdatedEvent(stats))
     }
   }

@@ -45,10 +45,11 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
   private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
   private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
+
+  // TODO: playerStats should be in a session
   private var playerStats = new PlayerStats
 
-  // TODO: make this a setting in current map
-  private val seed = 34
+  private val map = new Map(34)
 
   @volatile
   private var going: Boolean = true
@@ -65,7 +66,7 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
     log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
     send(client)(_.sessionInfo(sessionConfig.teamsOn))
-    send(client)(_.newMap(seed))
+    send(client)(_.newMap(map.seed))
     stats(_.joined(client, nickname))
   }
 
