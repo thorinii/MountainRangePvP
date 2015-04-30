@@ -1,11 +1,14 @@
 package mountainrangepvp.net.tcp
 
+import java.util.concurrent.TimeUnit
+
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.{ChannelFuture, ChannelInitializer, ChannelOption, EventLoopGroup}
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
+import io.netty.util.concurrent.Future
 import mountainrangepvp.net.server.Server
 
 class TcpServerWrapper(server: Server, port: Int) {
@@ -33,9 +36,10 @@ class TcpServerWrapper(server: Server, port: Int) {
   }
 
   def shutdown() = {
-    channel.channel.close
-    channel.channel.closeFuture.syncUninterruptibly
-    workerGroup.shutdownGracefully.syncUninterruptibly
-    bossGroup.shutdownGracefully.syncUninterruptibly
+    val futures: List[Future[_]] = List(
+      channel.channel.close,
+      workerGroup.shutdownGracefully(0, 0, TimeUnit.SECONDS),
+      bossGroup.shutdownGracefully(0, 0, TimeUnit.SECONDS))
+    futures.foreach(_.sync())
   }
 }
