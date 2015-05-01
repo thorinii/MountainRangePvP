@@ -23,6 +23,7 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
 
   private def handle(client: ClientId, m: ToServerMessage) = m match {
     case LoginMessage(c, v, n) => server.login(client, c, v, n)
+    case FireShotMessage(d) => server.fireShot(client, d)
     case _ => LegacyLog.todo(m.toString)
   }
 

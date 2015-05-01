@@ -12,7 +12,7 @@ class InputHandler(eventbus: EventBus) {
 
 
   actionMapper.addAction("fire", new DelayedRepeatingAction(state => {
-    eventbus.send(new PlayerFiredEvent(null, new Vector2(0, 0), new Vector2(0, 1)))
+    eventbus.send(new PlayerFiredEvent(new Vector2(0, 1)))
     0.1f
   }))
 
@@ -42,7 +42,7 @@ class InputHandler(eventbus: EventBus) {
 
   private def doShooting(player: Player) {
     val pos: Vector2 = player.getCentralPosition
-    eventbus.send(new PlayerFiredEvent(player, pos, player.getGunDirection.cpy))
+    eventbus.send(new PlayerFiredEvent(player.getGunDirection.cpy))
     val kickback: Vector2 = player.getGunDirection.cpy.scl(-90f)
     player.getVelocity.add(kickback)
   }

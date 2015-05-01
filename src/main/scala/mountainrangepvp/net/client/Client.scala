@@ -18,10 +18,6 @@ object Client {
 class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: String) {
   private var id: ClientId = null
 
-  private def subscribe() = {
-    eventbus.subscribe((e: PlayerFiredEvent) => log.todo())
-  }
-
   @throws(classOf[InterruptedException])
   def start() = {
     server.connect(new ClientInterfaceImpl)
@@ -31,6 +27,10 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
     server.shutdown()
   }
 
+
+  private def subscribe() = {
+    eventbus.subscribe((e: PlayerFiredEvent) => server.fireShot(id, e.direction))
+  }
 
   private class ClientInterfaceImpl extends ClientInterface {
     override def connected(id: ClientId) = {

@@ -1,5 +1,6 @@
 package mountainrangepvp.net.tcp
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 
@@ -20,3 +21,6 @@ case class SessionInfoMessage(teamsOn: Boolean) extends ToClientMessage
 case class NewMapMessage(seed: Int) extends ToClientMessage
 
 case class PlayerStatsMessage(stats: PlayerStats) extends ToClientMessage
+
+
+case class FireShotMessage(direction: Vector2) extends ToServerMessage

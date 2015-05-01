@@ -2,6 +2,7 @@ package mountainrangepvp.net.tcp
 
 import java.util.concurrent.TimeUnit
 
+import com.badlogic.gdx.math.Vector2
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel._
 import io.netty.channel.nio.NioEventLoopGroup
@@ -45,6 +46,10 @@ class TcpServerInterface(host: String, port: Int) extends ServerInterface {
       channel.channel.close,
       workerGroup.shutdownGracefully(0, 0, TimeUnit.SECONDS))
     futures.foreach(_.sync())
+  }
+
+  def fireShot(client: ClientId, direction: Vector2) = {
+    send(new FireShotMessage(direction))
   }
 
   private def send(msg: Message) = {

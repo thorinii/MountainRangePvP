@@ -3,6 +3,7 @@ package mountainrangepvp.net.server
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 import mountainrangepvp.net.{ClientInterface, ServerInterface}
@@ -52,17 +53,18 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
   private val map = new Map(34)
 
   @volatile
-  private var going: Boolean = true
+  private var _going: Boolean = true
+  def going = _going
 
 
-  def connect(client: ClientInterface) = {
+  override def connect(client: ClientInterface) = {
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
     interfaces += id -> client
 
     send(client)(_.connected(id))
   }
 
-  def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
+  override def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
     send(client)(_.sessionInfo(sessionConfig.teamsOn))
@@ -70,9 +72,14 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
     stats(_.joined(client, nickname))
   }
 
-  def shutdown() = {
-    going = false
+  override def shutdown() = {
+    _going = false
     shutdownHook()
+  }
+
+  override def fireShot(client: ClientId, direction: Vector2) = {
+    log.todo(client + " fired towards " + direction)
+    // TODO
   }
 
 
