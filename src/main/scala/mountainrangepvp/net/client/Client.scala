@@ -1,5 +1,6 @@
 package mountainrangepvp.net.client
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world._
 import mountainrangepvp.net._
@@ -47,8 +48,14 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
       eventbus.send(NewMapEvent(seed))
     }
 
-    override def playerStats(stats: PlayerStats): Unit = {
+
+    override def playerStats(stats: PlayerStats) = {
       eventbus.send(PlayerStatsUpdatedEvent(stats))
+    }
+
+    override def firedShot(client: ClientId, from: Vector2, direction: Vector2) = {
+      eventbus.send(PlayerFiredEvent(client, from, direction))
+      log.todo(client + " fired from " + from + " at " + direction)
     }
   }
 

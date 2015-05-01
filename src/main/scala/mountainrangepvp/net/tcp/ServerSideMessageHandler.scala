@@ -1,5 +1,6 @@
 package mountainrangepvp.net.tcp
 
+import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
@@ -41,22 +42,26 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
   private def idOf(ctx: ChannelHandlerContext): ClientId = ctx.attr(idAttrKey).get
 
   private class TcpClientInterface(ctx: ChannelHandlerContext) extends ClientInterface {
-    override def connected(id: ClientId): Unit = {
+    override def connected(id: ClientId) = {
       ctx.attr(idAttrKey).set(id)
 
       MessageCodec.send(ctx, ConnectedMessage(id))
     }
 
-    override def sessionInfo(teamsOn: Boolean): Unit = {
+    override def sessionInfo(teamsOn: Boolean) = {
       MessageCodec.send(ctx, SessionInfoMessage(teamsOn))
     }
 
-    override def newMap(seed: Int): Unit = {
+    override def newMap(seed: Int) = {
       MessageCodec.send(ctx, NewMapMessage(seed))
     }
 
-    override def playerStats(stats: PlayerStats): Unit = {
+    override def playerStats(stats: PlayerStats) = {
       MessageCodec.send(ctx, PlayerStatsMessage(stats))
+    }
+
+    override def firedShot(client: ClientId, from: Vector2, direction: Vector2) = {
+      MessageCodec.send(ctx, PlayerFiredMessage(client, from, direction))
     }
   }
 }
