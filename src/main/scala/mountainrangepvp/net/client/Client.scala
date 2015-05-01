@@ -29,7 +29,7 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
 
 
   private def subscribe() = {
-    eventbus.subscribe((e: PlayerFiredEvent) => server.fireShot(id, e.direction))
+    eventbus.subscribe((e: FireRequestEvent) => server.fireShot(id, e.direction))
   }
 
   private class ClientInterfaceImpl extends ClientInterface {
