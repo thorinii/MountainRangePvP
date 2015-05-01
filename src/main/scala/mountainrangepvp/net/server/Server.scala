@@ -11,35 +11,6 @@ import mountainrangepvp.net.{ClientInterface, ServerInterface}
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable
 
-/**
- * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
- */
-object Server {
-  def startServer(sessionConfig: SessionConfig): Server = {
-    val updateIntervalMillis = 100
-
-    var s: Server = null
-    val thread = new Thread(new Runnable {
-      override def run(): Unit = {
-        while (s.going) {
-          s.update()
-
-          try {
-            Thread.sleep(updateIntervalMillis)
-          } catch {
-            case _: InterruptedException => // do nothing; the while loop will stop when it's time
-          }
-        }
-      }
-    }, "Server Update")
-
-    s = new Server(sessionConfig, () => thread.interrupt())
-    thread.start()
-    s
-  }
-}
-
-
 class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends ServerInterface {
   private val log = new Log("server")
   private val nextClientId: AtomicLong = new AtomicLong(0L)
@@ -54,6 +25,7 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
 
   @volatile
   private var _going: Boolean = true
+
   def going = _going
 
 
