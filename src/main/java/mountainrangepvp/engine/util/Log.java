@@ -54,12 +54,12 @@ public class Log {
 
     public void todo() {
         String caller = getCaller();
-        warn("TODO: " + caller);
+        warn("TODO:" + caller);
     }
 
     public void todo(String msg) {
         String caller = getCaller();
-        warn("TODO: " + caller + "(" + msg + ")");
+        warn("TODO:" + caller + ": " + msg);
     }
 
     private static String getCaller() {
