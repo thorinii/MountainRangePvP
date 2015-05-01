@@ -77,7 +77,6 @@ public class Game {
 
     private void update(float dt) {
         eventbus.flushPendingMessages();
-        // TODO: client.update();
 
         if (session != null && session.hasMap()) {
             inputHandler.update(config.TIMESTEP);

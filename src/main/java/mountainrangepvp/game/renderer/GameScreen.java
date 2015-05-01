@@ -26,6 +26,7 @@ public class GameScreen implements Screen {
     private final int width, height;
 
     private final Session session;
+    private final Vector2 cameraPosition;
 
     public GameScreen(EventBus eventbus, Session session) {
         this.session = session;
@@ -49,9 +50,10 @@ public class GameScreen implements Screen {
                 LegacyLog.warn("Error hiding mouse:", ex);
             }
         }
+
+        cameraPosition = new Vector2(0, 0);
     }
 
-    private final Vector2 cameraPosition = new Vector2();
 
     @Override
     public void render(float delta) {

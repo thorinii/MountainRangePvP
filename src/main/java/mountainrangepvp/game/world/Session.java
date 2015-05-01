@@ -8,6 +8,7 @@ import mountainrangepvp.engine.util.LegacyLog;
  * State that doesn't change between maps.
  */
 public class Session {
+    private final EventBus eventBus;
     private final boolean teamsOn;
     public final PlayerManager playerManager;
     public final ChatManager chatManager;
@@ -15,7 +16,8 @@ public class Session {
     private Map map;
     private PlayerStats stats;
 
-    public Session(EventBus eventbus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
+    public Session(EventBus eventBus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
+        this.eventBus = eventBus;
         this.teamsOn = teamsOn;
         this.playerManager = playerManager;
         this.chatManager = chatManager;
@@ -23,7 +25,7 @@ public class Session {
         this.map = null;
         this.stats = new PlayerStats();
 
-        subscribeTo(eventbus);
+        subscribeTo(eventBus);
     }
 
     private void subscribeTo(EventBus eventbus) {
@@ -64,7 +66,7 @@ public class Session {
             HeightMap heightMap = new HillsHeightMap(event.seed());
 
             Terrain terrain = new Terrain(heightMap);
-            ShotManager shotManager = new ShotManager(playerManager, terrain, false, teamsOn);
+            ShotManager shotManager = new ShotManager(eventBus, playerManager, terrain, false, teamsOn);
 
             Session.this.map = new Map(shotManager, terrain, teamsOn);
 

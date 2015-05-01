@@ -24,6 +24,9 @@ public class HillsHeightMap extends AbstractHeightMap {
 
     @Override
     public int getSample(int x) {
+        if(true)
+            return -10;
+
         x = Math.abs(x);
 
         if (origin && x == 0) {
@@ -40,7 +43,7 @@ public class HillsHeightMap extends AbstractHeightMap {
         // Regular terrain
         return (int) (0.2f * sample(x)
                 + 0.8f * (sample(x - 1) + sample(x - 2) + sample(x - 3)
-                + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6);
+                + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6) - 4100;
 
     }
 

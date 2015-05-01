@@ -55,7 +55,6 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
 
     override def firedShot(client: ClientId, from: Vector2, direction: Vector2) = {
       eventbus.send(PlayerFiredEvent(client, from, direction))
-      log.todo(client + " fired from " + from + " at " + direction)
     }
   }
 

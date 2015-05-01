@@ -2,13 +2,11 @@ package mountainrangepvp.game.world;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.mp.message.Message;
-import mountainrangepvp.game.mp.message.MessageListener;
-import mountainrangepvp.game.mp.message.NewShotMessage;
+import mountainrangepvp.engine.util.EventBus;
+import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.LegacyLog;
 
 import java.awt.geom.Line2D;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,8 +14,10 @@ import java.util.List;
 /**
  * @author lachlan
  */
-public class ShotManager implements MessageListener {
+public class ShotManager {
     public static final int MAX_SHOT_LIFE = 5;
+
+    private final EventBus eventBus;
 
     private final PlayerManager playerManager;
     private final Terrain terrain;
@@ -26,7 +26,8 @@ public class ShotManager implements MessageListener {
     private final List<ShotListener> listeners;
     private final List<Shot> shots;
 
-    public ShotManager(PlayerManager playerManager, Terrain terrain, boolean addPoints, boolean teamMode) {
+    public ShotManager(EventBus eventBus, PlayerManager playerManager, Terrain terrain, boolean addPoints, boolean teamMode) {
+        this.eventBus = eventBus;
         this.playerManager = playerManager;
         this.terrain = terrain;
         this.addPoints = addPoints;
@@ -34,23 +35,14 @@ public class ShotManager implements MessageListener {
 
         listeners = new ArrayList<>();
         shots = new LinkedList<>();
-    }
 
-    public void addShotListener(ShotListener listener) {
-        listeners.add(listener);
-    }
-
-    public void removeShotListener(ShotListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void addShot(Vector2 base, Vector2 direction, Player player) {
-        addShot(new Shot(base, direction, player));
-    }
-
-    public void addShot(Shot shot) {
-        shots.add(shot);
-        fireShotAdd(shot);
+        eventBus.subscribe(PlayerFiredEvent.class, new EventHandler<PlayerFiredEvent>(){
+            @Override
+            public void receive(PlayerFiredEvent event) {
+                LegacyLog.fine(event.client() + " fired from " + event.from() + " at " + event.direction());
+                shots.add(new Shot(event.from(), event.direction(), null));
+            }
+        });
     }
 
     public List<Shot> getShots() {
@@ -233,14 +225,6 @@ public class ShotManager implements MessageListener {
     private void fireShotPlayerCollision(Shot shot, Player hit) {
         for (ShotListener listener : listeners) {
             listener.shotPlayerCollision(shot, hit);
-        }
-    }
-
-    @Override
-    public void accept(Message message, int id) throws IOException {
-        if (message instanceof NewShotMessage) {
-            NewShotMessage nsm = (NewShotMessage) message;
-            addShot(nsm.getShot(playerManager));
         }
     }
 }

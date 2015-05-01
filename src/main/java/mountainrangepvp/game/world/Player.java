@@ -56,8 +56,6 @@ public class Player {
         this.onGround = 0;
 
         this.timer = new Timer();
-
-        respawn();
     }
 
     public String getName() {
@@ -138,22 +136,5 @@ public class Player {
 
     public void update() {
         timer.update();
-
-        if (!alive) {
-            if (timer.getTime() > RESPAWN_TIMEOUT) {
-                respawn();
-                timer.reset();
-            }
-        }
-    }
-
-    private void respawn() {
-        position.x = (float) (Math.random() * 2 * RESPAWN_RANGE_X - RESPAWN_RANGE_X) + 10000;
-        position.y = 1000;
-        velocity.x = 0;
-        velocity.y = 0;
-        onGround = 0;
-
-        alive = true;
     }
 }
