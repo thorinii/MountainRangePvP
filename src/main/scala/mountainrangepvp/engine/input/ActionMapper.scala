@@ -1,5 +1,6 @@
 package mountainrangepvp.engine.input
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.input.Bindings._
 
 /**
@@ -32,7 +33,7 @@ class ActionMapper {
 /**
  * The current state of the input system.
  */
-case class InputState(mouse: (Float, Float), mouseButtons: Int) {
+case class InputState(mouse: Vector2, mouseButtons: Int) {
   def buttonDown(b: Bindings.MouseButton) = b match {
     case MouseLeft => (mouseButtons & 1) != 0
     case MouseMiddle => (mouseButtons & 2) != 0

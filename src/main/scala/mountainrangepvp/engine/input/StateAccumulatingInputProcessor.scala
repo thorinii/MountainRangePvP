@@ -1,13 +1,14 @@
 package mountainrangepvp.engine.input
 
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.{Input, InputProcessor}
 
 /**
  * Sends input to the action mapper.
  */
-class StateAccumulatingInputProcessor extends InputProcessor {
+class StateAccumulatingInputProcessor(screenHeight: Int) extends InputProcessor {
   private var mouseButtons = 0
-  private var mousePosition: (Float, Float) = (0, 0)
+  private val mousePosition = new Vector2(0, 0)
 
 
   def keyDown(keycode: Int): Boolean = true
@@ -36,11 +37,15 @@ class StateAccumulatingInputProcessor extends InputProcessor {
     true
   }
 
-  def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = true
+  def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = {
+    mousePosition.x = screenX
+    mousePosition.y = screenHeight - screenY
+    true
+  }
 
   def mouseMoved(screenX: Int, screenY: Int): Boolean = {
-    // TODO: convert to game coords
-    mousePosition = (screenX, screenY)
+    mousePosition.x = screenX
+    mousePosition.y = screenHeight - screenY
     true
   }
 
