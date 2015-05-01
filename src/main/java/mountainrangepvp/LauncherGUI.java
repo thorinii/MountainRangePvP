@@ -1,6 +1,6 @@
 package mountainrangepvp;
 
-import mountainrangepvp.engine.util.LegacyLog;
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.GameSettings;
 import mountainrangepvp.game.world.Player.Team;
 import mountainrangepvp.net.lanping.PingClient;
@@ -23,6 +23,7 @@ import java.util.prefs.Preferences;
  */
 public class LauncherGUI extends javax.swing.JFrame {
 
+    private final Log log;
     private final Preferences prefs = Preferences.userNodeForPackage(
             LauncherGUI.class);
     private DefaultListModel<String> serversListModel;
@@ -33,13 +34,15 @@ public class LauncherGUI extends javax.swing.JFrame {
      * Creates new form LauncherGUI
      */
     public LauncherGUI() {
+        this.log = new Log("launcher");
+
         initComponents();
 
         try {
-            pingClient = new PingClient();
+            pingClient = new PingClient(log);
             pingClient.start();
         } catch (IOException ioe) {
-            LegacyLog.warn("Could not start PingClient", ioe);
+            log.warn("Could not start PingClient", ioe);
         }
 
         serversListModel = new DefaultListModel<>();
@@ -449,7 +452,7 @@ public class LauncherGUI extends javax.swing.JFrame {
             teamBox.setSelectedIndex(prefs.getInt("team-colour", 0));
             gameTypeTeamBtn.setSelected(prefs.getBoolean("team-mode-on", false));
         } catch (Exception e) {
-            LegacyLog.warn("Could not load prefs", e);
+            log.warn("Could not load prefs", e);
         }
     }
 

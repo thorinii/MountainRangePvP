@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import mountainrangepvp.engine.util.LegacyLog
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 /**
@@ -60,8 +59,8 @@ object MessageCodec {
     case PlayerFiredMessage(client, from, direction) =>
       buf.writeInt(7)
       buf.writeLong(client.id)
-      writeVector(buf,from)
-      writeVector(buf,direction)
+      writeVector(buf, from)
+      writeVector(buf, direction)
   }
 
   def decode(buf: ByteBuf): Message = {
@@ -102,7 +101,6 @@ object MessageCodec {
                            readVector(buf))
 
       case _ =>
-        LegacyLog.todoCrash()
         throw new UnsupportedOperationException
     }
   }

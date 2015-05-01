@@ -11,7 +11,7 @@ class ProtocolTest {
   @Test
   def connectionTest() = {
     val eventbus = new EventBus(Thread.currentThread())
-    val server = new Server(SessionConfig(teamsOn = false), () => {})
+    val server = new Server(new Log("test"), SessionConfig(teamsOn = false), () => {})
     val client = new Client(new Log("test"), eventbus, server, "protocol test subject")
     val recorder = new EventRecorder(eventbus)
 

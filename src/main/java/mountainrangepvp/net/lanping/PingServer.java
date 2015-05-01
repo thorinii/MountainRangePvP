@@ -1,7 +1,7 @@
 package mountainrangepvp.net.lanping;
 
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.mp.MultiplayerConstants;
-import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -12,9 +12,14 @@ import java.net.DatagramSocket;
  */
 public class PingServer {
 
+    private final Log log;
     private DatagramSocket socket;
     private DatagramPacket packet;
     private Thread pingThread;
+
+    public PingServer(Log log) {
+        this.log = log;
+    }
 
     public void start() throws IOException {
         socket = new DatagramSocket();
@@ -53,18 +58,8 @@ public class PingServer {
         try {
             socket.send(packet);
         } catch (IOException ioe) {
-            LegacyLog.warn("Could not send ping", ioe);
+            log.warn("Could not send ping", ioe);
             Thread.currentThread().interrupt();
-        }
-    }
-
-    public static void main(String[] args) throws IOException,
-            InterruptedException {
-        PingServer server = new PingServer();
-        server.start();
-
-        while (true) {
-            Thread.sleep(1000);
         }
     }
 }
