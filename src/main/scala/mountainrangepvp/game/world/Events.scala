@@ -11,4 +11,4 @@ case class NewMapEvent(seed: Int) extends Event
 
 case class PlayerStatsUpdatedEvent(stats: PlayerStats) extends Event
 
-case class PlayerFiredEvent(direction: Vector2) extends Event
+case class FireRequestEvent(direction: Vector2) extends Event
