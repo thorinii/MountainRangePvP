@@ -50,8 +50,8 @@ class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends Ser
   }
 
   override def fireShot(client: ClientId, direction: Vector2) = {
-    log.todo(client + " fired towards " + direction)
-    // TODO
+    // TODO actually put in world and simulate
+    sendToAll(_.firedShot(client, new Vector2(0, 0), direction))
   }
 
 

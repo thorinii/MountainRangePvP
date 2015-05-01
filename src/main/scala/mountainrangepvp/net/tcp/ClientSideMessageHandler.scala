@@ -20,6 +20,7 @@ class ClientSideMessageHandler(client: ClientInterface) extends SimpleChannelInb
     case SessionInfoMessage(teamsOn) => client.sessionInfo(teamsOn)
     case NewMapMessage(seed) => client.newMap(seed)
     case PlayerStatsMessage(stats) => client.playerStats(stats)
+    case PlayerFiredMessage(id, from, direction) => client.firedShot(id, from, direction)
   }
 
 

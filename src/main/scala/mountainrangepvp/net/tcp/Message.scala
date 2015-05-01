@@ -24,3 +24,5 @@ case class PlayerStatsMessage(stats: PlayerStats) extends ToClientMessage
 
 
 case class FireShotMessage(direction: Vector2) extends ToServerMessage
+
+case class PlayerFiredMessage(client: ClientId, from: Vector2, direction: Vector2) extends ToClientMessage

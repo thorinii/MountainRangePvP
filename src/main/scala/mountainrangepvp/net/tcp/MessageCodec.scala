@@ -56,6 +56,12 @@ object MessageCodec {
     case FireShotMessage(direction) =>
       buf.writeInt(6)
       writeVector(buf, direction)
+
+    case PlayerFiredMessage(client, from, direction) =>
+      buf.writeInt(7)
+      buf.writeLong(client.id)
+      writeVector(buf,from)
+      writeVector(buf,direction)
   }
 
   def decode(buf: ByteBuf): Message = {
@@ -89,6 +95,11 @@ object MessageCodec {
 
       case 6 =>
         FireShotMessage(readVector(buf))
+
+      case 7 =>
+        PlayerFiredMessage(ClientId(buf.readLong()),
+                           readVector(buf),
+                           readVector(buf))
 
       case _ =>
         LegacyLog.todoCrash()

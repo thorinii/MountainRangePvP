@@ -1,5 +1,6 @@
 package mountainrangepvp.net
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
 /**
@@ -15,5 +16,9 @@ trait ClientInterface {
 
   def newMap(seed: Int)
 
+
   def playerStats(stats: PlayerStats)
+
+
+  def firedShot(client: ClientId, from: Vector2, direction: Vector2)
 }
