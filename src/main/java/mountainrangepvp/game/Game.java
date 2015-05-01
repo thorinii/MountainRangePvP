@@ -42,7 +42,8 @@ public class Game {
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
 
-        inputHandler = new InputHandler(eventbus);
+        inputHandler = new InputHandler(eventbus,
+                                        Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         inputHandler.register();
 
         eventbus.subscribe(NewSessionEvent.class, new NewSessionHandler());

@@ -85,6 +85,7 @@ public class WorldRenderer {
     }
 
     private void drawCrosshair() {
+        // TODO: use world crosshair info
         int x = Gdx.input.getX();
         int y = Gdx.graphics.getHeight() - Gdx.input.getY();
 
