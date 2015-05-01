@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
-import mountainrangepvp.engine.util.LegacyLog;
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.world.Session;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;
@@ -22,13 +22,15 @@ public class GameScreen implements Screen {
 
     private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
 
+    private final Log log;
     private final WorldRenderer renderer;
     private final int width, height;
 
     private final Session session;
     private final Vector2 cameraPosition;
 
-    public GameScreen(EventBus eventbus, Session session) {
+    public GameScreen(Log log, EventBus eventbus, Session session) {
+        this.log = log;
         this.session = session;
         renderer = new WorldRenderer(eventbus, session);
 
@@ -47,7 +49,7 @@ public class GameScreen implements Screen {
 
                 Mouse.setNativeCursor(emptyCursor);
             } catch (LWJGLException ex) {
-                LegacyLog.warn("Error hiding mouse:", ex);
+                log.warn("Error hiding mouse:", ex);
             }
         }
 

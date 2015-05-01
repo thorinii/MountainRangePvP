@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.Game;
 import mountainrangepvp.game.GameSettings;
 import mountainrangepvp.net.server.Server;
@@ -112,8 +113,8 @@ public class Main {
             public void create() {
                 SessionConfig sessionConfig = new SessionConfig(settings.teamsOn);
 
-                Server server = ServerThread.startServer(sessionConfig);
-                wrapper = new TcpServerWrapper(server, settings.port);
+                Server server = ServerThread.startServer(new Log("server"), sessionConfig);
+                wrapper = new TcpServerWrapper(new Log("tcp"), server, settings.port);
                 wrapper.start();
 
                 game = new Game(settings, server);
@@ -140,7 +141,7 @@ public class Main {
 
             @Override
             public void create() {
-                server = new TcpServerInterface(settings.serverIP, settings.port);
+                server = new TcpServerInterface(new Log("tcp"), settings.serverIP, settings.port);
 
                 game = new Game(settings, server);
                 game.start();

@@ -1,10 +1,12 @@
 package mountainrangepvp.net.server
 
+import mountainrangepvp.engine.util.Log
+
 /**
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
 object ServerThread {
-  def startServer(sessionConfig: SessionConfig): Server = {
+  def startServer(log: Log, sessionConfig: SessionConfig): Server = {
     val updateIntervalMillis = 100
 
     var s: Server = null
@@ -22,7 +24,7 @@ object ServerThread {
       }
     }, "Server Update")
 
-    s = new Server(sessionConfig, () => thread.interrupt())
+    s = new Server(log, sessionConfig, () => thread.interrupt())
     thread.start()
     s
   }

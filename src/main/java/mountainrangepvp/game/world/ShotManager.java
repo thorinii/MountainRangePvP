@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
-import mountainrangepvp.engine.util.LegacyLog;
+import mountainrangepvp.engine.util.Log;
 
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import java.util.List;
 public class ShotManager {
     public static final int MAX_SHOT_LIFE = 5;
 
+    private final Log log;
     private final EventBus eventBus;
 
     private final PlayerManager playerManager;
@@ -26,7 +27,8 @@ public class ShotManager {
     private final List<ShotListener> listeners;
     private final List<Shot> shots;
 
-    public ShotManager(EventBus eventBus, PlayerManager playerManager, Terrain terrain, boolean addPoints, boolean teamMode) {
+    public ShotManager(Log l, EventBus eventBus, PlayerManager playerManager, Terrain terrain, boolean addPoints, boolean teamMode) {
+        this.log = l;
         this.eventBus = eventBus;
         this.playerManager = playerManager;
         this.terrain = terrain;
@@ -39,7 +41,7 @@ public class ShotManager {
         eventBus.subscribe(PlayerFiredEvent.class, new EventHandler<PlayerFiredEvent>(){
             @Override
             public void receive(PlayerFiredEvent event) {
-                LegacyLog.fine(event.client() + " fired from " + event.from() + " at " + event.direction());
+                log.fine(event.client() + " fired from " + event.from() + " at " + event.direction());
                 shots.add(new Shot(event.from(), event.direction(), null));
             }
         });
@@ -204,7 +206,7 @@ public class ShotManager {
     }
 
     protected void handlePlayerHit(Shot shot, Player hit) {
-        LegacyLog.fine(hit + " was shot");
+        log.fine(hit + " was shot");
         hit.kill();
         if (addPoints)
             shot.player.addHit();

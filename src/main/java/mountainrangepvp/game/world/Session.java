@@ -2,12 +2,13 @@ package mountainrangepvp.game.world;
 
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.engine.util.EventHandler;
-import mountainrangepvp.engine.util.LegacyLog;
+import mountainrangepvp.engine.util.Log;
 
 /**
  * State that doesn't change between maps.
  */
 public class Session {
+    private final Log log;
     private final EventBus eventBus;
     private final boolean teamsOn;
     public final PlayerManager playerManager;
@@ -16,7 +17,8 @@ public class Session {
     private Map map;
     private PlayerStats stats;
 
-    public Session(EventBus eventBus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
+    public Session(Log log, EventBus eventBus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
+        this.log = log;
         this.eventBus = eventBus;
         this.teamsOn = teamsOn;
         this.playerManager = playerManager;
@@ -61,12 +63,12 @@ public class Session {
     private class NewMapHandler implements EventHandler<NewMapEvent> {
         @Override
         public void receive(NewMapEvent event) {
-            LegacyLog.info("Received seed " + event.seed() + "; changing map");
+            log.info("Received seed " + event.seed() + "; changing map");
 
             HeightMap heightMap = new HillsHeightMap(event.seed());
 
             Terrain terrain = new Terrain(heightMap);
-            ShotManager shotManager = new ShotManager(eventBus, playerManager, terrain, false, teamsOn);
+            ShotManager shotManager = new ShotManager(log, eventBus, playerManager, terrain, false, teamsOn);
 
             Session.this.map = new Map(shotManager, terrain, teamsOn);
 

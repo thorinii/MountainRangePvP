@@ -10,10 +10,11 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
 import io.netty.util.concurrent.Future
+import mountainrangepvp.engine.util.Log
 import mountainrangepvp.game.world.ClientId
 import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
-class TcpServerInterface(host: String, port: Int) extends ServerInterface {
+class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterface {
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private var channel: ChannelFuture = null
   private var ctx: ChannelHandlerContext = null
@@ -32,7 +33,7 @@ class TcpServerInterface(host: String, port: Int) extends ServerInterface {
       ch.pipeline.addLast("frameEncoder", new LengthFieldPrepender(4))
 
       ch.pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(1048576, 0, 4, 0, 4))
-      ch.pipeline.addLast("handler", new ClientSideMessageHandler(client))
+      ch.pipeline.addLast("handler", new ClientSideMessageHandler(log, client))
       ch.pipeline.addLast("connection", new ConnectionListener)
     }
   }

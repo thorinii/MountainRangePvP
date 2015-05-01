@@ -100,9 +100,9 @@ public class Game {
             PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);
 
-            session = new Session(eventbus, event.teamsOn(), playerManager, chatManager);
+            session = new Session(log, eventbus, event.teamsOn(), playerManager, chatManager);
 
-            gameScreen = new GameScreen(eventbus, session);
+            gameScreen = new GameScreen(log, eventbus, session);
         }
     }
 }

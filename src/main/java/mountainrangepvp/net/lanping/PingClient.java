@@ -1,7 +1,7 @@
 package mountainrangepvp.net.lanping;
 
+import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.mp.MultiplayerConstants;
-import mountainrangepvp.engine.util.LegacyLog;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -13,12 +13,14 @@ import java.util.*;
  */
 public class PingClient {
 
+    private final Log log;
     private final Set<ServerData> servers;
     private MulticastSocket socket;
     private DatagramPacket packet;
     private Thread listenThread;
 
-    public PingClient() {
+    public PingClient(Log log) {
+        this.log = log;
         servers = new HashSet<>();
     }
 
@@ -39,7 +41,7 @@ public class PingClient {
                         Thread.sleep(1000 / MultiplayerConstants.PING_RATE);
                     }
                 } catch (InterruptedException ex) {
-                    LegacyLog.fine("Ping Client shutting down");
+                    log.fine("Ping Client shutting down");
                 }
             }
         }, "Ping Client");
@@ -62,7 +64,7 @@ public class PingClient {
             socket.receive(packet);
         } catch (IOException ioe) {
             if (!socket.isClosed())
-                LegacyLog.warn("Could not read ping", ioe);
+                log.warn("Could not read ping", ioe);
             Thread.currentThread().interrupt();
         }
     }
@@ -131,17 +133,6 @@ public class PingClient {
         @Override
         public String toString() {
             return "Server[" + "ip=" + ip + ", freshness=" + getFreshness() + "ms]";
-        }
-    }
-
-    public static void main(String[] args) throws IOException,
-            InterruptedException {
-        PingClient client = new PingClient();
-        client.start();
-
-        while (true) {
-            System.out.println(client.getServers());
-            Thread.sleep(1000);
         }
     }
 }

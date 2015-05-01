@@ -4,14 +4,14 @@ import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
-import mountainrangepvp.engine.util.LegacyLog
+import mountainrangepvp.engine.util.Log
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
 /**
  * Decodes messages from the client
  */
-class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInboundHandler[ByteBuf] {
+class ServerSideMessageHandler(log: Log, server: ServerInterface) extends SimpleChannelInboundHandler[ByteBuf] {
 
   override def channelActive(ctx: ChannelHandlerContext): Unit = {
     server.connect(new TcpClientInterface(ctx))
@@ -25,12 +25,12 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
   private def handle(client: ClientId, m: ToServerMessage) = m match {
     case LoginMessage(c, v, n) => server.login(client, c, v, n)
     case FireShotMessage(d) => server.fireShot(client, d)
-    case _ => LegacyLog.todo(m.toString)
+    case _ => log.todo(m.toString)
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = cause match {
     case e: Exception =>
-      LegacyLog.crash("Error in ServerSideMessageHandler", cause)
+      log.crash("Error in ServerSideMessageHandler", cause)
       super.exceptionCaught(ctx, cause)
 
     case _ =>
@@ -64,4 +64,5 @@ class ServerSideMessageHandler(server: ServerInterface) extends SimpleChannelInb
       MessageCodec.send(ctx, PlayerFiredMessage(client, from, direction))
     }
   }
+
 }

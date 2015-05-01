@@ -11,8 +11,7 @@ import mountainrangepvp.net.{ClientInterface, ServerInterface}
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable
 
-class Server(sessionConfig: SessionConfig, shutdownHook: () => Unit) extends ServerInterface {
-  private val log = new Log("server")
+class Server(log: Log, sessionConfig: SessionConfig, shutdownHook: () => Unit) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
   private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
