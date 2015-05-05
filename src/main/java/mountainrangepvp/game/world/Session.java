@@ -71,8 +71,6 @@ public class Session {
             ShotManager shotManager = new ShotManager(log, eventBus, playerManager, terrain, false, teamsOn);
 
             Session.this.map = new Map(shotManager, terrain, teamsOn);
-
-            // TODO: shotManager.addShotListener(new AudioShotListener(playerManager, audioManager));
         }
     }
 }
