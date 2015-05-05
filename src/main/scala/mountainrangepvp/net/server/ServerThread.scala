@@ -1,6 +1,7 @@
 package mountainrangepvp.net.server
 
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.util.{EventBus, Log}
+import mountainrangepvp.game.world.{ChatManager, Player, PlayerManager, Session}
 
 /**
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
@@ -24,8 +25,20 @@ object ServerThread {
       }
     }, "Server Update")
 
-    s = new Server(log, sessionConfig, () => thread.interrupt())
+
+    val eventBus = new EventBus(thread)
+    val session = buildSession(log, eventBus, sessionConfig)
+
+    s = new Server(log, eventBus, session, () => thread.interrupt())
     thread.start()
     s
+  }
+
+  private def buildSession(log: Log, eventBus: EventBus, sessionConfig: SessionConfig) = {
+    // TODO get rid of this
+    val playerManager = new PlayerManager("", Player.Team.BLUE)
+    val chatManager = new ChatManager(playerManager)
+
+    new Session(log, eventBus, sessionConfig.teamsOn, playerManager, chatManager)
   }
 }

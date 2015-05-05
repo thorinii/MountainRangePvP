@@ -1,19 +1,22 @@
 package mountainrangepvp.net
 
 import junit.framework.AssertionFailedError
-import mountainrangepvp.engine.util.{Log, Event, EventHandler, EventBus}
-import mountainrangepvp.game.world.{PlayerStatsUpdatedEvent, NewMapEvent, NewSessionEvent}
+import mountainrangepvp.engine.util.{Event, EventBus, EventHandler, Log}
+import mountainrangepvp.game.world.{NewMapEvent, NewSessionEvent, PlayerStatsUpdatedEvent, Session}
 import mountainrangepvp.net.client.Client
-import mountainrangepvp.net.server.{Server, SessionConfig}
+import mountainrangepvp.net.server.Server
 import org.junit.Test
 
 class ProtocolTest {
+  val serverLog = new Log("test")
+  val clientLog = new Log("test")
+  val eventBus = new EventBus(Thread.currentThread())
+  val server = new Server(serverLog, eventBus, new Session(serverLog, eventBus, false, null, null), () => {})
+  val client = new Client(clientLog, eventBus, server, "protocol test subject")
+  val recorder = new EventRecorder(eventBus)
+
   @Test
   def connectionTest() = {
-    val eventbus = new EventBus(Thread.currentThread())
-    val server = new Server(new Log("test"), SessionConfig(teamsOn = false), () => {})
-    val client = new Client(new Log("test"), eventbus, server, "protocol test subject")
-    val recorder = new EventRecorder(eventbus)
 
     client.start()
     server.updateTillDone()
@@ -23,18 +26,19 @@ class ProtocolTest {
     recorder.received(classOf[PlayerStatsUpdatedEvent])
   }
 
-  private class EventRecorder(eventbus: EventBus) extends EventHandler[Event] {
+
+  class EventRecorder(eventbus: EventBus) extends EventHandler[Event] {
     private var recording: List[Event] = List.empty
 
     eventbus.subscribeAll(this)
 
     def received(event: Event): Unit = {
-      if(!recording.contains(event))
+      if (!recording.contains(event))
         throw new AssertionFailedError("Did not record a " + event)
     }
 
     def received[T <: Event](eventClass: Class[T]): Unit = {
-      if(!recording.exists(_.getClass == eventClass))
+      if (!recording.exists(_.getClass == eventClass))
         throw new AssertionFailedError("Did not record a " + eventClass)
     }
 
@@ -43,4 +47,5 @@ class ProtocolTest {
       recording ::= e
     }
   }
+
 }

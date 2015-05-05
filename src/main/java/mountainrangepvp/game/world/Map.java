@@ -15,6 +15,10 @@ public class Map {
         this.teamModeOn = teamModeOn;
     }
 
+    public int getSeed() {
+        return terrain.getSeed();
+    }
+
     public void update(float dt) {
         shotManager.update(dt);
     }

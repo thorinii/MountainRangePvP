@@ -4,28 +4,25 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.engine.util.Log
-import mountainrangepvp.game.world.{ClientId, PlayerStats}
+import mountainrangepvp.engine.util.{EventBus, Log}
+import mountainrangepvp.game.world.{NewMapEvent, ClientId, PlayerStats, Session}
 import mountainrangepvp.net.{ClientInterface, ServerInterface}
 
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable
 
-class Server(log: Log, sessionConfig: SessionConfig, shutdownHook: () => Unit) extends ServerInterface {
+class Server(log: Log, eventBus: EventBus, session: Session, shutdownHook: () => Unit) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
   private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
   private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
 
-  // TODO: playerStats should be in a session
-  private var playerStats = new PlayerStats
-
-  private val map = new Map(34)
-
   @volatile
   private var _going: Boolean = true
 
   def going = _going
+
+  eventBus.send(NewMapEvent(0))
 
 
   override def connect(client: ClientInterface) = {
@@ -38,8 +35,8 @@ class Server(log: Log, sessionConfig: SessionConfig, shutdownHook: () => Unit) e
   override def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
     log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
 
-    send(client)(_.sessionInfo(sessionConfig.teamsOn))
-    send(client)(_.newMap(map.seed))
+    send(client)(_.sessionInfo(session.areTeamsOn))
+    send(client)(_.newMap(session.getMap.getSeed))
     stats(_.joined(client, nickname))
   }
 
@@ -55,15 +52,16 @@ class Server(log: Log, sessionConfig: SessionConfig, shutdownHook: () => Unit) e
 
 
   def update(): Unit = {
-    val oldStats = playerStats
+    val oldStats = session.getStats
+    eventBus.flushPendingMessages()
 
     while (!taskQueue.isEmpty) {
       val task = taskQueue.take()
       task()
     }
 
-    if (playerStats.changedSince(oldStats)) {
-      sendToAll(_.playerStats(playerStats))
+    if (session.getStats.changedSince(oldStats)) {
+      sendToAll(_.playerStats(session.getStats))
     }
 
     while (!sendQueue.isEmpty) {
@@ -84,7 +82,7 @@ class Server(log: Log, sessionConfig: SessionConfig, shutdownHook: () => Unit) e
   }
 
   private def stats(action: PlayerStats => PlayerStats): Unit = {
-    async(taskQueue)(() => playerStats = action(playerStats))
+    async(taskQueue)(() => session.setStats(action(session.getStats)))
   }
 
   private def send(interface: ClientInterface)(action: SendAction): Unit = {

@@ -2,10 +2,7 @@ package mountainrangepvp.game;
 
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.AudioManager;
-import mountainrangepvp.game.world.Player;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Shot;
-import mountainrangepvp.game.world.ShotListener;
+import mountainrangepvp.game.world.*;
 
 /**
  * Plays gunshot sounds when guns are fired.

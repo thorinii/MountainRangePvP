@@ -54,11 +54,19 @@ public class Session {
         return stats;
     }
 
+    public void setStats(PlayerStats stats) {
+        this.stats = stats;
+    }
+
     public void update(float dt) {
         if (hasMap())
             map.update(dt);
     }
 
+
+    public boolean areTeamsOn() {
+        return teamsOn;
+    }
 
     private class NewMapHandler implements EventHandler<NewMapEvent> {
         @Override
