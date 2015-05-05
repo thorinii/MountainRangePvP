@@ -11,6 +11,9 @@ trait ServerInterface {
 
   def login(client: ClientId, checkCode: Int, version: Int, nickname: String)
 
+  def disconnect(client: ClientId)
+
+
   def shutdown()
 
 

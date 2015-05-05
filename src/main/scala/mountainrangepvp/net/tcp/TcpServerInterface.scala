@@ -42,6 +42,8 @@ class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterf
     send(new LoginMessage(checkCode, version, nickname))
   }
 
+  def disconnect(client: ClientId) = {}
+
   def shutdown() = {
     val futures: List[Future[_]] = List(
       channel.channel.close,

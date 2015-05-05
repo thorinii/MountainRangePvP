@@ -36,6 +36,12 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
     case _ =>
   }
 
+  override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+    val client = idOf(ctx)
+    if(client != null) {
+      server.disconnect(client)
+    }
+  }
 
   private val idAttrKey = AttributeKey.valueOf[ClientId]("id")
 

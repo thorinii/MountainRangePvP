@@ -33,11 +33,18 @@ class Server(log: Log, eventBus: EventBus, session: Session, shutdownHook: () =>
   }
 
   override def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
-    log.info(client + ": " + checkCode + "," + version + " " + nickname + " connected")
+    log.info(client + " " + checkCode + "," + version + " " + nickname + " connected")
 
     send(client)(_.sessionInfo(session.areTeamsOn))
     send(client)(_.newMap(session.getMap.getSeed))
     stats(_.joined(client, nickname))
+  }
+
+  override def disconnect(client: ClientId) = {
+    log.info(client + " " + session.getStats.players.get(client).map(_ + " ").getOrElse("") + "disconnected")
+
+    stats(_.left(client))
+    interfaces -= client
   }
 
   override def shutdown() = {
