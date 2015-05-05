@@ -25,6 +25,10 @@ public class Terrain {
         };
     }
 
+    public int getSeed() {
+        return heightMap.getSeed();
+    }
+
     public Slice getSlice(int base, int size) {
         return new Slice(base, size);
     }

@@ -129,5 +129,10 @@ public class TerrainTest {
                     return 0;
             }
         }
+
+        @Override
+        public int getSeed() {
+            return 0;
+        }
     }
 }

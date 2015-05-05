@@ -9,17 +9,24 @@ public class MountainHeightMap extends AbstractHeightMap {
     private static final int WALL_WIDTH = 50;
     private static final int WALL_DISTANCE = 3000;
     private static final int WALL_HEIGHT = 160;
+    private final int originalSeed;
     private final int seed;
     private final Noise noise;
     private boolean makeWalls;
     private boolean origin;
 
-    public MountainHeightMap(int seed) {
-        this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
+    public MountainHeightMap(int originalSeed) {
+        this.originalSeed = originalSeed;
+        this.seed = originalSeed ^ (originalSeed << 2) ^ (originalSeed << 4) ^ (originalSeed << 6) ^ (originalSeed << 8);
         this.noise = new Noise();
 
         makeWalls = false;
         origin = true;
+    }
+
+    @Override
+    public int getSeed() {
+        return originalSeed;
     }
 
     @Override

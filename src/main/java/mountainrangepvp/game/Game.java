@@ -97,7 +97,7 @@ public class Game {
         public void receive(NewSessionEvent event) {
             log.info("SessionInfo: teamsOn " + event.teamsOn());
 
-            PlayerManager playerManager = new ClientPlayerManager(config.nickname, config.team);
+            PlayerManager playerManager = new PlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);
 
             session = new Session(log, eventbus, event.teamsOn(), playerManager, chatManager);
