@@ -22,7 +22,7 @@ public class WorldRenderer {
     private final SpriteBatch batch;
     private final OrthographicCamera camera;
 
-    private final EventBus eventbus;
+    private final EventBus eventBus;
     private final Session session;
 
     private final TextRenderer textRenderer;
@@ -37,8 +37,8 @@ public class WorldRenderer {
 
     private final Texture crossHairTexture;
 
-    public WorldRenderer(EventBus eventbus, Session session) {
-        this.eventbus = eventbus;
+    public WorldRenderer(EventBus eventBus, Session session) {
+        this.eventBus = eventBus;
         this.session = session;
 
         screen = new Vector2(Gdx.graphics.getWidth() + 1,
@@ -80,7 +80,7 @@ public class WorldRenderer {
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);
         textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
-        textRenderer.drawString(batch, eventbus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
+        textRenderer.drawString(batch, eventBus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
         textRenderer.setColour(Color.BLACK);
     }
 

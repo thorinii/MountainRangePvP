@@ -19,7 +19,7 @@ public class Game {
     private final GameSettings config;
     private final Log log;
 
-    private final EventBus eventbus;
+    private final EventBus eventBus;
     private final Client client;
     private final PhysicsSystem physicsSystem;
     private final AudioManager audioManager;
@@ -32,9 +32,9 @@ public class Game {
         this.config = config;
         log = new Log("client");
 
-        eventbus = new EventBus(Thread.currentThread());
+        eventBus = new EventBus(Thread.currentThread());
 
-        client = Client.newClient(log, eventbus, server, config.nickname);
+        client = Client.newClient(log, eventBus, server, config.nickname);
 
         physicsSystem = new PhysicsSystem();
 
@@ -42,11 +42,11 @@ public class Game {
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
 
-        inputHandler = new InputHandler(eventbus,
+        inputHandler = new InputHandler(eventBus,
                                         Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         inputHandler.register();
 
-        eventbus.subscribe(NewSessionEvent.class, new NewSessionHandler());
+        eventBus.subscribe(NewSessionEvent.class, new NewSessionHandler());
     }
 
     public void start() {
@@ -77,7 +77,7 @@ public class Game {
     }
 
     private void update(float dt) {
-        eventbus.flushPendingMessages();
+        eventBus.flushPendingMessages();
 
         if (session != null && session.hasMap()) {
             inputHandler.update(config.TIMESTEP);
@@ -89,7 +89,7 @@ public class Game {
 
         if (gameScreen != null) gameScreen.render(dt);
 
-        eventbus.resetMessagesPerFrame();
+        eventBus.resetMessagesPerFrame();
     }
 
     private class NewSessionHandler implements EventHandler<NewSessionEvent> {
@@ -100,9 +100,9 @@ public class Game {
             PlayerManager playerManager = new PlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);
 
-            session = new Session(log, eventbus, event.teamsOn(), playerManager, chatManager);
+            session = new Session(log, eventBus, event.teamsOn(), playerManager, chatManager);
 
-            gameScreen = new GameScreen(log, eventbus, session);
+            gameScreen = new GameScreen(log, eventBus, session);
         }
     }
 }

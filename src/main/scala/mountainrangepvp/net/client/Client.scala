@@ -9,14 +9,14 @@ import mountainrangepvp.net._
  * That which talks to the server, whether by the network or in-process calls.
  */
 object Client {
-  def newClient(log: Log, eventbus: EventBus, server: ServerInterface, nickname: String): Client = {
-    val c = new Client(log, eventbus, server, nickname)
+  def newClient(log: Log, eventBus: EventBus, server: ServerInterface, nickname: String): Client = {
+    val c = new Client(log, eventBus, server, nickname)
     c.subscribe()
     c
   }
 }
 
-class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: String) {
+class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: String) {
   private var id: ClientId = null
   private var online = false
 
@@ -33,7 +33,7 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
 
 
   private def subscribe() = {
-    eventbus.subscribe((e: FireRequestEvent) => server.fireShot(id, e.direction))
+    eventBus.subscribe((e: FireRequestEvent) => server.fireShot(id, e.direction))
   }
 
   private class ClientInterfaceImpl extends ClientInterface {
@@ -45,25 +45,25 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
 
     override def disconnected() = {
       if (online) {
-        eventbus.send(ServerDisconnect)
+        eventBus.send(ServerDisconnect)
       }
     }
 
     override def sessionInfo(teamsOn: Boolean) = {
-      eventbus.send(NewSessionEvent(teamsOn))
+      eventBus.send(NewSessionEvent(teamsOn))
     }
 
     override def newMap(seed: Int) = {
-      eventbus.send(NewMapEvent(seed))
+      eventBus.send(NewMapEvent(seed))
     }
 
 
     override def playerStats(stats: PlayerStats) = {
-      eventbus.send(PlayerStatsUpdatedEvent(stats))
+      eventBus.send(PlayerStatsUpdatedEvent(stats))
     }
 
     override def firedShot(client: ClientId, from: Vector2, direction: Vector2) = {
-      eventbus.send(PlayerFiredEvent(client, from, direction))
+      eventBus.send(PlayerFiredEvent(client, from, direction))
     }
   }
 

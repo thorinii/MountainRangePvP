@@ -6,14 +6,14 @@ import mountainrangepvp.engine.input.{ActionMapper, StateAccumulatingInputProces
 import mountainrangepvp.engine.util.EventBus
 import mountainrangepvp.game.world._
 
-class InputHandler(eventbus: EventBus, screenWidth: Int, screenHeight: Int) {
+class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
   private val actionMapper = new ActionMapper
   private val inputProcessor = new StateAccumulatingInputProcessor(screenHeight)
 
 
   actionMapper.addAction("fire", new DelayedRepeatingAction(state => {
     val direction = state.mouse.cpy().sub(screenWidth/2, screenHeight/2).nor()
-    eventbus.send(new FireRequestEvent(direction))
+    eventBus.send(new FireRequestEvent(direction))
 
     0.1f
   }))
@@ -44,7 +44,7 @@ class InputHandler(eventbus: EventBus, screenWidth: Int, screenHeight: Int) {
 
   private def doShooting(player: Player) {
     val pos: Vector2 = player.getCentralPosition
-    eventbus.send(new FireRequestEvent(player.getGunDirection.cpy))
+    eventBus.send(new FireRequestEvent(player.getGunDirection.cpy))
     val kickback: Vector2 = player.getGunDirection.cpy.scl(-90f)
     player.getVelocity.add(kickback)
   }
