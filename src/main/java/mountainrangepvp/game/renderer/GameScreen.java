@@ -29,10 +29,10 @@ public class GameScreen implements Screen {
     private final Session session;
     private final Vector2 cameraPosition;
 
-    public GameScreen(Log log, EventBus eventbus, Session session) {
+    public GameScreen(Log log, EventBus eventBus, Session session) {
         this.log = log;
         this.session = session;
-        renderer = new WorldRenderer(eventbus, session);
+        renderer = new WorldRenderer(eventBus, session);
 
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();

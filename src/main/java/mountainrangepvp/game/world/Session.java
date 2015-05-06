@@ -30,9 +30,9 @@ public class Session {
         subscribeTo(eventBus);
     }
 
-    private void subscribeTo(EventBus eventbus) {
-        eventbus.subscribe(NewMapEvent.class, new NewMapHandler());
-        eventbus.subscribe(PlayerStatsUpdatedEvent.class, new EventHandler<PlayerStatsUpdatedEvent>() {
+    private void subscribeTo(EventBus eventBus) {
+        eventBus.subscribe(NewMapEvent.class, new NewMapHandler());
+        eventBus.subscribe(PlayerStatsUpdatedEvent.class, new EventHandler<PlayerStatsUpdatedEvent>() {
             @Override
             public void receive(PlayerStatsUpdatedEvent event) {
                 stats = event.stats();
