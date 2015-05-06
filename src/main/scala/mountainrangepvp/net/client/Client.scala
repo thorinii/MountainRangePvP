@@ -18,13 +18,16 @@ object Client {
 
 class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: String) {
   private var id: ClientId = null
+  private var online = false
 
   @throws(classOf[InterruptedException])
   def start() = {
     server.connect(new ClientInterfaceImpl)
+    online = true
   }
 
   def shutdown() = {
+    online = false
     server.shutdown()
   }
 
@@ -38,6 +41,12 @@ class Client(log: Log, eventbus: EventBus, server: ServerInterface, nickname: St
       Client.this.id = id
       log.setName("client" + id.id)
       server.login(id, NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname)
+    }
+
+    override def disconnected() = {
+      if (online) {
+        eventbus.send(ServerDisconnect)
+      }
     }
 
     override def sessionInfo(teamsOn: Boolean) = {

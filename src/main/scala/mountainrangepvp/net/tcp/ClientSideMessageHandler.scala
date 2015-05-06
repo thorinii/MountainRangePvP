@@ -25,8 +25,9 @@ class ClientSideMessageHandler(log: Log, client: ClientInterface) extends Simple
 
 
   override def channelInactive(ctx: ChannelHandlerContext): Unit = {
-    log.info("Disconnected from server")
     super.channelInactive(ctx)
+
+    client.disconnected()
   }
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = cause match {

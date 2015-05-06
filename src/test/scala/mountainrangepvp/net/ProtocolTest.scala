@@ -36,6 +36,8 @@ class ProtocolTest {
         id = i
       }
 
+      override def disconnected(): Unit = {}
+
       override def newMap(seed: Int): Unit = {}
 
       override def firedShot(client: ClientId, from: Vector2, direction: Vector2): Unit = {}
@@ -59,6 +61,8 @@ class ProtocolTest {
       override def connected(i: ClientId): Unit = {
         id = i
       }
+
+      override def disconnected(): Unit = {}
 
       override def newMap(seed: Int): Unit = {}
 
