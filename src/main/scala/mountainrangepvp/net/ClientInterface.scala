@@ -12,6 +12,12 @@ trait ClientInterface {
    */
   def connected(id: ClientId)
 
+  /**
+   * When the socket closes (may be called during normal shutdown, not just when the server disconnects)
+   */
+  def disconnected()
+
+
   def sessionInfo(teamsOn: Boolean)
 
   def newMap(seed: Int)

@@ -37,6 +37,8 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
   }
 
   override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+    super.channelInactive(ctx)
+
     val client = idOf(ctx)
     if(client != null) {
       server.disconnect(client)
@@ -52,6 +54,10 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
       ctx.attr(idAttrKey).set(id)
 
       MessageCodec.send(ctx, ConnectedMessage(id))
+    }
+
+    override def disconnected() = {
+      // Do nothing
     }
 
     override def sessionInfo(teamsOn: Boolean) = {

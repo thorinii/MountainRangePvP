@@ -15,3 +15,6 @@ case class PlayerStatsUpdatedEvent(stats: PlayerStats) extends Event
 case class FireRequestEvent(direction: Vector2) extends Event
 
 case class PlayerFiredEvent(client: ClientId, from: Vector2, direction: Vector2) extends Event
+
+
+case object ServerDisconnect extends Event
