@@ -1,11 +1,14 @@
 package mountainrangepvp.net
 
+import com.badlogic.gdx.math.Vector2
 import junit.framework.AssertionFailedError
 import mountainrangepvp.engine.util.{Event, EventBus, EventHandler, Log}
-import mountainrangepvp.game.world.{NewMapEvent, NewSessionEvent, PlayerStatsUpdatedEvent, Session}
+import mountainrangepvp.game.world._
 import mountainrangepvp.net.client.Client
 import mountainrangepvp.net.server.Server
 import org.junit.Test
+
+import scala.collection.{Map => SMap}
 
 class ProtocolTest {
   val serverLog = new Log("test")
@@ -17,13 +20,64 @@ class ProtocolTest {
 
   @Test
   def connectionTest() = {
-
     client.start()
     server.updateTillDone()
 
     recorder.received(NewSessionEvent(teamsOn = false))
     recorder.received(classOf[NewMapEvent])
     recorder.received(classOf[PlayerStatsUpdatedEvent])
+  }
+
+  @Test
+  def disconnectBeforeLogin() = {
+    var id: ClientId = null
+    server.connect(new ClientInterface {
+      override def connected(i: ClientId): Unit = {
+        id = i
+      }
+
+      override def newMap(seed: Int): Unit = {}
+
+      override def firedShot(client: ClientId, from: Vector2, direction: Vector2): Unit = {}
+
+      override def sessionInfo(teamsOn: Boolean): Unit = {}
+
+      override def playerStats(stats: PlayerStats): Unit = {}
+    })
+    server.updateTillDone()
+
+    server.disconnect(id)
+    server.updateTillDone()
+
+    assert(server.session.getStats.players.isEmpty)
+  }
+
+  @Test
+  def disconnectAfterLogin() = {
+    var id: ClientId = null
+    server.connect(new ClientInterface {
+      override def connected(i: ClientId): Unit = {
+        id = i
+      }
+
+      override def newMap(seed: Int): Unit = {}
+
+      override def firedShot(client: ClientId, from: Vector2, direction: Vector2): Unit = {}
+
+      override def sessionInfo(teamsOn: Boolean): Unit = {}
+
+      override def playerStats(stats: PlayerStats): Unit = {}
+    })
+    server.updateTillDone()
+    server.login(id, NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, "test player")
+    server.updateTillDone()
+
+    assert(server.session.getStats.players.size == 1)
+
+    server.disconnect(id)
+    server.updateTillDone()
+
+    assert(server.session.getStats.players.isEmpty)
   }
 
 
@@ -34,12 +88,12 @@ class ProtocolTest {
 
     def received(event: Event): Unit = {
       if (!recording.contains(event))
-        throw new AssertionFailedError("Did not record a " + event)
+        throw new AssertionFailedError("Did not record a " + event + ". Instead:\n  " + recording.mkString("\n  "))
     }
 
     def received[T <: Event](eventClass: Class[T]): Unit = {
       if (!recording.exists(_.getClass == eventClass))
-        throw new AssertionFailedError("Did not record a " + eventClass)
+        throw new AssertionFailedError("Did not record a " + eventClass + ". Instead:\n  " + recording.mkString("\n  "))
     }
 
 
