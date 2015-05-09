@@ -1,5 +1,7 @@
 package mountainrangepvp.net
 
+import java.time.Duration
+
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
 
@@ -16,6 +18,17 @@ trait ClientInterface {
    * When the socket closes (may be called during normal shutdown, not just when the server disconnects)
    */
   def disconnected()
+
+
+  /**
+   * The server requests a Pong message
+   */
+  def ping(pingId: Int)
+
+  /**
+   * The server's response to the Pong message
+   */
+  def pinged(lag: Duration)
 
 
   def sessionInfo(teamsOn: Boolean)

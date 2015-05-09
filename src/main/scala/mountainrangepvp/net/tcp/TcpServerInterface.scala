@@ -46,6 +46,10 @@ class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterf
     // Do nothing
   }
 
+  override def pong(client: ClientId, pingId: Int): Unit = {
+    send(PongMessage(pingId))
+  }
+
   def shutdown() = {
     val futures: List[Future[_]] = List(
       channel.channel.close,

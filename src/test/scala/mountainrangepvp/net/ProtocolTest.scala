@@ -1,5 +1,7 @@
 package mountainrangepvp.net
 
+import java.time.Duration
+
 import com.badlogic.gdx.math.Vector2
 import junit.framework.AssertionFailedError
 import mountainrangepvp.engine.util.{Event, EventBus, EventHandler, Log}
@@ -38,6 +40,10 @@ class ProtocolTest {
 
       override def disconnected(): Unit = {}
 
+      override def ping(pingId: Int): Unit = {}
+
+      override def pinged(lag: Duration): Unit = {}
+
       override def newMap(seed: Int): Unit = {}
 
       override def firedShot(client: ClientId, from: Vector2, direction: Vector2): Unit = {}
@@ -63,6 +69,10 @@ class ProtocolTest {
       }
 
       override def disconnected(): Unit = {}
+
+      override def ping(pingId: Int): Unit = {}
+
+      override def pinged(lag: Duration): Unit = {}
 
       override def newMap(seed: Int): Unit = {}
 

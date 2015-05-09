@@ -14,11 +14,12 @@ import org.lwjgl.input.Cursor;
 import org.lwjgl.input.Mouse;
 
 import java.nio.IntBuffer;
+import java.time.Duration;
 
 /**
  * @author lachlan
  */
-public class GameScreen implements Screen {
+public class GameScreen {
 
     private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
 
@@ -57,8 +58,7 @@ public class GameScreen implements Screen {
     }
 
 
-    @Override
-    public void render(float delta) {
+    public void render(float delta, Duration pingTime) {
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -74,30 +74,6 @@ public class GameScreen implements Screen {
 
         cameraPosition.lerp(pos, 0.2f);
 
-        renderer.render(cameraPosition);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
+        renderer.render(cameraPosition, pingTime);
     }
 }

@@ -1,5 +1,8 @@
 package mountainrangepvp.net.client
 
+import java.time.Duration
+import java.util.concurrent.TimeUnit
+
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world._
@@ -19,6 +22,11 @@ object Client {
 class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: String) {
   private var id: ClientId = null
   private var online = false
+
+  private var _lag: Duration = Duration.ZERO
+
+  def lag = _lag
+
 
   @throws(classOf[InterruptedException])
   def start() = {
@@ -47,6 +55,14 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
       if (online) {
         eventBus.send(ServerDisconnect)
       }
+    }
+
+    override def ping(pingId: Int): Unit = {
+      server.pong(id, pingId)
+    }
+
+    override def pinged(lag: Duration): Unit = {
+      _lag = lag
     }
 
     override def sessionInfo(teamsOn: Boolean) = {

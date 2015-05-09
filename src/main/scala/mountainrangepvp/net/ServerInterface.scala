@@ -14,6 +14,12 @@ trait ServerInterface {
   def disconnect(client: ClientId)
 
 
+  /**
+   * The client's response to a Ping
+   */
+  def pong(client: ClientId, pingId: Int)
+
+
   def shutdown()
 
 

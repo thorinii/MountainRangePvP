@@ -21,6 +21,8 @@ class ClientSideMessageHandler(log: Log, client: ClientInterface) extends Simple
     case NewMapMessage(seed) => client.newMap(seed)
     case PlayerStatsMessage(stats) => client.playerStats(stats)
     case PlayerFiredMessage(id, from, direction) => client.firedShot(id, from, direction)
+    case PingMessage(id) => client.ping(id)
+    case PingedMessage(lag) => client.pinged(lag)
   }
 
 

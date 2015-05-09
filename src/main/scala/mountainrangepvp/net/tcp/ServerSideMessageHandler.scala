@@ -1,5 +1,7 @@
 package mountainrangepvp.net.tcp
 
+import java.time.Duration
+
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
@@ -25,6 +27,7 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
   private def handle(client: ClientId, m: ToServerMessage) = m match {
     case LoginMessage(c, v, n) => server.login(client, c, v, n)
     case FireShotMessage(d) => server.fireShot(client, d)
+    case PongMessage(id) => server.pong(client, id)
     case _ => log.todo(m.toString)
   }
 
@@ -58,6 +61,14 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
 
     override def disconnected() = {
       // Do nothing
+    }
+
+    override def ping(pingId: Int)= {
+      MessageCodec.send(ctx, PingMessage(pingId))
+    }
+
+    override def pinged(lag: Duration) = {
+      MessageCodec.send(ctx, PingedMessage(lag))
     }
 
     override def sessionInfo(teamsOn: Boolean) = {
