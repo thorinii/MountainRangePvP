@@ -1,6 +1,7 @@
 package mountainrangepvp.net.tcp
 
 import java.nio.charset.StandardCharsets
+import java.time.Duration
 
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
@@ -61,6 +62,18 @@ object MessageCodec {
       buf.writeLong(client.id)
       writeVector(buf, from)
       writeVector(buf, direction)
+
+    case PingMessage(id) =>
+      buf.writeInt(8)
+      buf.writeInt(id)
+
+    case PongMessage(id) =>
+      buf.writeInt(9)
+      buf.writeInt(id)
+
+    case PingedMessage(lag) =>
+      buf.writeInt(10)
+      buf.writeLong(lag.toMillis)
   }
 
   def decode(buf: ByteBuf): Message = {
@@ -99,6 +112,15 @@ object MessageCodec {
         PlayerFiredMessage(ClientId(buf.readLong()),
                            readVector(buf),
                            readVector(buf))
+
+      case 8 =>
+        PingMessage(buf.readInt())
+
+      case 9 =>
+        PongMessage(buf.readInt())
+
+      case 10 =>
+        PingedMessage(Duration.ofMillis(buf.readLong()))
 
       case _ =>
         throw new UnsupportedOperationException

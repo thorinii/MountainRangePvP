@@ -11,6 +11,8 @@ import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.game.world.Session;
 
+import java.time.Duration;
+
 /**
  * @author lachlan
  */
@@ -63,7 +65,7 @@ public class WorldRenderer {
         leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer);
     }
 
-    public void render(Vector2 scroll) {
+    public void render(Vector2 scroll, Duration pingTime) {
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -77,10 +79,13 @@ public class WorldRenderer {
 
         drawCrosshair();
 
+        String pingMillis = String.valueOf(pingTime.toMillis());
+
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);
         textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
         textRenderer.drawString(batch, eventBus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
+        textRenderer.drawString(batch, pingMillis + " ms ping", 10, screen.y - 50);
         textRenderer.setColour(Color.BLACK);
     }
 

@@ -14,6 +14,7 @@ object ServerThread {
     val thread = new Thread(new Runnable {
       override def run(): Unit = {
         while (s.going) {
+          s.sendPingQuery()
           s.update()
 
           try {

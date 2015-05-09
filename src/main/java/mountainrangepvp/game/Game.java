@@ -87,7 +87,7 @@ public class Game {
 
         timeSinceLastUpdate = 0;
 
-        if (gameScreen != null) gameScreen.render(dt);
+        if (gameScreen != null) gameScreen.render(dt, client.lag());
 
         eventBus.resetMessagesPerFrame();
     }

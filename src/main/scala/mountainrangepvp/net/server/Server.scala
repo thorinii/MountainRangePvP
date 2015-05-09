@@ -1,12 +1,13 @@
 package mountainrangepvp.net.server
 
+import java.time.Duration
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{NewMapEvent, ClientId, PlayerStats, Session}
-import mountainrangepvp.net.{ClientInterface, ServerInterface}
+import mountainrangepvp.game.world.{ClientId, NewMapEvent, PlayerStats, Session}
+import mountainrangepvp.net.{ClientInterface, MultiLagTimer, ServerInterface}
 
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable
@@ -20,7 +21,12 @@ class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: (
   @volatile
   private var _going: Boolean = true
 
+  @volatile
+  private var _multiLagTimer = MultiLagTimer()
+
   def going = _going
+
+  def lag(client: ClientId): Option[Duration] = _multiLagTimer.lagFor(client)
 
   eventBus.send(NewMapEvent(0))
 
@@ -45,6 +51,28 @@ class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: (
 
     stats(_.left(client))
     interfaces -= client
+  }
+
+  def sendPingQuery(): Unit = {
+    interfaces.foreach { case (id, int) =>
+      val now = System.currentTimeMillis()
+
+      async(taskQueue) { () =>
+        _multiLagTimer = _multiLagTimer.start(id, now) { pingId =>
+          send(id)(_.ping(pingId))
+        }
+      }
+    }
+  }
+
+  override def pong(id: ClientId, pingId: Int): Unit = {
+    val now = System.currentTimeMillis()
+
+    async(taskQueue) { () =>
+      _multiLagTimer = _multiLagTimer.stop(id, pingId, now) { time =>
+        send(id)(_.pinged(time))
+      }
+    }
   }
 
   override def shutdown() = {
@@ -106,6 +134,10 @@ class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: (
 
   private def sendToAllExcept(id: ClientId)(action: SendAction): Unit = {
     interfaces.filterKeys(_ != id).values.foreach(i => send(i)(action))
+  }
+
+  private def sendNow(id: ClientId)(action: SendAction): Unit = {
+    action(interfaces(id))
   }
 
 
