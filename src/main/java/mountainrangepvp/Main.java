@@ -5,9 +5,9 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.Game;
+import mountainrangepvp.game.ClientGame;
 import mountainrangepvp.game.GameSettings;
-import mountainrangepvp.net.server.Server;
+import mountainrangepvp.net.server.LocalServerInterface;
 import mountainrangepvp.net.server.ServerThread;
 import mountainrangepvp.net.server.SessionConfig;
 import mountainrangepvp.net.tcp.TcpServerInterface;
@@ -106,18 +106,22 @@ public class Main {
 
     private ApplicationListener hostingAdapter() {
         return new ApplicationAdapter() {
+            LocalServerInterface localInterface;
             TcpServerWrapper wrapper;
-            Game game;
+            ClientGame game;
 
             @Override
             public void create() {
                 SessionConfig sessionConfig = new SessionConfig(settings.teamsOn);
 
-                Server server = ServerThread.startServer(new Log("server"), sessionConfig);
-                wrapper = new TcpServerWrapper(new Log("tcp"), server, settings.port);
+                Log serverLog = new Log("server");
+                Log tcpLog = new Log("tcp");
+
+                localInterface = ServerThread.startServer(serverLog, sessionConfig);
+                wrapper = new TcpServerWrapper(tcpLog, localInterface, settings.port);
                 wrapper.start();
 
-                game = new Game(settings, server);
+                game = new ClientGame(settings, localInterface);
                 game.start();
             }
 
@@ -129,6 +133,7 @@ public class Main {
             @Override
             public void dispose() {
                 game.kill();
+                localInterface.shutdown();
                 wrapper.shutdown();
             }
         };
@@ -137,13 +142,13 @@ public class Main {
     private ApplicationListener joiningAdapter() {
         return new ApplicationAdapter() {
             TcpServerInterface server;
-            Game game;
+            ClientGame game;
 
             @Override
             public void create() {
                 server = new TcpServerInterface(new Log("tcp"), settings.serverIP, settings.port);
 
-                game = new Game(settings, server);
+                game = new ClientGame(settings, server);
                 game.start();
             }
 

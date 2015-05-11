@@ -7,18 +7,23 @@ import mountainrangepvp.game.world.{ChatManager, Player, PlayerManager, Session}
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
 object ServerThread {
-  def startServer(log: Log, sessionConfig: SessionConfig): Server = {
-    val updateIntervalMillis = 100
+  def startServer(log: Log, sessionConfig: SessionConfig): LocalServerInterface = {
+    val fps = 20
+    val updateInterval = 1f / fps
 
-    var s: Server = null
+    val eventBus = new EventBus()
+    val session = buildSession(log, eventBus, sessionConfig)
+
+    val localInterface = new LocalServerInterface(log, eventBus)
+    val server = new ServerGame(log, eventBus, localInterface, session)
+
     val thread = new Thread(new Runnable {
       override def run(): Unit = {
-        while (s.going) {
-          s.sendPingQuery()
-          s.update()
+        while (server.going) {
+          server.update(updateInterval)
 
           try {
-            Thread.sleep(updateIntervalMillis)
+            Thread.sleep((updateInterval * 1000).toInt)
           } catch {
             case _: InterruptedException => // do nothing; the while loop will stop when it's time
           }
@@ -26,13 +31,9 @@ object ServerThread {
       }
     }, "Server Update")
 
-
-    val eventBus = new EventBus(thread)
-    val session = buildSession(log, eventBus, sessionConfig)
-
-    s = new Server(log, eventBus, session, () => thread.interrupt())
+    eventBus.setDispatchThread(thread)
     thread.start()
-    s
+    localInterface
   }
 
   private def buildSession(log: Log, eventBus: EventBus, sessionConfig: SessionConfig) = {

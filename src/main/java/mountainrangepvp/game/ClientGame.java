@@ -14,7 +14,7 @@ import mountainrangepvp.net.client.Client;
 /**
  * Container of game systems.
  */
-public class Game {
+public class ClientGame {
 
     private final GameSettings config;
     private final Log log;
@@ -28,11 +28,11 @@ public class Game {
     private Session session;
     private GameScreen gameScreen;
 
-    public Game(GameSettings config, ServerInterface server) {
+    public ClientGame(GameSettings config, ServerInterface server) {
         this.config = config;
         log = new Log("client");
 
-        eventBus = new EventBus(Thread.currentThread());
+        eventBus = new EventBus();
 
         client = Client.newClient(log, eventBus, server, config.nickname);
 
