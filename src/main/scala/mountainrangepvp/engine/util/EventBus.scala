@@ -17,11 +17,16 @@ trait EventHandler[T <: Event] {
 /**
  * A pub/sub message passing system.
  */
-class EventBus(dispatchThread: Thread) {
+class EventBus {
   private val dispatchers: mutable.Map[Class[_ <: Event], Dispatcher[_ <: Event]] = TrieMap.empty
   private val allDispatchers: mutable.ListBuffer[EventHandler[Event]] = mutable.ListBuffer.empty
   private val pendingMessages: util.Queue[Event] = new LinkedBlockingQueue[Event]
   private val messagesPerFrame: AtomicInteger = new AtomicInteger(0)
+  private var _dispatchThread: Thread = Thread.currentThread()
+
+  def setDispatchThread(t: Thread) = {
+    _dispatchThread = t
+  }
 
   def subscribe[T <: Event](eventClass: Class[T], handler: EventHandler[T]): Unit = {
     val d: Dispatcher[T] = dispatchers.get(eventClass).map(_.asInstanceOf[Dispatcher[T]]).getOrElse {
@@ -50,7 +55,7 @@ class EventBus(dispatchThread: Thread) {
   }
 
   def send(event: Event) = {
-    if (Thread.currentThread eq dispatchThread) dispatch(event)
+    if (Thread.currentThread eq _dispatchThread) dispatch(event)
     else pendingMessages.offer(event)
   }
 
