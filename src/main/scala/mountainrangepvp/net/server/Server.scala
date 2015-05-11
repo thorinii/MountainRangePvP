@@ -2,7 +2,6 @@ package mountainrangepvp.net.server
 
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicLong
-import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
@@ -15,8 +14,8 @@ import scala.collection.mutable
 class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: () => Unit) extends ServerInterface {
   private val nextClientId: AtomicLong = new AtomicLong(0L)
   private val interfaces: mutable.Map[ClientId, ClientInterface] = TrieMap.empty
-  private val taskQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
-  private val sendQueue: BlockingQueue[Action] = new LinkedBlockingQueue[Action]()
+  private val taskQueue = new TaskQueue
+  private val sendQueue = new TaskQueue
 
   @volatile
   private var _going: Boolean = true
@@ -57,7 +56,7 @@ class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: (
     interfaces.foreach { case (id, int) =>
       val now = System.currentTimeMillis()
 
-      async(taskQueue) { () =>
+      taskQueue.queue { () =>
         _multiLagTimer = _multiLagTimer.start(id, now) { pingId =>
           send(id)(_.ping(pingId))
         }
@@ -68,7 +67,7 @@ class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: (
   override def pong(id: ClientId, pingId: Int): Unit = {
     val now = System.currentTimeMillis()
 
-    async(taskQueue) { () =>
+    taskQueue.queue { () =>
       _multiLagTimer = _multiLagTimer.stop(id, pingId, now) { time =>
         send(id)(_.pinged(time))
       }
@@ -90,38 +89,27 @@ class Server(log: Log, eventBus: EventBus, val session: Session, shutdownHook: (
     val oldStats = session.getStats
     eventBus.flushPendingMessages()
 
-    while (!taskQueue.isEmpty) {
-      val task = taskQueue.take()
-      task()
-    }
+    taskQueue.runAll()
 
-    if (session.getStats.changedSince(oldStats)) {
+    if (session.getStats.changedSince(oldStats))
       sendToAll(_.playerStats(session.getStats))
-    }
 
-    while (!sendQueue.isEmpty) {
-      val msg = sendQueue.take()
-      msg()
-    }
+    sendQueue.runAll()
   }
 
   def updateTillDone() = {
     do {
       update()
-    } while (!taskQueue.isEmpty || !sendQueue.isEmpty)
+    } while (taskQueue.hasWork || sendQueue.hasWork)
   }
 
-
-  private def async(queue: BlockingQueue[Action])(action: Action): Unit = {
-    queue.offer(action)
-  }
 
   private def stats(action: PlayerStats => PlayerStats): Unit = {
-    async(taskQueue)(() => session.setStats(action(session.getStats)))
+    taskQueue.queue(() => session.setStats(action(session.getStats)))
   }
 
   private def send(interface: ClientInterface)(action: SendAction): Unit = {
-    async(sendQueue)(() => action(interface))
+    sendQueue.queue(() => action(interface))
   }
 
   private def send(id: ClientId)(action: SendAction): Unit = {
