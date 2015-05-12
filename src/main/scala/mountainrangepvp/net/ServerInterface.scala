@@ -1,27 +1,29 @@
 package mountainrangepvp.net
 
-import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.game.world.ClientId
 
 /**
  * The interface the client talks to, either in-process or over the network.
  */
 trait ServerInterface {
+  /**
+   * A client wishes to connect.
+   */
   def connect(client: ClientInterface)
 
-  def login(client: ClientId, checkCode: Int, version: Int, nickname: String)
-
+  /**
+   * A client has disconnected.
+   */
   def disconnect(client: ClientId)
 
-
   /**
-   * The client's response to a Ping
+   * A command to shutdown the interface.
    */
-  def pong(client: ClientId, pingId: Int)
-
-
   def shutdown()
 
 
-  def fireShot(client: ClientId, direction: Vector2)
+  /**
+   * Receive a message from a client
+   */
+  def receive(clientId: ClientId, message: Message)
 }

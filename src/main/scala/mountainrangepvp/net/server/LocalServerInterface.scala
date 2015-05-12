@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world._
-import mountainrangepvp.net.{ClientInterface, ServerInterface}
+import mountainrangepvp.net._
 
 import scala.collection.concurrent.TrieMap
 import scala.collection.mutable
@@ -22,24 +22,31 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     client.connected(id)
   }
 
-  override def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
-    eventBus.send(PlayerJoined(client, nickname))
-  }
-
   override def disconnect(client: ClientId) = {
     eventBus.send(PlayerLeft(client))
     interfaces -= client
   }
 
-  override def pong(id: ClientId, pingId: Int): Unit = {
-  }
+  override def shutdown() = eventBus.send(ShutdownEvent())
 
-  override def fireShot(client: ClientId, direction: Vector2) = {
-    // TODO actually put in world and simulate
-    sendToAll(_.firedShot(client, new Vector2(0, 0), direction))
-  }
+  /**
+   * Receive a message from a client
+   */
+  override def receive(client: ClientId, message: Message) = message match {
+    case LoginMessage(checkCode, version, nickname) =>
+      eventBus.send(PlayerJoined(client, nickname))
 
-  def shutdown() = eventBus.send(ShutdownEvent())
+    case PongMessage(id) =>
+    // TODO: send to ServerGame
+
+    case FireShotMessage(direction: Vector2) =>
+      // TODO actually put in world and simulate
+      sendToAll(_.firedShot(client, new Vector2(0, 0), direction))
+
+
+    case m =>
+      log.crash("Unexpected message: " + m)
+  }
 
 
   private def send(interface: ClientInterface, action: ClientInterface => Unit): Unit = {

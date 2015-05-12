@@ -1,7 +1,6 @@
 package mountainrangepvp.net.client
 
 import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
@@ -41,14 +40,14 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
 
 
   private def subscribe() = {
-    eventBus.subscribe((e: FireRequestEvent) => server.fireShot(id, e.direction))
+    eventBus.subscribe((e: FireRequestEvent) => server.receive(id, FireShotMessage(e.direction)))
   }
 
   private class ClientInterfaceImpl extends ClientInterface {
     override def connected(id: ClientId) = {
       Client.this.id = id
       log.setName("client" + id.id)
-      server.login(id, NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname)
+      server.receive(id, LoginMessage(NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname))
     }
 
     override def disconnected() = {
@@ -58,7 +57,7 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
     }
 
     override def ping(pingId: Int): Unit = {
-      server.pong(id, pingId)
+      server.receive(id, PongMessage(pingId))
     }
 
     override def pinged(lag: Duration): Unit = {

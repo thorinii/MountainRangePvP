@@ -1,4 +1,4 @@
-package mountainrangepvp.net.tcp
+package mountainrangepvp.net
 
 import java.nio.charset.StandardCharsets
 import java.time.Duration
