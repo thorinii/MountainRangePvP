@@ -2,7 +2,6 @@ package mountainrangepvp.net.tcp
 
 import java.util.concurrent.TimeUnit
 
-import com.badlogic.gdx.math.Vector2
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel._
 import io.netty.channel.nio.NioEventLoopGroup
@@ -12,14 +11,14 @@ import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepende
 import io.netty.util.concurrent.Future
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.game.world.ClientId
-import mountainrangepvp.net.{ClientInterface, ServerInterface}
+import mountainrangepvp.net._
 
 class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterface {
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private var channel: ChannelFuture = null
   private var ctx: ChannelHandlerContext = null
 
-  def connect(client: ClientInterface) = {
+  override def connect(client: ClientInterface) = {
     val b = new Bootstrap()
             .group(workerGroup)
             .channel(classOf[NioSocketChannel])
@@ -27,6 +26,24 @@ class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterf
             .handler(channelInitializer(client))
     channel = b.connect(host, port).sync
   }
+
+  /**
+   * This method will never be called by the client; it's called by the receiving TCP side.
+   */
+  override def disconnect(client: ClientId) = {}
+
+  override def shutdown() = {
+    val futures: List[Future[_]] = List(
+      channel.channel.close,
+      workerGroup.shutdownGracefully(0, 0, TimeUnit.SECONDS))
+    futures.foreach(_.sync())
+  }
+
+  /**
+   * Forward the message over the network.
+   */
+  override def receive(clientId: ClientId, message: Message) = MessageCodec.send(ctx, message)
+
 
   private def channelInitializer(client: ClientInterface) = new ChannelInitializer[SocketChannel] {
     def initChannel(ch: SocketChannel) = {
@@ -36,33 +53,6 @@ class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterf
       ch.pipeline.addLast("handler", new ClientSideMessageHandler(log, client))
       ch.pipeline.addLast("connection", new ConnectionListener)
     }
-  }
-
-  def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
-    send(new LoginMessage(checkCode, version, nickname))
-  }
-
-  def disconnect(client: ClientId) = {
-    // Do nothing
-  }
-
-  override def pong(client: ClientId, pingId: Int): Unit = {
-    send(PongMessage(pingId))
-  }
-
-  def shutdown() = {
-    val futures: List[Future[_]] = List(
-      channel.channel.close,
-      workerGroup.shutdownGracefully(0, 0, TimeUnit.SECONDS))
-    futures.foreach(_.sync())
-  }
-
-  def fireShot(client: ClientId, direction: Vector2) = {
-    send(new FireShotMessage(direction))
-  }
-
-  private def send(msg: Message) = {
-    MessageCodec.send(ctx, msg)
   }
 
   private class ConnectionListener extends ChannelInboundHandlerAdapter {

@@ -3,7 +3,7 @@ package mountainrangepvp.net.tcp
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import mountainrangepvp.engine.util.Log
-import mountainrangepvp.net.ClientInterface
+import mountainrangepvp.net._
 
 /**
  * Decodes messages from the server.

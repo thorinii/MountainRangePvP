@@ -8,7 +8,7 @@ import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
 import mountainrangepvp.engine.util.Log
 import mountainrangepvp.game.world.{ClientId, PlayerStats}
-import mountainrangepvp.net.{ClientInterface, ServerInterface}
+import mountainrangepvp.net._
 
 /**
  * Decodes messages from the client
@@ -24,12 +24,7 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
     handle(idOf(ctx), m.asInstanceOf[ToServerMessage])
   }
 
-  private def handle(client: ClientId, m: ToServerMessage) = m match {
-    case LoginMessage(c, v, n) => server.login(client, c, v, n)
-    case FireShotMessage(d) => server.fireShot(client, d)
-    case PongMessage(id) => server.pong(client, id)
-    case _ => log.todo(m.toString)
-  }
+  private def handle(client: ClientId, m: ToServerMessage) = server.receive(client, m)
 
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = cause match {
     case e: Exception =>
