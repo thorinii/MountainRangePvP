@@ -61,8 +61,8 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing, session: Session) 
   eventBus.subscribe((e: PlayerJoined) => {
     log.info(e.id + " " + e.nickname + " connected")
 
-    out.send(e.id, _.receive(SessionInfoMessage(session.areTeamsOn)))
-    out.send(e.id, _.receive(NewMapMessage(session.getMap.getSeed)))
+    out.send(e.id, SessionInfoMessage(session.areTeamsOn))
+    out.send(e.id, NewMapMessage(session.getMap.getSeed))
 
     // TODO: stats(_.joined(client, nickname))
   })

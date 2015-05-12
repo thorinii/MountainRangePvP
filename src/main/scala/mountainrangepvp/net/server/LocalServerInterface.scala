@@ -41,24 +41,16 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
 
     case FireShotMessage(direction: Vector2) =>
       // TODO actually put in world and simulate
-      sendToAll(_.receive(PlayerFiredMessage(client, new Vector2(0, 0), direction)))
+      sendToAll(PlayerFiredMessage(client, new Vector2(0, 0), direction))
   }
 
 
-  private def send(interface: ClientInterface, action: ClientInterface => Unit): Unit = {
-    action(interface)
+  override def send(id: ClientId, message: ToClientMessage): Unit = {
+    interfaces(id).receive(message)
   }
 
-  override def send(id: ClientId, action: ClientInterface => Unit): Unit = {
-    action(interfaces(id))
-  }
-
-  private def sendToAll(action: ClientInterface => Unit): Unit = {
-    interfaces.values.foreach(i => send(i, action))
-  }
-
-  private def sendToAllExcept(id: ClientId, action: ClientInterface => Unit): Unit = {
-    interfaces.filterKeys(_ != id).values.foreach(i => send(i, action))
+  private def sendToAll(message: ToClientMessage): Unit = {
+    interfaces.values.foreach(_.receive(message))
   }
 
 
