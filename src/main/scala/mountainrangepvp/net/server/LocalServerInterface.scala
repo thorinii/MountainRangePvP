@@ -23,14 +23,10 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
   }
 
   override def login(client: ClientId, checkCode: Int, version: Int, nickname: String) = {
-    log.info(client + " " + checkCode + "," + version + " " + nickname + " connected")
-
     eventBus.send(PlayerJoined(client, nickname))
   }
 
   override def disconnect(client: ClientId) = {
-    log.info(client + " disconnected")
-
     eventBus.send(PlayerLeft(client))
     interfaces -= client
   }
