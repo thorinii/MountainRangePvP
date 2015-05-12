@@ -59,10 +59,17 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing, session: Session) 
   eventBus.subscribe((_: ShutdownEvent) => shutdown())
 
   eventBus.subscribe((e: PlayerJoined) => {
+    log.info(e.id + " " + e.nickname + " connected")
+
     out.send(e.id, _.sessionInfo(session.areTeamsOn))
     out.send(e.id, _.newMap(session.getMap.getSeed))
 
     // TODO: stats(_.joined(client, nickname))
+  })
+
+  eventBus.subscribe((e: PlayerLeft) => {
+    log.info(e.id + " disconnected")
+    // Note may not be fully logged in
   })
 
 
