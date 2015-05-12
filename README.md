@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/thorinii/MountainRangePvP.png?label=ready&title=Ready)](https://waffle.io/thorinii/MountainRangePvP)
 Mountain Range PvP
 ==================
 
