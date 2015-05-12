@@ -42,7 +42,9 @@ class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterf
   /**
    * Forward the message over the network.
    */
-  override def receive(clientId: ClientId, message: Message) = MessageCodec.send(ctx, message)
+  override def receive(clientId: ClientId, message: ToServerMessage) = {
+    MessageCodec.send(ctx, message)
+  }
 
 
   private def channelInitializer(client: ClientInterface) = new ChannelInitializer[SocketChannel] {

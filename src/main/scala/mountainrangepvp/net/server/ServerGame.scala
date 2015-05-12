@@ -4,7 +4,7 @@ import java.time.Duration
 
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world.{ClientId, NewMapEvent, Session}
-import mountainrangepvp.net.MultiLagTimer
+import mountainrangepvp.net.{MultiLagTimer, NewMapMessage, SessionInfoMessage}
 
 /**
  * Container of game systems.
@@ -61,8 +61,8 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing, session: Session) 
   eventBus.subscribe((e: PlayerJoined) => {
     log.info(e.id + " " + e.nickname + " connected")
 
-    out.send(e.id, _.sessionInfo(session.areTeamsOn))
-    out.send(e.id, _.newMap(session.getMap.getSeed))
+    out.send(e.id, _.receive(SessionInfoMessage(session.areTeamsOn)))
+    out.send(e.id, _.receive(NewMapMessage(session.getMap.getSeed)))
 
     // TODO: stats(_.joined(client, nickname))
   })

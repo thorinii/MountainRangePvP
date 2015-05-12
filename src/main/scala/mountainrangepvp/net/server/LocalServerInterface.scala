@@ -19,7 +19,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
     interfaces += id -> client
 
-    client.connected(id)
+    client.receive(ConnectedMessage(id))
   }
 
   override def disconnect(client: ClientId) = {
@@ -32,7 +32,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
   /**
    * Receive a message from a client
    */
-  override def receive(client: ClientId, message: Message) = message match {
+  override def receive(client: ClientId, message: ToServerMessage) = message match {
     case LoginMessage(checkCode, version, nickname) =>
       eventBus.send(PlayerJoined(client, nickname))
 
@@ -41,11 +41,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
 
     case FireShotMessage(direction: Vector2) =>
       // TODO actually put in world and simulate
-      sendToAll(_.firedShot(client, new Vector2(0, 0), direction))
-
-
-    case m =>
-      log.crash("Unexpected message: " + m)
+      sendToAll(_.receive(PlayerFiredMessage(client, new Vector2(0, 0), direction)))
   }
 
 
