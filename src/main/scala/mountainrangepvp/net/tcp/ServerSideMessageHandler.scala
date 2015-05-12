@@ -1,13 +1,10 @@
 package mountainrangepvp.net.tcp
 
-import java.time.Duration
-
-import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
 import mountainrangepvp.engine.util.Log
-import mountainrangepvp.game.world.{ClientId, PlayerStats}
+import mountainrangepvp.game.world.ClientId
 import mountainrangepvp.net._
 
 /**
@@ -38,7 +35,7 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
     super.channelInactive(ctx)
 
     val client = idOf(ctx)
-    if(client != null) {
+    if (client != null) {
       server.disconnect(client)
     }
   }
@@ -48,38 +45,22 @@ class ServerSideMessageHandler(log: Log, server: ServerInterface) extends Simple
   private def idOf(ctx: ChannelHandlerContext): ClientId = ctx.attr(idAttrKey).get
 
   private class TcpClientInterface(ctx: ChannelHandlerContext) extends ClientInterface {
-    override def connected(id: ClientId) = {
-      ctx.attr(idAttrKey).set(id)
 
-      MessageCodec.send(ctx, ConnectedMessage(id))
-    }
+    /**
+     * This will never be called by the server.
+     */
+    override def disconnected() = {}
 
-    override def disconnected() = {
-      // Do nothing
-    }
 
-    override def ping(pingId: Int)= {
-      MessageCodec.send(ctx, PingMessage(pingId))
-    }
+    /**
+     * Forward a message over the network.
+     */
+    override def receive(message: ToClientMessage): Unit = message match {
+      case ConnectedMessage(id) =>
+        ctx.attr(idAttrKey).set(id)
+        MessageCodec.send(ctx, message)
 
-    override def pinged(lag: Duration) = {
-      MessageCodec.send(ctx, PingedMessage(lag))
-    }
-
-    override def sessionInfo(teamsOn: Boolean) = {
-      MessageCodec.send(ctx, SessionInfoMessage(teamsOn))
-    }
-
-    override def newMap(seed: Int) = {
-      MessageCodec.send(ctx, NewMapMessage(seed))
-    }
-
-    override def playerStats(stats: PlayerStats) = {
-      MessageCodec.send(ctx, PlayerStatsMessage(stats))
-    }
-
-    override def firedShot(client: ClientId, from: Vector2, direction: Vector2) = {
-      MessageCodec.send(ctx, PlayerFiredMessage(client, from, direction))
+      case _ => MessageCodec.send(ctx, message)
     }
   }
 

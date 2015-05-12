@@ -15,15 +15,7 @@ class ClientSideMessageHandler(log: Log, client: ClientInterface) extends Simple
     handle(m.asInstanceOf[ToClientMessage])
   }
 
-  private def handle(m: ToClientMessage) = m match {
-    case ConnectedMessage(id) => client.connected(id)
-    case SessionInfoMessage(teamsOn) => client.sessionInfo(teamsOn)
-    case NewMapMessage(seed) => client.newMap(seed)
-    case PlayerStatsMessage(stats) => client.playerStats(stats)
-    case PlayerFiredMessage(id, from, direction) => client.firedShot(id, from, direction)
-    case PingMessage(id) => client.ping(id)
-    case PingedMessage(lag) => client.pinged(lag)
-  }
+  private def handle(m: ToClientMessage) = client.receive(m)
 
 
   override def channelInactive(ctx: ChannelHandlerContext): Unit = {

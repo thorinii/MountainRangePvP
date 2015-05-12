@@ -25,5 +25,5 @@ trait ServerInterface {
   /**
    * Receive a message from a client
    */
-  def receive(clientId: ClientId, message: Message)
+  def receive(clientId: ClientId, message: ToServerMessage)
 }

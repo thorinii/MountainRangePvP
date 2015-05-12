@@ -44,41 +44,35 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
   }
 
   private class ClientInterfaceImpl extends ClientInterface {
-    override def connected(id: ClientId) = {
-      Client.this.id = id
-      log.setName("client" + id.id)
-      server.receive(id, LoginMessage(NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname))
-    }
-
     override def disconnected() = {
       if (online) {
         eventBus.send(ServerDisconnect)
       }
     }
 
-    override def ping(pingId: Int): Unit = {
-      server.receive(id, PongMessage(pingId))
-    }
+    override def receive(message: ToClientMessage) = message match {
+      case ConnectedMessage(id) =>
+        Client.this.id = id
+        log.setName("client" + id.id)
+        server.receive(id, LoginMessage(NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname))
 
-    override def pinged(lag: Duration): Unit = {
-      _lag = lag
-    }
+      case PingMessage(pingId) =>
+        server.receive(id, PongMessage(pingId))
 
-    override def sessionInfo(teamsOn: Boolean) = {
-      eventBus.send(NewSessionEvent(teamsOn))
-    }
+      case PingedMessage(lag) =>
+        _lag = lag
 
-    override def newMap(seed: Int) = {
-      eventBus.send(NewMapEvent(seed))
-    }
+      case SessionInfoMessage(teamsOn) =>
+        eventBus.send(NewSessionEvent(teamsOn))
 
+      case NewMapMessage(seed) =>
+        eventBus.send(NewMapEvent(seed))
 
-    override def playerStats(stats: PlayerStats) = {
-      eventBus.send(PlayerStatsUpdatedEvent(stats))
-    }
+      case PlayerStatsMessage(stats) =>
+        eventBus.send(PlayerStatsUpdatedEvent(stats))
 
-    override def firedShot(client: ClientId, from: Vector2, direction: Vector2) = {
-      eventBus.send(PlayerFiredEvent(client, from, direction))
+      case PlayerFiredMessage(client, from, direction) =>
+        eventBus.send(PlayerFiredEvent(client, from, direction))
     }
   }
 
