@@ -29,7 +29,7 @@ public class ShotRenderer {
             Vector2 shotPos = shot.position();
             shotPos.sub(scroll);
 
-            Vector2 dir = shot.direction;
+            Vector2 dir = shot.direction();
             dir.angle();
 
             batch.draw(shotTexture,

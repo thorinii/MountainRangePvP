@@ -3,7 +3,6 @@ package mountainrangepvp.game.world;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.util.EventBus;
-import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.engine.util.Log;
 
 import java.awt.geom.Line2D;
@@ -60,9 +59,9 @@ public class ShotManager {
 
     private boolean handleShot(Shot shot, float dt) {
         Vector2 pos = shot.position();
-        Vector2 npos = shot.position(shot.time + dt);
+        Vector2 npos = shot.position(shot.time() + dt);
 
-        shot.time += dt;
+        shot.time_$eq(shot.time() + dt);
 
         if (testLife(shot)) {
             return true;
@@ -70,9 +69,9 @@ public class ShotManager {
             fireShotTerrainCollision(shot);
             return true;
         } else {
-            Old_Player hit = testNewRespawnPlayers(shot, pos, npos);
-            if (hit != null) {
-                if (teamMode && hit.getTeam() == shot.player.getTeam()) {
+            ClientId hit = null;//testNewRespawnPlayers(shot, pos, npos);
+            /*if (hit != null) {
+                if (teamMode && hit.getTeam() == shot.player().getTeam()) {
                     // Let it pass
                 } else {
                     Vector2 intersection =
@@ -82,30 +81,27 @@ public class ShotManager {
                     Vector2 direction = intersection.cpy().sub(hit.
                             getCentralPosition()).nor();
 
-                    Shot ricochet = new Shot(intersection, direction,
-                                             hit);
+                    Shot ricochet = new Shot(hit, intersection, direction);
                     shots.add(ricochet);
 
                     return true;
                 }
             } else {
-                hit = testNonRespawnPlayers(shot, pos, npos);
+                hit = null;//testNonRespawnPlayers(shot, pos, npos);
                 if (hit != null)
-                    if (teamMode && hit.getTeam() == shot.player.getTeam()) {
-                        // Let it pass
-                    } else {
+                    if (!teamMode || hit.getTeam() != shot.player().getTeam()) {
                         handlePlayerHit(shot, hit);
                         fireShotPlayerCollision(shot, hit);
                         return true;
                     }
-            }
+            }*/
         }
 
         return false;
     }
 
     private boolean testLife(Shot shot) {
-        return shot.time > MAX_SHOT_LIFE;
+        return shot.time() > MAX_SHOT_LIFE;
     }
 
     private boolean testTerrain(Vector2 pos, Vector2 npos) {
@@ -114,10 +110,10 @@ public class ShotManager {
 
     private Old_Player testNewRespawnPlayers(Shot shot, Vector2 lp1, Vector2 lp2) {
         for (Old_Player player : playerManager.getPlayers()) {
-            if (!player.isAlive() || player == shot.player || !player.
+            /*if (!player.isAlive() || player == shot.player() || !player.
                     isSpawnBubbleOn()) {
                 continue;
-            }
+            }*/
 
             Vector2 pp = player.getCentralPosition();
 
@@ -135,10 +131,10 @@ public class ShotManager {
 
         Vector2 p1, p2;
         for (Old_Player player : playerManager.getPlayers()) {
-            if (!player.isAlive() || player == shot.player || player.
+            /*if (!player.isAlive() || player == shot.playerId() || player.
                     isSpawnBubbleOn()) {
                 continue;
-            }
+            }*/
 
             p1 = player.getPosition().cpy();
             p2 = p1.cpy().add(0, Old_Player.HEIGHT);
@@ -209,7 +205,8 @@ public class ShotManager {
         log.fine(hit + " was shot");
         hit.kill();
         if (addPoints)
-            shot.player.addHit();
+            ;//shot.player().addHit();
+
     }
 
     private void fireShotAdd(Shot shot) {
