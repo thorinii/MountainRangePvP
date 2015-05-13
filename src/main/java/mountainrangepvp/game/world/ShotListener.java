@@ -9,5 +9,5 @@ public interface ShotListener {
 
     public void shotTerrainCollision(Shot shot);
 
-    public void shotPlayerCollision(Shot shot, Player player);
+    public void shotPlayerCollision(Shot shot, Old_Player player);
 }

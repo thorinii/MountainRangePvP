@@ -10,10 +10,10 @@ public class Shot {
     public static final int SHOT_SPEED = 2000;
     public final Vector2 base;
     public final Vector2 direction;
-    public final Player player;
+    public final Old_Player player;
     public float time;
 
-    public Shot(Vector2 base, Vector2 direction, Player player) {
+    public Shot(Vector2 base, Vector2 direction, Old_Player player) {
         this.base = base;
         this.direction = direction;
         this.player = player;

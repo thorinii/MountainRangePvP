@@ -30,7 +30,7 @@ class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
     actionMapper.update(state, dt)
   }
 
-  private def aimAtCrosshair(player: Player) {
+  private def aimAtCrosshair(player: Old_Player) {
     val x: Int = Gdx.input.getX
     val y: Int = Gdx.graphics.getHeight - Gdx.input.getY
     val target: Vector2 = new Vector2(x, y)
@@ -42,7 +42,7 @@ class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
     dir.lerp(target, lerpSpeed)
   }
 
-  private def doShooting(player: Player) {
+  private def doShooting(player: Old_Player) {
     val pos: Vector2 = player.getCentralPosition
     eventBus.send(new FireRequestEvent(player.getGunDirection.cpy))
     val kickback: Vector2 = player.getGunDirection.cpy.scl(-90f)

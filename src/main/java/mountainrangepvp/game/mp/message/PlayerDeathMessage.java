@@ -1,6 +1,6 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,7 +17,7 @@ public class PlayerDeathMessage implements Message {
     public PlayerDeathMessage() {
     }
 
-    public PlayerDeathMessage(Player hit, Player hitter) {
+    public PlayerDeathMessage(Old_Player hit, Old_Player hitter) {
         this(hit.getID(), hitter.getID());
     }
 

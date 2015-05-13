@@ -1,7 +1,7 @@
 package mountainrangepvp.game.mp.message;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,7 +22,7 @@ public class PlayerUpdateMessage implements Message {
     public PlayerUpdateMessage() {
     }
 
-    public PlayerUpdateMessage(Player p) {
+    public PlayerUpdateMessage(Old_Player p) {
         this(p.getID(), p.getPosition(), p.getVelocity(), p.getGunDirection(),
              p.isAlive(), p.getHits());
     }

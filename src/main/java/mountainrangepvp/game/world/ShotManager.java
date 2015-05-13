@@ -70,7 +70,7 @@ public class ShotManager {
             fireShotTerrainCollision(shot);
             return true;
         } else {
-            Player hit = testNewRespawnPlayers(shot, pos, npos);
+            Old_Player hit = testNewRespawnPlayers(shot, pos, npos);
             if (hit != null) {
                 if (teamMode && hit.getTeam() == shot.player.getTeam()) {
                     // Let it pass
@@ -78,7 +78,7 @@ public class ShotManager {
                     Vector2 intersection =
                             getLineCircleIntersection(pos, npos,
                                                       hit.getCentralPosition(),
-                                                      Player.SPAWN_BUBBLE_RADIUS + 1);
+                                                      Old_Player.SPAWN_BUBBLE_RADIUS + 1);
                     Vector2 direction = intersection.cpy().sub(hit.
                             getCentralPosition()).nor();
 
@@ -112,8 +112,8 @@ public class ShotManager {
         return terrain.collideLine(pos, npos);
     }
 
-    private Player testNewRespawnPlayers(Shot shot, Vector2 lp1, Vector2 lp2) {
-        for (Player player : playerManager.getPlayers()) {
+    private Old_Player testNewRespawnPlayers(Shot shot, Vector2 lp1, Vector2 lp2) {
+        for (Old_Player player : playerManager.getPlayers()) {
             if (!player.isAlive() || player == shot.player || !player.
                     isSpawnBubbleOn()) {
                 continue;
@@ -121,7 +121,7 @@ public class ShotManager {
 
             Vector2 pp = player.getCentralPosition();
 
-            if (Line2D.ptSegDist(lp1.x, lp1.y, lp2.x, lp2.y, pp.x, pp.y) <= Player.SPAWN_BUBBLE_RADIUS) {
+            if (Line2D.ptSegDist(lp1.x, lp1.y, lp2.x, lp2.y, pp.x, pp.y) <= Old_Player.SPAWN_BUBBLE_RADIUS) {
                 return player;
             }
         }
@@ -129,36 +129,36 @@ public class ShotManager {
         return null;
     }
 
-    private Player testNonRespawnPlayers(Shot shot, Vector2 pos, Vector2 npos) {
+    private Old_Player testNonRespawnPlayers(Shot shot, Vector2 pos, Vector2 npos) {
         Vector2 shot1 = pos;
         Vector2 shot2 = npos;
 
         Vector2 p1, p2;
-        for (Player player : playerManager.getPlayers()) {
+        for (Old_Player player : playerManager.getPlayers()) {
             if (!player.isAlive() || player == shot.player || player.
                     isSpawnBubbleOn()) {
                 continue;
             }
 
             p1 = player.getPosition().cpy();
-            p2 = p1.cpy().add(0, Player.HEIGHT);
+            p2 = p1.cpy().add(0, Old_Player.HEIGHT);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
                 return player;
             }
 
-            p2 = p1.cpy().add(Player.WIDTH, 0);
+            p2 = p1.cpy().add(Old_Player.WIDTH, 0);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
                 return player;
             }
 
-            p1 = p1.add(Player.WIDTH, 0);
-            p2 = p1.cpy().add(0, Player.HEIGHT);
+            p1 = p1.add(Old_Player.WIDTH, 0);
+            p2 = p1.cpy().add(0, Old_Player.HEIGHT);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
                 return player;
             }
 
-            p1 = player.getPosition().cpy().add(0, Player.HEIGHT);
-            p2 = p1.cpy().add(Player.WIDTH, 0);
+            p1 = player.getPosition().cpy().add(0, Old_Player.HEIGHT);
+            p2 = p1.cpy().add(Old_Player.WIDTH, 0);
             if (Intersector.intersectSegments(shot1, shot2, p1, p2, null)) {
                 return player;
             }
@@ -205,7 +205,7 @@ public class ShotManager {
             return i2;
     }
 
-    protected void handlePlayerHit(Shot shot, Player hit) {
+    protected void handlePlayerHit(Shot shot, Old_Player hit) {
         log.fine(hit + " was shot");
         hit.kill();
         if (addPoints)
@@ -224,7 +224,7 @@ public class ShotManager {
         }
     }
 
-    private void fireShotPlayerCollision(Shot shot, Player hit) {
+    private void fireShotPlayerCollision(Shot shot, Old_Player hit) {
         for (ShotListener listener : listeners) {
             listener.shotPlayerCollision(shot, hit);
         }

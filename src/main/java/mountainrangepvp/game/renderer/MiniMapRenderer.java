@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 import mountainrangepvp.game.world.Terrain;
 import mountainrangepvp.game.world.Terrain.Slice;
 
@@ -91,7 +91,7 @@ public class MiniMapRenderer {
     }
 
     private void drawPlayers(Vector2 scroll, PlayerManager playerManager) {
-        for (Player player : playerManager.getPlayers()) {
+        for (Old_Player player : playerManager.getPlayers()) {
             if (!player.isAlive())
                 continue;
 

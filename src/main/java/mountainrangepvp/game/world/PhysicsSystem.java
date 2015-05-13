@@ -11,7 +11,7 @@ public class PhysicsSystem {
     private static final float DAMPING = 0.01f;
 
     public void update(Session world, float dt) {
-        for (Player player : world.playerManager.getPlayers()) {
+        for (Old_Player player : world.playerManager.getPlayers()) {
             updatePlayer(world.getMap().terrain, player, dt);
         }
     }
@@ -24,7 +24,7 @@ public class PhysicsSystem {
      * @param player
      * @param dt
      */
-    private void updatePlayer(Terrain terrain, Player player, float dt) {
+    private void updatePlayer(Terrain terrain, Old_Player player, float dt) {
         Vector2 pos = player.getPosition();
         Vector2 vel = player.getVelocity();
 
@@ -50,7 +50,7 @@ public class PhysicsSystem {
             base = (int) (pos.x + vel.x * dt);
             length = (int) Math.ceil(-vel.x * dt) + 1;
         } else {
-            base = (int) pos.x + Player.WIDTH;
+            base = (int) pos.x + Old_Player.WIDTH;
             length = (int) Math.ceil(vel.x * dt) + 1;
         }
 
@@ -58,31 +58,31 @@ public class PhysicsSystem {
         int slope = highest - (int) pos.y;
 
 
-        if (slope > Player.MAX_WALK_SLOPE) {
+        if (slope > Old_Player.MAX_WALK_SLOPE) {
             vel.x = 0;
         } else if (slope > 0) {
             vel.y += slope * 190 * dt;
         }
     }
 
-    private void slideDownSlope(Terrain terrain, Player player, Vector2 pos, Vector2 vel,
+    private void slideDownSlope(Terrain terrain, Old_Player player, Vector2 pos, Vector2 vel,
                                 float dt) {
         if (player.isOnGround()) {
-            Terrain.Slice slice = terrain.getSlice((int) pos.x - 1, Player.WIDTH + 3);
+            Terrain.Slice slice = terrain.getSlice((int) pos.x - 1, Old_Player.WIDTH + 3);
 
             int maxIndex = slice.getHighestIndex();
             int maxHeight = slice.getHighestPoint();
 
             if (maxIndex == 1) { // left corner
                 int slope = (int) pos.y - maxHeight;
-                if (slope > Player.MIN_SLIDE_SLOPE) {
+                if (slope > Old_Player.MIN_SLIDE_SLOPE) {
                     // Slide right
                     vel.x += 500 * dt;
                     vel.y -= 50 * dt;
                 }
-            } else if (maxIndex == Player.WIDTH + 2) { // right corner
+            } else if (maxIndex == Old_Player.WIDTH + 2) { // right corner
                 int slope = (int) pos.y - maxHeight;
-                if (slope > Player.MIN_SLIDE_SLOPE) {
+                if (slope > Old_Player.MIN_SLIDE_SLOPE) {
                     // Slide left
                     vel.x -= 500 * dt;
                     vel.y -= 50 * dt;
@@ -91,8 +91,8 @@ public class PhysicsSystem {
         }
     }
 
-    private void checkGroundIntersection(Terrain terrain, Player player, Vector2 pos, Vector2 vel) {
-        Terrain.Slice slice = terrain.getSlice((int) pos.x, Player.WIDTH);
+    private void checkGroundIntersection(Terrain terrain, Old_Player player, Vector2 pos, Vector2 vel) {
+        Terrain.Slice slice = terrain.getSlice((int) pos.x, Old_Player.WIDTH);
 
         int highestPoint = slice.getHighestPoint();
 
