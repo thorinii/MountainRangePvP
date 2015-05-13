@@ -40,8 +40,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     // TODO: send to ServerGame
 
     case FireShotMessage(direction: Vector2) =>
-      // TODO actually put in world and simulate
-      sendToAll(PlayerFiredMessage(client, new Vector2(0, 0), direction))
+      eventBus.send(PlayerFireRequestEvent(client, direction))
   }
 
 

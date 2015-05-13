@@ -12,7 +12,7 @@ public class PhysicsSystem {
 
     public void update(Session world, float dt) {
         for (Old_Player player : world.playerManager.getPlayers()) {
-            updatePlayer(world.getMap().terrain, player, dt);
+            //updatePlayer(world.getSnapshot().terrain, player, dt);
         }
     }
 

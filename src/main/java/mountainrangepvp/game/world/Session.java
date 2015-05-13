@@ -22,7 +22,7 @@ public class Session {
         this.playerManager = playerManager;
         this.chatManager = chatManager;
 
-        this.map = null;
+        this.snapshot = null;
 
         subscribeTo(eventBus);
     }
@@ -31,24 +31,23 @@ public class Session {
         eventBus.subscribe(SnapshotEvent.class, new EventHandler<SnapshotEvent>() {
             @Override
             public void receive(SnapshotEvent event) {
-                log.info("New snapshot " + event.snapshot());
                 snapshot = event.snapshot();
             }
         });
     }
 
-    public Map getMap() {
-        if (map == null)
-            throw new IllegalStateException("No map loaded");
-        return map;
+    public Snapshot getSnapshot() {
+        if (snapshot == null)
+            throw new IllegalStateException("No snapshot available");
+        return snapshot;
     }
 
-    public boolean hasMap() {
-        return map != null;
+    public boolean hasSnapshot() {
+        return snapshot != null;
     }
 
     public void update(float dt) {
-        if (hasMap())
+        if (map != null)
             map.update(dt);
     }
 }

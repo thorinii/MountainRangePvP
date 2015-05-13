@@ -2,8 +2,9 @@ package mountainrangepvp.net.server
 
 import java.time.Duration
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{ClientId, Snapshot}
+import mountainrangepvp.game.world.{Shot, PlayerFireRequestEvent, ClientId, Snapshot}
 import mountainrangepvp.net.{MultiLagTimer, SessionInfoMessage, SnapshotMessage}
 
 /**
@@ -78,5 +79,10 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
       _snapshot = updated
       out.sendToAll(SnapshotMessage(_snapshot))
     }
+  })
+
+  eventBus.subscribe((e: PlayerFireRequestEvent) => {
+    _snapshot = _snapshot.addShot(e.playerId, new Vector2(0, 0), e.direction)
+    out.sendToAll(SnapshotMessage(_snapshot))
   })
 }

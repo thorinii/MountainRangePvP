@@ -70,12 +70,12 @@ public class WorldRenderer {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         backgroundRenderer.render(scroll);
-        shotRenderer.render(scroll, session.getMap().shotManager);
-        terrainRenderer.render(scroll, session.getMap().terrain);
+        shotRenderer.render(scroll, session.getSnapshot());
+        //terrainRenderer.render(scroll, session.getSnapshot().terrain);
         playerRenderer.render(scroll, session.playerManager);
         chatRenderer.render(session.chatManager);
         leaderboardRenderer.render(scroll, session.playerManager);
-        miniMapRenderer.render(scroll, session.playerManager, session.getMap().terrain);
+        //miniMapRenderer.render(scroll, session.playerManager, session.getSnapshot().terrain);
 
         drawCrosshair();
 

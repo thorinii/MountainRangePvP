@@ -5,7 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.game.world.Shot;
-import mountainrangepvp.game.world.ShotManager;
+import mountainrangepvp.game.world.Snapshot;
+import scala.collection.JavaConversions;
 
 /**
  * @author lachlan
@@ -21,10 +22,10 @@ public class ShotRenderer {
         shotTexture = new Texture(Gdx.files.internal("shot/shot.png"));
     }
 
-    public void render(Vector2 scroll, ShotManager shotManager) {
+    public void render(final Vector2 scroll, Snapshot snapshot) {
         batch.begin();
 
-        for (Shot shot : shotManager.getShots()) {
+        for (Shot shot : JavaConversions.asJavaIterable(snapshot.shots())) {
             Vector2 shotPos = shot.position();
             shotPos.sub(scroll);
 
