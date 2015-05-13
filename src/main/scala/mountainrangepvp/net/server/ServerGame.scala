@@ -3,7 +3,7 @@ package mountainrangepvp.net.server
 import java.time.Duration
 
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{ClientId, NewMapEvent}
+import mountainrangepvp.game.world.{Snapshot, ClientId, NewMapEvent}
 import mountainrangepvp.net.{MultiLagTimer, NewMapMessage, SessionInfoMessage}
 
 /**

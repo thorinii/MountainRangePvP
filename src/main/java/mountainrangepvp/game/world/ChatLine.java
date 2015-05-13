@@ -6,12 +6,12 @@ package mountainrangepvp.game.world;
 public class ChatLine {
 
     public static final long OLD_TIME = 8000;
-    private final Player player;
+    private final Old_Player player;
     private final String playerName;
     private final String text;
     private final long time;
 
-    public ChatLine(Player player, String text) {
+    public ChatLine(Old_Player player, String text) {
         this.player = player;
         this.playerName = (player == null) ? "" : player.getName();
         this.text = text;
@@ -19,7 +19,7 @@ public class ChatLine {
         time = System.currentTimeMillis();
     }
 
-    public Player getPlayer() {
+    public Old_Player getPlayer() {
         return player;
     }
 

@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 
 import java.util.List;
 
@@ -38,13 +38,13 @@ public class LeaderboardRenderer {
     }
 
     public void render(Vector2 scroll, PlayerManager playerManager) {
-        List<Player> topPlayers = playerManager.getPlayersByHits(3);
+        List<Old_Player> topPlayers = playerManager.getPlayersByHits(3);
 
         int x = 20;
         int y = height - 20;
 
         batch.begin();
-        for (Player p : topPlayers) {
+        for (Old_Player p : topPlayers) {
             if (p.getHits() == 0)
                 continue;
 

@@ -19,7 +19,7 @@ public class AudioShotListener implements ShotListener {
 
     @Override
     public void shotAdd(Shot shot) {
-        Player lp = playerManager.getLocalPlayer();
+        Old_Player lp = playerManager.getLocalPlayer();
 
         Vector2 diff = shot.base.cpy().sub(lp.getPosition());
         audioManager.play(Sounds.GunFire, diff);
@@ -30,6 +30,6 @@ public class AudioShotListener implements ShotListener {
     }
 
     @Override
-    public void shotPlayerCollision(Shot shot, Player player) {
+    public void shotPlayerCollision(Shot shot, Old_Player player) {
     }
 }

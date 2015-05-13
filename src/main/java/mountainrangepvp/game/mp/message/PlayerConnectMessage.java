@@ -1,7 +1,7 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.game.world.Player;
-import mountainrangepvp.game.world.Player.Team;
+import mountainrangepvp.game.world.Old_Player;
+import mountainrangepvp.game.world.Old_Player.Team;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,7 +19,7 @@ public class PlayerConnectMessage implements Message {
     public PlayerConnectMessage() {
     }
 
-    public PlayerConnectMessage(Player player) {
+    public PlayerConnectMessage(Old_Player player) {
         this(player.getName(), player.getID(), player.getTeam().ordinal());
     }
 

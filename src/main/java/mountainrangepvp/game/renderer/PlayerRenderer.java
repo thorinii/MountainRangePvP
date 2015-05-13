@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 
 /**
  * @author lachlan
@@ -46,7 +46,7 @@ public class PlayerRenderer {
     public void render(Vector2 scroll, PlayerManager playerManager) {
         batch.begin();
 
-        for (Player player : playerManager.getPlayers()) {
+        for (Old_Player player : playerManager.getPlayers()) {
             if (player.isAlive()) {
                 drawPlayer(player, scroll);
             }
@@ -59,21 +59,21 @@ public class PlayerRenderer {
         batch.end();
     }
 
-    private void drawPlayer(Player player, Vector2 scroll) {
+    private void drawPlayer(Old_Player player, Vector2 scroll) {
         Texture tex = bodyTextures[player.getTeam().ordinal()];
 
         Vector2 pos = player.getPosition().cpy();
         pos.sub(scroll);
 
-        if (pos.x < -Player.WIDTH || pos.x > width) {
+        if (pos.x < -Old_Player.WIDTH || pos.x > width) {
             return;
         }
-        if (pos.y < -Player.HEIGHT || pos.y > height) {
+        if (pos.y < -Old_Player.HEIGHT || pos.y > height) {
             return;
         }
 
         Vector2 ppos = player.getPosition().cpy();
-        ppos.x += Player.WIDTH / 2;
+        ppos.x += Old_Player.WIDTH / 2;
         ppos.y += 60;
         Vector2 dir = player.getGunDirection();
 
@@ -111,15 +111,15 @@ public class PlayerRenderer {
 
         if (player.isSpawnBubbleOn()) {
             batch.draw(spawnBubbleTexture,
-                       pos.x + Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
-                       pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.
+                       pos.x + Old_Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
+                       pos.y + Old_Player.HEIGHT / 2 - spawnBubbleTexture.
                                getHeight() / 2);
         }
 
         textRenderer.setSize(20);
         textRenderer.drawString(batch, player.getName(),
                                 (int) pos.x,
-                                (int) pos.y + Player.HEIGHT + 20);
+                                (int) pos.y + Old_Player.HEIGHT + 20);
     }
 
     private void drawDeathMessage() {

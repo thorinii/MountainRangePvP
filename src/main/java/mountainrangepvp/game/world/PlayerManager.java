@@ -14,19 +14,19 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class PlayerManager implements MessageListener {
 
-    protected final List<Player> players;
+    protected final List<Old_Player> players;
     private final String localPlayerName;
-    private final Player.Team localPlayerTeam;
-    private Player localPlayer;
+    private final Old_Player.Team localPlayerTeam;
+    private Old_Player localPlayer;
 
-    public PlayerManager(String localName, Player.Team localTeam) {
+    public PlayerManager(String localName, Old_Player.Team localTeam) {
         players = new CopyOnWriteArrayList<>();
         localPlayerName = localName;
         localPlayerTeam = localTeam;
-        localPlayer = new Player(localName, 0, localTeam);
+        localPlayer = new Old_Player(localName, 0, localTeam);
     }
 
-    public Player getLocalPlayer() {
+    public Old_Player getLocalPlayer() {
         return localPlayer;
     }
 
@@ -34,7 +34,7 @@ public class PlayerManager implements MessageListener {
         return localPlayerName;
     }
 
-    public Player.Team getLocalPlayerTeam() {
+    public Old_Player.Team getLocalPlayerTeam() {
         return localPlayerTeam;
     }
 
@@ -42,13 +42,13 @@ public class PlayerManager implements MessageListener {
     public void accept(Message message, int id) throws IOException {
         if (message instanceof ServerHelloMessage) {
             ServerHelloMessage shm = (ServerHelloMessage) message;
-            localPlayer = new Player(localPlayerName, shm.getClientID(),
+            localPlayer = new Old_Player(localPlayerName, shm.getClientID(),
                                      localPlayerTeam);
             players.add(localPlayer);
 
         } else if (message instanceof PlayerConnectMessage) {
             PlayerConnectMessage pcm = (PlayerConnectMessage) message;
-            players.add(new Player(pcm.getPlayerName(), pcm.getID(),
+            players.add(new Old_Player(pcm.getPlayerName(), pcm.getID(),
                                    pcm.getTeam()));
 
         } else if (message instanceof PlayerDisconnectMessage) {
@@ -57,7 +57,7 @@ public class PlayerManager implements MessageListener {
 
         } else if (message instanceof PlayerUpdateMessage) {
             PlayerUpdateMessage pum = (PlayerUpdateMessage) message;
-            Player p = getPlayer(pum.getPlayer());
+            Old_Player p = getPlayer(pum.getPlayer());
 
             if (p == null)
                 return;
@@ -71,8 +71,8 @@ public class PlayerManager implements MessageListener {
         } else if (message instanceof PlayerDeathMessage) {
             PlayerDeathMessage pdm = (PlayerDeathMessage) message;
 
-            Player hit = getPlayer(pdm.getHitID());
-            Player hitter = getPlayer(pdm.getHitterID());
+            Old_Player hit = getPlayer(pdm.getHitID());
+            Old_Player hitter = getPlayer(pdm.getHitterID());
 
 
             if (hit == null || hitter == null)
@@ -83,12 +83,12 @@ public class PlayerManager implements MessageListener {
         }
     }
 
-    public List<Player> getPlayers() {
+    public List<Old_Player> getPlayers() {
         return Collections.unmodifiableList(players);
     }
 
-    public Player getPlayer(String playerName) {
-        for (Player p : players) {
+    public Old_Player getPlayer(String playerName) {
+        for (Old_Player p : players) {
             if (p.getName().equals(playerName)) {
                 return p;
             }
@@ -97,20 +97,20 @@ public class PlayerManager implements MessageListener {
         return null;
     }
 
-    public Player getPlayer(int id) {
-        for (Player player : players) {
+    public Old_Player getPlayer(int id) {
+        for (Old_Player player : players) {
             if (player.getID() == id)
                 return player;
         }
         return null;
     }
 
-    public List<Player> getPlayersByHits(int count) {
-        List<Player> tmp = new ArrayList<>(players);
+    public List<Old_Player> getPlayersByHits(int count) {
+        List<Old_Player> tmp = new ArrayList<>(players);
 
-        Collections.sort(tmp, new Comparator<Player>() {
+        Collections.sort(tmp, new Comparator<Old_Player>() {
             @Override
-            public int compare(Player o1, Player o2) {
+            public int compare(Old_Player o1, Old_Player o2) {
                 return o2.getHits() - o1.getHits();
             }
         });

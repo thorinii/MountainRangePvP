@@ -1,6 +1,6 @@
 package mountainrangepvp.game.mp.message;
 
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -16,7 +16,7 @@ public class PlayerDisconnectMessage implements Message {
     public PlayerDisconnectMessage() {
     }
 
-    public PlayerDisconnectMessage(Player player) {
+    public PlayerDisconnectMessage(Old_Player player) {
         this(player.getID());
     }
 

@@ -46,7 +46,7 @@ public class ChatManager implements MessageListener {
         addLine(new ChatLine(null, text));
     }
 
-    public void addLine(Player player, String text) {
+    public void addLine(Old_Player player, String text) {
         addLine(new ChatLine(player, text));
     }
 

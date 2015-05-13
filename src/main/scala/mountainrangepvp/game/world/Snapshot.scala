@@ -1,6 +1,4 @@
-package mountainrangepvp.net.server
-
-import mountainrangepvp.game.world.{ClientId, Shot}
+package mountainrangepvp.game.world
 
 /**
  * The game state at a point in time.

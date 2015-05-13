@@ -6,7 +6,8 @@ import mountainrangepvp.engine.util.Timer;
 /**
  * @author lachlan
  */
-public class Player {
+@Deprecated
+public class Old_Player {
 
     public enum Team {
 
@@ -44,7 +45,7 @@ public class Player {
 
     private int hits;
 
-    public Player(String name, int id, Team team) {
+    public Old_Player(String name, int id, Team team) {
         this.name = name;
         this.id = id;
         this.team = team;
