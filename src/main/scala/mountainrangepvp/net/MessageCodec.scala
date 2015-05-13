@@ -6,7 +6,7 @@ import java.time.Duration
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import mountainrangepvp.game.world.{ClientId, Player, Snapshot}
+import mountainrangepvp.game.world.{Shot, ClientId, Player, Snapshot}
 
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
@@ -46,12 +46,6 @@ object MessageCodec {
       buf.writeInt(6)
       writeVector(buf, direction)
 
-    case PlayerFiredMessage(client, from, direction) =>
-      buf.writeInt(7)
-      writeId(buf, client)
-      writeVector(buf, from)
-      writeVector(buf, direction)
-
     case PingMessage(id) =>
       buf.writeInt(8)
       buf.writeInt(id)
@@ -85,11 +79,6 @@ object MessageCodec {
       case 6 =>
         FireShotMessage(readVector(buf))
 
-      case 7 =>
-        PlayerFiredMessage(readId(buf),
-                           readVector(buf),
-                           readVector(buf))
-
       case 8 =>
         PingMessage(buf.readInt())
 
@@ -109,14 +98,14 @@ object MessageCodec {
     buf.writeBoolean(snapshot.teamsOn)
     buf.writeInt(snapshot.players.size)
     for (p <- snapshot.players) writePlayer(buf, p)
-
-    if (snapshot.shots.nonEmpty) throw new UnsupportedOperationException("sending shots is not implemented")
+    buf.writeInt(snapshot.shots.size)
+    for(s <- snapshot.shots) writeShot(buf, s)
   }
 
   private def readSnapshot(buf: ByteBuf) = {
     Snapshot(buf.readInt(), buf.readBoolean(),
              0.until(buf.readInt()).map(_ => readPlayer(buf)).toSet,
-             List.empty)
+             0.until(buf.readInt()).map(_ => readShot(buf)).toSet)
   }
 
   private def writePlayer(buf: ByteBuf, player: Player) = {
@@ -125,6 +114,16 @@ object MessageCodec {
   }
 
   private def readPlayer(buf: ByteBuf) = Player(readId(buf), readString(buf))
+
+
+  private def writeShot(buf: ByteBuf, shot: Shot) = {
+    //writeId(buf, ClientId.Invalid)
+    writeVector(buf, shot.base)
+    writeVector(buf, shot.direction)
+  }
+
+  private def readShot(buf: ByteBuf) = new Shot(readVector(buf), readVector(buf), null)
+
 
   private def writeId(buf: ByteBuf, id: ClientId) = {
     buf.writeLong(id.id)

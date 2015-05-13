@@ -25,8 +25,6 @@ case class SnapshotMessage(snapshot: Snapshot) extends ToClientMessage
 
 case class FireShotMessage(direction: Vector2) extends ToServerMessage
 
-case class PlayerFiredMessage(client: ClientId, from: Vector2, direction: Vector2) extends ToClientMessage
-
 
 case class PingMessage(id: Int) extends ToClientMessage
 

@@ -38,13 +38,13 @@ public class ShotManager {
         listeners = new ArrayList<>();
         shots = new LinkedList<>();
 
-        eventBus.subscribe(PlayerFiredEvent.class, new EventHandler<PlayerFiredEvent>(){
+        /*eventBus.subscribe(PlayerFiredEvent.class, new EventHandler<PlayerFiredEvent>(){
             @Override
             public void receive(PlayerFiredEvent event) {
                 log.fine(event.client() + " fired from " + event.from() + " at " + event.direction());
                 shots.add(new Shot(event.from(), event.direction(), null));
             }
-        });
+        });*/
     }
 
     public List<Shot> getShots() {
