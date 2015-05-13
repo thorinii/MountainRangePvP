@@ -8,4 +8,5 @@ import mountainrangepvp.net.ToClientMessage
  */
 trait Outgoing {
   def send(id: ClientId, message: ToClientMessage): Unit
+  def sendToAll(message: ToClientMessage): Unit
 }

@@ -10,17 +10,15 @@ import mountainrangepvp.engine.util.Log;
 public class Session {
     private final Log log;
     private final EventBus eventBus;
-    private final boolean teamsOn;
     public final PlayerManager playerManager;
     public final ChatManager chatManager;
 
     private Snapshot snapshot;
     private Map map;
 
-    public Session(Log log, EventBus eventBus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
+    public Session(Log log, EventBus eventBus, PlayerManager playerManager, ChatManager chatManager) {
         this.log = log;
         this.eventBus = eventBus;
-        this.teamsOn = teamsOn;
         this.playerManager = playerManager;
         this.chatManager = chatManager;
 
@@ -33,6 +31,7 @@ public class Session {
         eventBus.subscribe(SnapshotEvent.class, new EventHandler<SnapshotEvent>() {
             @Override
             public void receive(SnapshotEvent event) {
+                log.info("New snapshot " + event.snapshot());
                 snapshot = event.snapshot();
             }
         });

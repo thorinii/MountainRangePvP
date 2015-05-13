@@ -49,7 +49,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     interfaces(id).receive(message)
   }
 
-  private def sendToAll(message: ToClientMessage): Unit = {
+  override def sendToAll(message: ToClientMessage): Unit = {
     interfaces.values.foreach(_.receive(message))
   }
 

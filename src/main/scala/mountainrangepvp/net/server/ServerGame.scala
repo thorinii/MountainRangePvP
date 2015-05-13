@@ -3,8 +3,8 @@ package mountainrangepvp.net.server
 import java.time.Duration
 
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{Snapshot, ClientId, SnapshotEvent}
-import mountainrangepvp.net.{MultiLagTimer, NewMapMessage, SessionInfoMessage}
+import mountainrangepvp.game.world.{ClientId, Snapshot}
+import mountainrangepvp.net.{MultiLagTimer, SessionInfoMessage, SnapshotMessage}
 
 /**
  * Container of game systems.
@@ -63,15 +63,20 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   eventBus.subscribe((e: PlayerJoined) => {
     log.info(e.id + " " + e.nickname + " connected")
+    _snapshot = _snapshot.join(e.id, e.nickname)
 
     out.send(e.id, SessionInfoMessage(_snapshot.teamsOn))
-    out.send(e.id, NewMapMessage(_snapshot.seed))
-
-    _snapshot = _snapshot.join(e.id, e.nickname)
+    out.sendToAll(SnapshotMessage(_snapshot))
   })
 
   eventBus.subscribe((e: PlayerLeft) => {
     log.info(e.id + " disconnected")
-    // Note may not be fully logged in
+
+    val updated = _snapshot.leave(e.id)
+
+    if (updated != _snapshot) {
+      _snapshot = updated
+      out.sendToAll(SnapshotMessage(_snapshot))
+    }
   })
 }

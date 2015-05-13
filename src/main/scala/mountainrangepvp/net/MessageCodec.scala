@@ -6,7 +6,7 @@ import java.time.Duration
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import mountainrangepvp.game.world.{ClientId, PlayerStats}
+import mountainrangepvp.game.world.{ClientId, Player, Snapshot}
 
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
@@ -26,7 +26,7 @@ object MessageCodec {
   private def encode(msg: Message, buf: ByteBuf): Unit = msg match {
     case ConnectedMessage(id) =>
       buf.writeInt(1)
-      buf.writeLong(id.id)
+      writeId(buf, id)
 
     case LoginMessage(checkCode, version, nickname) =>
       buf.writeInt(2)
@@ -38,20 +38,9 @@ object MessageCodec {
       buf.writeInt(3)
       buf.writeBoolean(teamsOn)
 
-    case NewMapMessage(seed) =>
+    case SnapshotMessage(snapshot) =>
       buf.writeInt(4)
-      buf.writeInt(seed)
-
-    case PlayerStatsMessage(stats) =>
-      buf.writeInt(5)
-
-      val players = stats.players
-      buf.writeInt(players.size)
-
-      players.foreach { case (id, nickname) =>
-        buf.writeLong(id.id)
-        writeString(buf, nickname)
-      }
+      writeSnapshot(buf, snapshot)
 
     case FireShotMessage(direction) =>
       buf.writeInt(6)
@@ -59,7 +48,7 @@ object MessageCodec {
 
     case PlayerFiredMessage(client, from, direction) =>
       buf.writeInt(7)
-      buf.writeLong(client.id)
+      writeId(buf, client)
       writeVector(buf, from)
       writeVector(buf, direction)
 
@@ -80,7 +69,7 @@ object MessageCodec {
     val `type` = buf.readInt()
     `type` match {
       case 1 =>
-        ConnectedMessage(new ClientId(buf.readLong()))
+        ConnectedMessage(readId(buf))
 
       case 2 =>
         LoginMessage(buf.readInt(),
@@ -91,25 +80,13 @@ object MessageCodec {
         SessionInfoMessage(buf.readBoolean())
 
       case 4 =>
-        NewMapMessage(buf.readInt())
-
-      case 5 =>
-        val playerCount = buf.readInt()
-        var players = Map.empty[ClientId, String]
-
-        for (_ <- 1 to playerCount) {
-          val id = buf.readLong()
-          val nickname = readString(buf)
-          players += (new ClientId(id) -> nickname)
-        }
-
-        PlayerStatsMessage(new PlayerStats(players))
+        SnapshotMessage(readSnapshot(buf))
 
       case 6 =>
         FireShotMessage(readVector(buf))
 
       case 7 =>
-        PlayerFiredMessage(ClientId(buf.readLong()),
+        PlayerFiredMessage(readId(buf),
                            readVector(buf),
                            readVector(buf))
 
@@ -127,7 +104,35 @@ object MessageCodec {
     }
   }
 
-  private def writeString(buf: ByteBuf, string: String): Unit = {
+  private def writeSnapshot(buf: ByteBuf, snapshot: Snapshot) = {
+    buf.writeInt(snapshot.seed)
+    buf.writeBoolean(snapshot.teamsOn)
+    buf.writeInt(snapshot.players.size)
+    for (p <- snapshot.players) writePlayer(buf, p)
+
+    if (snapshot.shots.nonEmpty) throw new UnsupportedOperationException("sending shots is not implemented")
+  }
+
+  private def readSnapshot(buf: ByteBuf) = {
+    Snapshot(buf.readInt(), buf.readBoolean(),
+             0.until(buf.readInt()).map(_ => readPlayer(buf)).toSet,
+             List.empty)
+  }
+
+  private def writePlayer(buf: ByteBuf, player: Player) = {
+    writeId(buf, player.id)
+    writeString(buf, player.nickname)
+  }
+
+  private def readPlayer(buf: ByteBuf) = Player(readId(buf), readString(buf))
+
+  private def writeId(buf: ByteBuf, id: ClientId) = {
+    buf.writeLong(id.id)
+  }
+
+  private def readId(buf: ByteBuf) = ClientId(buf.readLong())
+
+  private def writeString(buf: ByteBuf, string: String) = {
     val bytes = string.getBytes(StandardCharsets.UTF_8)
     buf.writeInt(bytes.length)
     buf.writeBytes(bytes)
@@ -140,7 +145,7 @@ object MessageCodec {
     new String(bytes)
   }
 
-  private def writeVector(buf: ByteBuf, v: Vector2): Unit = {
+  private def writeVector(buf: ByteBuf, v: Vector2) = {
     buf.writeFloat(v.x).writeFloat(v.y)
   }
 
