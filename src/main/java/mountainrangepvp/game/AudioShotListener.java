@@ -21,7 +21,7 @@ public class AudioShotListener implements ShotListener {
     public void shotAdd(Shot shot) {
         Old_Player lp = playerManager.getLocalPlayer();
 
-        Vector2 diff = shot.base.cpy().sub(lp.getPosition());
+        Vector2 diff = shot.base().cpy().sub(lp.getPosition());
         audioManager.play(Sounds.GunFire, diff);
     }
 

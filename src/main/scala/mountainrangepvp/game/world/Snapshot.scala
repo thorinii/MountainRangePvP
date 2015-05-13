@@ -18,7 +18,7 @@ case class Snapshot(seed: Int,
 
   def leave(playerId: ClientId) = copy(players = players.filter(_.id == playerId))
 
-  def addShot(playerId: ClientId, base: Vector2, direction: Vector2) = copy(shots = shots + new Shot(base, direction, null))
+  def addShot(playerId: ClientId, base: Vector2, direction: Vector2) = copy(shots = shots + new Shot(playerId, base, direction))
 }
 
 case class Player(id: ClientId, nickname: String)

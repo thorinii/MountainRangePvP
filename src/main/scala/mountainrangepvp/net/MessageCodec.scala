@@ -117,12 +117,12 @@ object MessageCodec {
 
 
   private def writeShot(buf: ByteBuf, shot: Shot) = {
-    //writeId(buf, ClientId.Invalid)
+    writeId(buf, ClientId.Invalid)
     writeVector(buf, shot.base)
     writeVector(buf, shot.direction)
   }
 
-  private def readShot(buf: ByteBuf) = new Shot(readVector(buf), readVector(buf), null)
+  private def readShot(buf: ByteBuf) = new Shot(readId(buf), readVector(buf), readVector(buf))
 
 
   private def writeId(buf: ByteBuf, id: ClientId) = {
