@@ -100,7 +100,7 @@ public class ClientGame {
             PlayerManager playerManager = new PlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);
 
-            session = new Session(log, eventBus, event.teamsOn(), playerManager, chatManager);
+            session = new Session(log, eventBus, playerManager, chatManager);
 
             gameScreen = new GameScreen(log, eventBus, session);
         }
