@@ -6,7 +6,8 @@ import mountainrangepvp.engine.util.Event
 
 case class NewSessionEvent(teamsOn: Boolean) extends Event
 
-case class NewMapEvent(seed: Int) extends Event
+
+case class SnapshotEvent(snapshot: Snapshot) extends Event
 
 
 case class PlayerStatsUpdatedEvent(stats: PlayerStats) extends Event

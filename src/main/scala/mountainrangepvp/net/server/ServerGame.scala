@@ -3,7 +3,7 @@ package mountainrangepvp.net.server
 import java.time.Duration
 
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{Snapshot, ClientId, NewMapEvent}
+import mountainrangepvp.game.world.{Snapshot, ClientId, SnapshotEvent}
 import mountainrangepvp.net.{MultiLagTimer, NewMapMessage, SessionInfoMessage}
 
 /**
@@ -74,7 +74,4 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     log.info(e.id + " disconnected")
     // Note may not be fully logged in
   })
-
-
-  eventBus.send(NewMapEvent(0))
 }
