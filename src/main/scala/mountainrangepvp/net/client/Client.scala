@@ -66,7 +66,7 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
         eventBus.send(NewSessionEvent(teamsOn))
 
       case NewMapMessage(seed) =>
-        eventBus.send(NewMapEvent(seed))
+        //eventBus.send(SnapshotEvent(0))
 
       case PlayerStatsMessage(stats) =>
         eventBus.send(PlayerStatsUpdatedEvent(stats))

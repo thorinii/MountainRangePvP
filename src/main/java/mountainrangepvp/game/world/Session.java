@@ -14,8 +14,8 @@ public class Session {
     public final PlayerManager playerManager;
     public final ChatManager chatManager;
 
+    private Snapshot snapshot;
     private Map map;
-    private PlayerStats stats;
 
     public Session(Log log, EventBus eventBus, boolean teamsOn, PlayerManager playerManager, ChatManager chatManager) {
         this.log = log;
@@ -25,17 +25,15 @@ public class Session {
         this.chatManager = chatManager;
 
         this.map = null;
-        this.stats = new PlayerStats();
 
         subscribeTo(eventBus);
     }
 
     private void subscribeTo(EventBus eventBus) {
-        eventBus.subscribe(NewMapEvent.class, new NewMapHandler());
-        eventBus.subscribe(PlayerStatsUpdatedEvent.class, new EventHandler<PlayerStatsUpdatedEvent>() {
+        eventBus.subscribe(SnapshotEvent.class, new EventHandler<SnapshotEvent>() {
             @Override
-            public void receive(PlayerStatsUpdatedEvent event) {
-                stats = event.stats();
+            public void receive(SnapshotEvent event) {
+                snapshot = event.snapshot();
             }
         });
     }
@@ -50,35 +48,8 @@ public class Session {
         return map != null;
     }
 
-    public PlayerStats getStats() {
-        return stats;
-    }
-
-    public void setStats(PlayerStats stats) {
-        this.stats = stats;
-    }
-
     public void update(float dt) {
         if (hasMap())
             map.update(dt);
-    }
-
-
-    public boolean areTeamsOn() {
-        return teamsOn;
-    }
-
-    private class NewMapHandler implements EventHandler<NewMapEvent> {
-        @Override
-        public void receive(NewMapEvent event) {
-            log.info("Received seed " + event.seed() + "; changing map");
-
-            HeightMap heightMap = new HillsHeightMap(event.seed());
-
-            Terrain terrain = new Terrain(heightMap);
-            ShotManager shotManager = new ShotManager(log, eventBus, playerManager, terrain, false, teamsOn);
-
-            Session.this.map = new Map(shotManager, terrain, teamsOn);
-        }
     }
 }
