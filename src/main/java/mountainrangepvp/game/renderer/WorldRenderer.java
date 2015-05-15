@@ -71,11 +71,11 @@ public class WorldRenderer {
 
         backgroundRenderer.render(scroll);
         shotRenderer.render(scroll, session.getSnapshot());
-        //terrainRenderer.render(scroll, session.getSnapshot().terrain);
+        terrainRenderer.render(scroll, session.getTerrain());
         playerRenderer.render(scroll, session.playerManager);
         chatRenderer.render(session.chatManager);
         leaderboardRenderer.render(scroll, session.playerManager);
-        //miniMapRenderer.render(scroll, session.playerManager, session.getSnapshot().terrain);
+        miniMapRenderer.render(scroll, session.playerManager, session.getTerrain());
 
         drawCrosshair();
 
