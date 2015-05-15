@@ -62,10 +62,8 @@ public class GameScreen {
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        if (!session.hasSnapshot()) return;
 
         Vector2 scroll = session.getCameraCentre().cpy();
-
         scroll.x = scroll.x - width / 2;
         scroll.y = scroll.y - height / 2;
 
