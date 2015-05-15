@@ -3,6 +3,9 @@
 JAR=target/scala-2.11/mountainrangepvp-assembly-1.0.jar
 CLIENTS=${1:-1}
 
+trap 'jobs -p | xargs kill' EXIT
+
+
 java -jar $JAR server ServerUser &
 
 sleep 1
@@ -15,4 +18,6 @@ do
 done
 
 
-wait
+while pgrep -P "$BASHPID" > /dev/null; do
+      wait
+done

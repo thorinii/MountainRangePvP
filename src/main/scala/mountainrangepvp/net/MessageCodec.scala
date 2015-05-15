@@ -6,7 +6,7 @@ import java.time.Duration
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import mountainrangepvp.game.world.{Shot, ClientId, Player, Snapshot}
+import mountainrangepvp.game.world._
 
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
@@ -96,8 +96,13 @@ object MessageCodec {
   private def writeSnapshot(buf: ByteBuf, snapshot: Snapshot) = {
     buf.writeInt(snapshot.seed)
     buf.writeBoolean(snapshot.teamsOn)
+
     buf.writeInt(snapshot.players.size)
     for (p <- snapshot.players) writePlayer(buf, p)
+
+    buf.writeInt(snapshot.playerEntities.size)
+    for (e <- snapshot.playerEntities) writePlayerEntity(buf, e)
+
     buf.writeInt(snapshot.shots.size)
     for(s <- snapshot.shots) writeShot(buf, s)
   }
@@ -105,6 +110,7 @@ object MessageCodec {
   private def readSnapshot(buf: ByteBuf) = {
     Snapshot(buf.readInt(), buf.readBoolean(),
              0.until(buf.readInt()).map(_ => readPlayer(buf)).toSet,
+             0.until(buf.readInt()).map(_ => readPlayerEntity(buf)).toSet,
              0.until(buf.readInt()).map(_ => readShot(buf)).toSet)
   }
 
@@ -117,12 +123,22 @@ object MessageCodec {
 
 
   private def writeShot(buf: ByteBuf, shot: Shot) = {
-    writeId(buf, ClientId.Invalid)
+    writeId(buf, shot.owner)
     writeVector(buf, shot.position)
     writeVector(buf, shot.direction)
+    buf.writeFloat(shot.age)
   }
 
-  private def readShot(buf: ByteBuf) = new Shot(readId(buf), readVector(buf), readVector(buf))
+  private def readShot(buf: ByteBuf) = Shot(readId(buf), readVector(buf), readVector(buf), buf.readFloat())
+
+
+  private def writePlayerEntity(buf: ByteBuf, e: PlayerEntity) = {
+    buf.writeLong(e.entityId)
+    writeId(buf, e.player)
+    writeVector(buf, e.position)
+  }
+
+  private def readPlayerEntity(buf: ByteBuf) = PlayerEntity(buf.readLong(), readId(buf), readVector(buf))
 
 
   private def writeId(buf: ByteBuf, id: ClientId) = {
