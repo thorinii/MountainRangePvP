@@ -7,38 +7,30 @@ import mountainrangepvp.engine.util.{EventBus, Log}
  * State that doesn't change between maps.
  */
 class Session(log: Log, eventBus: EventBus,
-              localId: ClientId,
+              localId: ClientId, baseSnapshot: Snapshot,
               val playerManager: PlayerManager, val chatManager: ChatManager) {
-  private var snapshot: Snapshot = null
+  private var snapshot = baseSnapshot
+  private var camera = new Camera(new Vector2(0, 0))
   private var terrain: Terrain = null
-  private var camera: Camera = new Camera(new Vector2(0, 0))
 
-  eventBus.subscribe((e: SnapshotEvent) => {
-    snapshot = e.snapshot
-    if (terrain == null || terrain.getSeed != snapshot.seed) {
-      val heightMap: HeightMap = new HillsHeightMap(snapshot.seed)
+  eventBus.subscribe((e: SnapshotEvent) => updateSnapshot(e.snapshot))
+  updateSnapshot(baseSnapshot)
+
+  private def updateSnapshot(s: Snapshot) = {
+    snapshot = s
+    if (terrain == null || terrain.getSeed != s.seed) {
+      val heightMap: HeightMap = new HillsHeightMap(s.seed)
       terrain = new Terrain(heightMap)
     }
-  })
-
-
-  def getSnapshot: Snapshot = {
-    if (snapshot == null) throw new IllegalStateException("No snapshot available")
-    snapshot
   }
 
-  def hasSnapshot: Boolean = {
-    snapshot != null
-  }
+  def getSnapshot = snapshot
 
-  def getTerrain: Terrain = {
-    if (terrain == null) throw new IllegalStateException("No terrain available")
-    terrain
-  }
+  def getTerrain = terrain
 
-  def getCameraCentre: Vector2 = camera.centre
+  def getCameraCentre = camera.centre
 
-  private def localPlayer: Option[PlayerEntity] = snapshot.getPlayerEntity(localId)
+  def localPlayer: Option[PlayerEntity] = snapshot.getPlayerEntity(localId)
 
   def update(dt: Float) = {
     localPlayer.foreach { p => camera = camera.centreOn(p) }

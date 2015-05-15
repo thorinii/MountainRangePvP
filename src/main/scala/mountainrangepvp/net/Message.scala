@@ -18,8 +18,6 @@ case class ConnectedMessage(id: ClientId) extends ToClientMessage
 case class LoginMessage(checkCode: Int, version: Int, nickname: String) extends ToServerMessage
 
 
-case class SessionInfoMessage(teamsOn: Boolean) extends ToClientMessage
-
 case class SnapshotMessage(snapshot: Snapshot) extends ToClientMessage
 
 

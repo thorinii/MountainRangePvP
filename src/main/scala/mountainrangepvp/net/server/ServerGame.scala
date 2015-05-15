@@ -5,7 +5,7 @@ import java.time.Duration
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world.{ClientId, Shot, Snapshot}
-import mountainrangepvp.net.{MultiLagTimer, SessionInfoMessage, SnapshotMessage}
+import mountainrangepvp.net.{MultiLagTimer, SnapshotMessage}
 
 /**
  * Container of game systems.
@@ -57,11 +57,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     log.info(e.id + " " + e.nickname + " connected")
     _snapshot =
       _snapshot.join(e.id, e.nickname)
-      .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random()*500-250).toFloat, 100))
+      .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random() * 500 - 250).toFloat, 100))
 
     _nextEntityId += 1
-
-    out.send(e.id, SessionInfoMessage(_snapshot.teamsOn))
   })
 
   eventBus.subscribe((e: PlayerLeft) => {
