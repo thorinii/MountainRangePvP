@@ -13,6 +13,7 @@ public class Session {
     public final ChatManager chatManager;
 
     private Snapshot snapshot;
+    private Terrain terrain;
 
     public Session(Log log, EventBus eventBus, PlayerManager playerManager, ChatManager chatManager) {
         this.log = log;
@@ -29,6 +30,11 @@ public class Session {
             @Override
             public void receive(SnapshotEvent event) {
                 snapshot = event.snapshot();
+
+                if(terrain == null || terrain.getSeed() != snapshot.seed()) {
+                    HeightMap heightMap = new HillsHeightMap(snapshot.seed());
+                    terrain = new Terrain(heightMap);
+                }
             }
         });
     }
@@ -37,6 +43,12 @@ public class Session {
         if (snapshot == null)
             throw new IllegalStateException("No snapshot available");
         return snapshot;
+    }
+
+    public Terrain getTerrain() {
+        if(terrain == null)
+            throw new IllegalStateException("No terrain available");
+        return terrain;
     }
 
     public boolean hasSnapshot() {
