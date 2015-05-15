@@ -26,6 +26,9 @@ case class Snapshot(seed: Int,
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
     copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position))
+
+
+  def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
 }
 
 case class Player(id: ClientId, nickname: String)

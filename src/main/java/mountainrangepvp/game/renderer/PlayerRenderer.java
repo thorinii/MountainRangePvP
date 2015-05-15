@@ -5,13 +5,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Old_Player;
+import mountainrangepvp.game.world.PlayerEntity;
+import mountainrangepvp.game.world.Snapshot;
+import scala.collection.JavaConversions;
 
 /**
  * @author lachlan
  */
 public class PlayerRenderer {
+    private static final int PLAYER_WIDTH = 40;
+    private static final int PLAYER_HEIGHT = 100;
 
     private final int width, height;
     private final SpriteBatch batch;
@@ -43,39 +46,36 @@ public class PlayerRenderer {
                 "player/spawn-bubble.png"));
     }
 
-    public void render(Vector2 scroll, PlayerManager playerManager) {
+    public void render(Vector2 scroll, Snapshot snapshot) {
         batch.begin();
 
-        for (Old_Player player : playerManager.getPlayers()) {
-            if (player.isAlive()) {
-                drawPlayer(player, scroll);
-            }
+        for (PlayerEntity player : JavaConversions.asJavaIterable(snapshot.playerEntities())) {
+            String nickname = snapshot.nicknameFor(player.player());
+            drawPlayer(player, nickname, scroll);
         }
 
-        if (!playerManager.getLocalPlayer().isAlive()) {
+        // TODO: fix this in #40
+        if (false) { // !playerManager.getLocalPlayer().isAlive()) {
             drawDeathMessage();
         }
 
         batch.end();
     }
 
-    private void drawPlayer(Old_Player player, Vector2 scroll) {
-        Texture tex = bodyTextures[player.getTeam().ordinal()];
+    private void drawPlayer(PlayerEntity player, String nickname, Vector2 scroll) {
+        Texture tex = bodyTextures[0];
 
-        Vector2 pos = player.getPosition().cpy();
+        Vector2 pos = player.position().cpy();
         pos.sub(scroll);
 
-        if (pos.x < -Old_Player.WIDTH || pos.x > width) {
+        if (pos.x < -PLAYER_WIDTH || pos.x > width) {
             return;
         }
-        if (pos.y < -Old_Player.HEIGHT || pos.y > height) {
+        if (pos.y < -PLAYER_HEIGHT || pos.y > height) {
             return;
         }
 
-        Vector2 ppos = player.getPosition().cpy();
-        ppos.x += Old_Player.WIDTH / 2;
-        ppos.y += 60;
-        Vector2 dir = player.getGunDirection();
+        Vector2 dir = new Vector2(1, 0); // TODO: fix in #41; player.getGunDirection();
 
         if (dir.x < 0) {
             batch.draw(armsTexture,
@@ -109,17 +109,18 @@ public class PlayerRenderer {
                    tex.getWidth(), tex.getHeight(), // Src WH
                    dir.x > 0, false);
 
-        if (player.isSpawnBubbleOn()) {
+        // TODO: fix in #51
+        if (false) { // player.isSpawnBubbleOn()) {
             batch.draw(spawnBubbleTexture,
-                       pos.x + Old_Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
-                       pos.y + Old_Player.HEIGHT / 2 - spawnBubbleTexture.
+                       pos.x + PLAYER_WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
+                       pos.y + PLAYER_HEIGHT / 2 - spawnBubbleTexture.
                                getHeight() / 2);
         }
 
         textRenderer.setSize(20);
-        textRenderer.drawString(batch, player.getName(),
+        textRenderer.drawString(batch, nickname,
                                 (int) pos.x,
-                                (int) pos.y + Old_Player.HEIGHT + 20);
+                                (int) pos.y + PLAYER_HEIGHT + 20);
     }
 
     private void drawDeathMessage() {
