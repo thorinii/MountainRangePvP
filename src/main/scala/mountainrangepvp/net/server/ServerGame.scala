@@ -57,7 +57,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     log.info(e.id + " " + e.nickname + " connected")
     _snapshot =
       _snapshot.join(e.id, e.nickname)
-      .addPlayerEntity(_nextEntityId, e.id, new Vector2(0, 0))
+      .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random()*500-250).toFloat, 100))
 
     _nextEntityId += 1
 

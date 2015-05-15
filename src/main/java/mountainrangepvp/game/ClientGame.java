@@ -81,6 +81,7 @@ public class ClientGame {
 
         if (session != null && session.hasSnapshot()) {
             inputHandler.update(config.TIMESTEP);
+            session.update(dt);
             physicsSystem.update(session, config.TIMESTEP);
         }
 
@@ -99,7 +100,7 @@ public class ClientGame {
             PlayerManager playerManager = new PlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);
 
-            session = new Session(log, eventBus, playerManager, chatManager);
+            session = new Session(log, eventBus, event.localId(), playerManager, chatManager);
 
             gameScreen = new GameScreen(log, eventBus, session);
         }

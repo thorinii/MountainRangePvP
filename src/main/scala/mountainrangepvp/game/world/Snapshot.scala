@@ -24,6 +24,7 @@ case class Snapshot(seed: Int,
   def addShot(playerId: ClientId, base: Vector2, direction: Vector2) =
     copy(shots = shots + Shot(playerId, base, direction, 0f))
 
+
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) = {
     println("adding " + entityId + " " + playerId)
     copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position))
@@ -31,6 +32,10 @@ case class Snapshot(seed: Int,
 
   def removePlayerEntity(playerId: ClientId) =
     copy(playerEntities = playerEntities.filterNot(_.player == playerId))
+
+  def hasPlayerEntity(playerId: ClientId) = playerEntities.exists(_.player == playerId)
+
+  def getPlayerEntity(playerId: ClientId) = playerEntities.find(_.player == playerId).get
 
 
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
