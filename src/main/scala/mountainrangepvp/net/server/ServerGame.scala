@@ -22,6 +22,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   private var _snapshot = _emptySnapshot
 
 
+  private var _nextEntityId: Long = 0
+
+
   @volatile
   private var _multiLagTimer = MultiLagTimer()
 
@@ -29,25 +32,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
 
   def sendPingQuery(): Unit = {
-    /*interfaces.foreach { case (id, int) =>
-      val now = System.currentTimeMillis()
-
-      taskQueue.queue { () =>
-        _multiLagTimer = _multiLagTimer.start(id, now) { pingId =>
-          send(id, _.ping(pingId))
-        }
-      }
-    }*/
   }
 
   def pong(id: ClientId, pingId: Int): Unit = {
-    /*val now = System.currentTimeMillis()
-
-    taskQueue.queue { () =>
-      _multiLagTimer = _multiLagTimer.stop(id, pingId, now) { time =>
-        send(id, _.pinged(time))
-      }
-    }*/
   }
 
   def shutdown() = {
@@ -68,7 +55,11 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   eventBus.subscribe((e: PlayerJoined) => {
     log.info(e.id + " " + e.nickname + " connected")
-    _snapshot = _snapshot.join(e.id, e.nickname)
+    _snapshot =
+      _snapshot.join(e.id, e.nickname)
+      .addPlayerEntity(_nextEntityId, e.id, new Vector2(0, 0))
+
+    _nextEntityId += 1
 
     out.send(e.id, SessionInfoMessage(_snapshot.teamsOn))
   })
