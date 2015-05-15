@@ -10,12 +10,7 @@ case class NewSessionEvent(teamsOn: Boolean) extends Event
 case class SnapshotEvent(snapshot: Snapshot) extends Event
 
 
-case class PlayerStatsUpdatedEvent(stats: PlayerStats) extends Event
-
-
 case class FireRequestEvent(direction: Vector2) extends Event
-
-case class PlayerFireRequestEvent(playerId: ClientId, direction: Vector2) extends Event
 
 
 case object ServerDisconnect extends Event

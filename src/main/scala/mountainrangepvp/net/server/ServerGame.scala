@@ -4,7 +4,7 @@ import java.time.Duration
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{ClientId, PlayerFireRequestEvent, Shot, Snapshot}
+import mountainrangepvp.game.world.{ClientId, Shot, Snapshot}
 import mountainrangepvp.net.{MultiLagTimer, SessionInfoMessage, SnapshotMessage}
 
 /**

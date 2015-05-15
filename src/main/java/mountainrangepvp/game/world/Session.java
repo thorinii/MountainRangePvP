@@ -9,16 +9,13 @@ import mountainrangepvp.engine.util.Log;
  */
 public class Session {
     private final Log log;
-    private final EventBus eventBus;
     public final PlayerManager playerManager;
     public final ChatManager chatManager;
 
     private Snapshot snapshot;
-    private Map map;
 
     public Session(Log log, EventBus eventBus, PlayerManager playerManager, ChatManager chatManager) {
         this.log = log;
-        this.eventBus = eventBus;
         this.playerManager = playerManager;
         this.chatManager = chatManager;
 
@@ -44,10 +41,5 @@ public class Session {
 
     public boolean hasSnapshot() {
         return snapshot != null;
-    }
-
-    public void update(float dt) {
-        if (map != null)
-            map.update(dt);
     }
 }
