@@ -21,11 +21,11 @@ public class ClientGame {
 
     private final EventBus eventBus;
     private final Client client;
-    private final PhysicsSystem physicsSystem;
     private final AudioManager audioManager;
     private final InputHandler inputHandler;
 
     private Session session;
+    private ClientId localId;
     private GameScreen gameScreen;
 
     public ClientGame(GameSettings config, ServerInterface server) {
@@ -36,8 +36,6 @@ public class ClientGame {
 
         client = Client.newClient(log, eventBus, server, config.nickname);
 
-        physicsSystem = new PhysicsSystem();
-
         audioManager = new AudioManager();
         audioManager.loadAudio(Sounds.SOUNDS);
         audioManager.setMuted(true);
@@ -46,7 +44,19 @@ public class ClientGame {
                                         Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         inputHandler.register();
 
-        eventBus.subscribe(NewSessionEvent.class, new NewSessionHandler());
+
+        eventBus.subscribe(SnapshotEvent.class, new EventHandler<SnapshotEvent>() {
+            @Override
+            public void receive(SnapshotEvent event) {
+                handleSnapshot(event.snapshot());
+            }
+        });
+        eventBus.subscribe(ConnectedEvent.class, new EventHandler<ConnectedEvent>() {
+            @Override
+            public void receive(ConnectedEvent event) {
+                localId = event.localId();
+            }
+        });
     }
 
     public void start() {
@@ -79,9 +89,9 @@ public class ClientGame {
     private void update(float dt) {
         eventBus.flushPendingMessages();
 
-        if (session != null && session.hasSnapshot()) {
+        if (session != null) {
             inputHandler.update(config.TIMESTEP);
-            physicsSystem.update(session, config.TIMESTEP);
+            session.update(dt);
         }
 
         timeSinceLastUpdate = 0;
@@ -91,15 +101,12 @@ public class ClientGame {
         eventBus.resetMessagesPerFrame();
     }
 
-    private class NewSessionHandler implements EventHandler<NewSessionEvent> {
-        @Override
-        public void receive(NewSessionEvent event) {
-            log.info("SessionInfo: teamsOn " + event.teamsOn());
-
+    private void handleSnapshot(Snapshot s) {
+        if (session == null) {
             PlayerManager playerManager = new PlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager(playerManager);
 
-            session = new Session(log, eventBus, playerManager, chatManager);
+            session = new Session(log, eventBus, localId, s, playerManager, chatManager);
 
             gameScreen = new GameScreen(log, eventBus, session);
         }
