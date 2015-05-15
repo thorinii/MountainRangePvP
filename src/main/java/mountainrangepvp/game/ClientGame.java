@@ -81,7 +81,6 @@ public class ClientGame {
 
         if (session != null && session.hasSnapshot()) {
             inputHandler.update(config.TIMESTEP);
-            session.update(config.TIMESTEP);
             physicsSystem.update(session, config.TIMESTEP);
         }
 
