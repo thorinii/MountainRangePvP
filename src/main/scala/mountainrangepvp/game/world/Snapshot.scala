@@ -6,12 +6,14 @@ import com.badlogic.gdx.math.Vector2
  * The game state at a point in time.
  */
 object Snapshot {
-  def empty(seed: Int, teamsOn: Boolean) = Snapshot(seed, teamsOn, Set.empty, Set.empty)
+  def empty(seed: Int, teamsOn: Boolean) = Snapshot(seed, teamsOn,
+                                                    Set.empty, Set.empty, Set.empty)
 }
 
 case class Snapshot(seed: Int,
                     teamsOn: Boolean,
                     players: Set[Player],
+                    playerEntities: Set[PlayerEntity],
                     shots: Set[Shot]) {
 
   def join(playerId: ClientId, nickname: String) = copy(players = players + Player(playerId, nickname))
