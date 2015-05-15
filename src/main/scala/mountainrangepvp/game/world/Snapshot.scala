@@ -22,7 +22,7 @@ case class Snapshot(seed: Int,
 
 
   def addShot(playerId: ClientId, base: Vector2, direction: Vector2) =
-    copy(shots = shots + Shot(playerId, base, direction))
+    copy(shots = shots + Shot(playerId, base, direction, 0f))
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) = {
     println("adding " + entityId + " " + playerId)

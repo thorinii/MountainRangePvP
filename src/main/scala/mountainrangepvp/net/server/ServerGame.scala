@@ -78,7 +78,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   def step(dt: Float, snapshot: Snapshot): Snapshot = {
     snapshot.copy(
-      shots = snapshot.shots.map(s => stepShot(dt, s))
+      shots = snapshot.shots.map(s => stepShot(dt, s)).filter(_.isAlive)
     )
   }
 
@@ -86,6 +86,6 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     val newpos = shot.direction.cpy()
                  .scl(Shot.SHOT_SPEED * dt)
                  .add(shot.position)
-    shot.copy(position = newpos)
+    shot.copy(position = newpos, age = shot.age + dt)
   }
 }
