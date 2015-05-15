@@ -4,7 +4,7 @@ import java.time.Duration
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{Shot, PlayerFireRequestEvent, ClientId, Snapshot}
+import mountainrangepvp.game.world.{ClientId, PlayerFireRequestEvent, Shot, Snapshot}
 import mountainrangepvp.net.{MultiLagTimer, SessionInfoMessage, SnapshotMessage}
 
 /**
@@ -17,7 +17,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   def going: Boolean = _going
 
 
-  private var _emptySnapshot = Snapshot.empty(0, false)
+  private val _emptySnapshot = Snapshot.empty(0, false)
 
   private var _snapshot = _emptySnapshot
 
@@ -56,6 +56,10 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   def update(dt: Float) = {
     eventBus.flushPendingMessages()
+
+    _snapshot = step(dt, _snapshot)
+
+    out.sendToAll(SnapshotMessage(_snapshot))
     eventBus.resetMessagesPerFrame()
   }
 
@@ -67,22 +71,28 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     _snapshot = _snapshot.join(e.id, e.nickname)
 
     out.send(e.id, SessionInfoMessage(_snapshot.teamsOn))
-    out.sendToAll(SnapshotMessage(_snapshot))
   })
 
   eventBus.subscribe((e: PlayerLeft) => {
     log.info(e.id + " disconnected")
-
-    val updated = _snapshot.leave(e.id)
-
-    if (updated != _snapshot) {
-      _snapshot = updated
-      out.sendToAll(SnapshotMessage(_snapshot))
-    }
+    _snapshot = _snapshot.leave(e.id)
   })
 
   eventBus.subscribe((e: PlayerFireRequestEvent) => {
     _snapshot = _snapshot.addShot(e.playerId, new Vector2(0, 0), e.direction)
-    out.sendToAll(SnapshotMessage(_snapshot))
   })
+
+
+  def step(dt: Float, snapshot: Snapshot): Snapshot = {
+    snapshot.copy(
+      shots = snapshot.shots.map(s => stepShot(dt, s))
+    )
+  }
+
+  def stepShot(dt: Float, shot: Shot) = {
+    val newpos = shot.direction.cpy()
+                 .scl(Shot.SHOT_SPEED * dt)
+                 .add(shot.position)
+    shot.copy(position = newpos)
+  }
 }
