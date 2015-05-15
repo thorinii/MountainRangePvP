@@ -2,7 +2,6 @@ package mountainrangepvp.net.client
 
 import java.time.Duration
 
-import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world._
 import mountainrangepvp.net._
@@ -44,6 +43,14 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
   }
 
   private class ClientInterfaceImpl extends ClientInterface {
+    private var loggedIn = false
+
+    private def setLoggedIn() = if (!loggedIn) {
+      eventBus.send(ConnectedEvent(id))
+      loggedIn = true
+    }
+
+
     override def disconnected() = {
       if (online) {
         eventBus.send(ServerDisconnect)
@@ -57,15 +64,15 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
         server.receive(id, LoginMessage(NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname))
 
       case PingMessage(pingId) =>
+        setLoggedIn()
         server.receive(id, PongMessage(pingId))
 
       case PingedMessage(lag) =>
+        setLoggedIn()
         _lag = lag
 
-      case SessionInfoMessage(teamsOn) =>
-        eventBus.send(NewSessionEvent(teamsOn))
-
       case SnapshotMessage(snapshot) =>
+        setLoggedIn()
         eventBus.send(SnapshotEvent(snapshot))
     }
   }

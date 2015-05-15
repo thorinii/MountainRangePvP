@@ -34,10 +34,6 @@ object MessageCodec {
       buf.writeInt(version)
       writeString(buf, nickname)
 
-    case SessionInfoMessage(teamsOn) =>
-      buf.writeInt(3)
-      buf.writeBoolean(teamsOn)
-
     case SnapshotMessage(snapshot) =>
       buf.writeInt(4)
       writeSnapshot(buf, snapshot)
@@ -69,9 +65,6 @@ object MessageCodec {
         LoginMessage(buf.readInt(),
                      buf.readInt(),
                      readString(buf))
-
-      case 3 =>
-        SessionInfoMessage(buf.readBoolean())
 
       case 4 =>
         SnapshotMessage(readSnapshot(buf))
