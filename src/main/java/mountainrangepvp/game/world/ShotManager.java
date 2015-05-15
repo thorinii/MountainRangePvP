@@ -59,7 +59,7 @@ public class ShotManager {
 
     private boolean handleShot(Shot shot, float dt) {
         Vector2 pos = shot.position();
-        Vector2 npos = shot.position(shot.time() + dt);
+        Vector2 npos = pos;
 
         shot.time_$eq(shot.time() + dt);
 

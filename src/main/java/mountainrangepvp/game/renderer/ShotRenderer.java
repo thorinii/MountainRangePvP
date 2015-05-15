@@ -25,15 +25,15 @@ public class ShotRenderer {
     public void render(final Vector2 scroll, Snapshot snapshot) {
         batch.begin();
 
+        Vector2 position = new Vector2();
         for (Shot shot : JavaConversions.asJavaIterable(snapshot.shots())) {
-            Vector2 shotPos = shot.position();
-            shotPos.sub(scroll);
+            position.set(shot.position())
+                    .sub(scroll);
 
             Vector2 dir = shot.direction();
-            dir.angle();
 
             batch.draw(shotTexture,
-                       shotPos.x, shotPos.y, // Position
+                       position.x, position.y,
                        0, 0, // Origin
                        shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
                        1, 1, // Scale

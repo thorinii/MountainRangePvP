@@ -118,7 +118,7 @@ object MessageCodec {
 
   private def writeShot(buf: ByteBuf, shot: Shot) = {
     writeId(buf, ClientId.Invalid)
-    writeVector(buf, shot.base)
+    writeVector(buf, shot.position)
     writeVector(buf, shot.direction)
   }
 
