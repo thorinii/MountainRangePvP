@@ -63,7 +63,7 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
         _lag = lag
 
       case SessionInfoMessage(teamsOn) =>
-        eventBus.send(NewSessionEvent(teamsOn))
+        eventBus.send(NewSessionEvent(id, teamsOn))
 
       case SnapshotMessage(snapshot) =>
         eventBus.send(SnapshotEvent(snapshot))

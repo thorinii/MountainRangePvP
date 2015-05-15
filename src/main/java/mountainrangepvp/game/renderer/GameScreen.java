@@ -27,7 +27,6 @@ public class GameScreen {
     private final int width, height;
 
     private final Session session;
-    private final Vector2 cameraPosition;
 
     public GameScreen(Log log, EventBus eventBus, Session session) {
         this.log = log;
@@ -37,9 +36,10 @@ public class GameScreen {
         width = Gdx.graphics.getWidth() + 1;
         height = Gdx.graphics.getHeight();
 
-        /*
-         * Hide the cursor
-         */
+        hideCursor();
+    }
+
+    private void hideCursor() {
         if (Mouse.isCreated()) {
             try {
                 int min = Cursor.getMinCursorSize();
@@ -52,8 +52,6 @@ public class GameScreen {
                 log.warn("Error hiding mouse:", ex);
             }
         }
-
-        cameraPosition = new Vector2(0, 0);
     }
 
 
@@ -66,13 +64,11 @@ public class GameScreen {
 
         if (!session.hasSnapshot()) return;
 
-        Vector2 pos = session.playerManager.getLocalPlayer().getCentralPosition();
+        Vector2 scroll = session.getCameraCentre().cpy();
 
-        pos.x = pos.x - width / 2;
-        pos.y = pos.y - height / 2;
+        scroll.x = scroll.x - width / 2;
+        scroll.y = scroll.y - height / 2;
 
-        cameraPosition.lerp(pos, 0.2f);
-
-        renderer.render(cameraPosition, pingTime);
+        renderer.render(scroll, pingTime);
     }
 }
