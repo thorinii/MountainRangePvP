@@ -33,9 +33,7 @@ case class Snapshot(seed: Int,
   def removePlayerEntity(playerId: ClientId) =
     copy(playerEntities = playerEntities.filterNot(_.player == playerId))
 
-  def hasPlayerEntity(playerId: ClientId) = playerEntities.exists(_.player == playerId)
-
-  def getPlayerEntity(playerId: ClientId) = playerEntities.find(_.player == playerId).get
+  def getPlayerEntity(playerId: ClientId) = playerEntities.find(_.player == playerId)
 
 
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
