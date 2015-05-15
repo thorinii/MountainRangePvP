@@ -18,14 +18,19 @@ case class Snapshot(seed: Int,
 
   def join(playerId: ClientId, nickname: String) = copy(players = players + Player(playerId, nickname))
 
-  def leave(playerId: ClientId) = copy(players = players.filter(_.id == playerId))
+  def leave(playerId: ClientId) = copy(players = players.filterNot(_.id == playerId))
 
 
   def addShot(playerId: ClientId, base: Vector2, direction: Vector2) =
     copy(shots = shots + Shot(playerId, base, direction))
 
-  def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
+  def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) = {
+    println("adding " + entityId + " " + playerId)
     copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position))
+  }
+
+  def removePlayerEntity(playerId: ClientId) =
+    copy(playerEntities = playerEntities.filterNot(_.player == playerId))
 
 
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
