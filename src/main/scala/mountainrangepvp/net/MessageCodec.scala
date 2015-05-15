@@ -128,7 +128,7 @@ object MessageCodec {
     writeVector(buf, shot.direction)
   }
 
-  private def readShot(buf: ByteBuf) = new Shot(readId(buf), readVector(buf), readVector(buf))
+  private def readShot(buf: ByteBuf) = Shot(readId(buf), readVector(buf), readVector(buf))
 
 
   private def writePlayerEntity(buf: ByteBuf, e: PlayerEntity) = {
