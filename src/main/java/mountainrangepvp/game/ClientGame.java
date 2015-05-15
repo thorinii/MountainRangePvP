@@ -21,7 +21,6 @@ public class ClientGame {
 
     private final EventBus eventBus;
     private final Client client;
-    private final PhysicsSystem physicsSystem;
     private final AudioManager audioManager;
     private final InputHandler inputHandler;
 
@@ -35,8 +34,6 @@ public class ClientGame {
         eventBus = new EventBus();
 
         client = Client.newClient(log, eventBus, server, config.nickname);
-
-        physicsSystem = new PhysicsSystem();
 
         audioManager = new AudioManager();
         audioManager.loadAudio(Sounds.SOUNDS);
@@ -82,7 +79,6 @@ public class ClientGame {
         if (session != null && session.hasSnapshot()) {
             inputHandler.update(config.TIMESTEP);
             session.update(dt);
-            physicsSystem.update(session, config.TIMESTEP);
         }
 
         timeSinceLastUpdate = 0;
