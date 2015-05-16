@@ -64,8 +64,12 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     var nextSnapshot = snapshot
 
     _clientInputState = _clientInputState.map { case (id, state) =>
-      nextSnapshot = nextSnapshot
-                     .playerUpdate(id, state.run, state.aimDirection)
+      nextSnapshot = nextSnapshot.updatePlayer(id, e => {
+        val newVel = e.velocity.cpy()
+        if (newVel.x.abs <= PlayerEntity.RunSpeed)
+          newVel.x = lerp(newVel.x, state.run * PlayerEntity.RunSpeed, 0.5f)
+        e.copy(aim = state.aimDirection, velocity = newVel)
+      })
 
       if (state.firing)
         nextSnapshot = nextSnapshot.addShot(id, state.aimDirection)
@@ -112,6 +116,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
     playerEntity.copy(position = newPos, velocity = newVel)
   }
+
+  private def lerp(x: Float, target: Float, alpha: Float) =
+    x + alpha * (target - x)
 
 
   eventBus.subscribe((_: ShutdownEvent) => shutdown())
