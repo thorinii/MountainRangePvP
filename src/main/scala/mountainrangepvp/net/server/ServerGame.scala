@@ -66,7 +66,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   })
 
   eventBus.subscribe((e: PlayerLeft) => {
-    log.info(e.id + " disconnected")
+    log.info(e.id + " " + _snapshot.nicknameFor(e.id) + " disconnected")
     _snapshot =
       _snapshot.leave(e.id)
       .removePlayerEntity(e.id)
