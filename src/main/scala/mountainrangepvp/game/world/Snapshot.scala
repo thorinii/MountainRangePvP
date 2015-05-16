@@ -21,14 +21,17 @@ case class Snapshot(seed: Int,
   def leave(playerId: ClientId) = copy(players = players.filterNot(_.id == playerId))
 
 
-  def addShot(playerId: ClientId, base: Vector2, direction: Vector2) =
+  def addShot(playerId: ClientId, direction: Vector2): Snapshot =
+    addShot(playerId,
+            playerEntities.find(_.player == playerId).map(_.position).getOrElse(new Vector2(0, 0)),
+            direction)
+
+  def addShot(playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =
     copy(shots = shots + Shot(playerId, base, direction, 0f))
 
 
-  def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) = {
-    println("adding " + entityId + " " + playerId)
+  def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
     copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position))
-  }
 
   def removePlayerEntity(playerId: ClientId) =
     copy(playerEntities = playerEntities.filterNot(_.player == playerId))
