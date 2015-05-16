@@ -1,5 +1,7 @@
 package mountainrangepvp.net.tcp
 
+import java.io.IOException
+import java.nio.channels.ClosedChannelException
 import java.util.concurrent.TimeUnit
 
 import io.netty.bootstrap.Bootstrap
@@ -42,8 +44,15 @@ class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterf
   /**
    * Forward the message over the network.
    */
-  override def receive(clientId: ClientId, message: ToServerMessage) = {
+  override def deliver(clientId: ClientId, message: ToServerMessage) = try {
     MessageCodec.send(ctx, message)
+  } catch {
+    case _: ClosedChannelException =>
+      // other things will close up the connection, so just log the error
+      log.fine("Channel to " + clientId + " closed while sending")
+
+    case e: IOException =>
+      log.crash("Failed to deliver " + message + " to " + clientId, e)
   }
 
 

@@ -19,7 +19,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     val id: ClientId = new ClientId(nextClientId.getAndIncrement)
     interfaces += id -> client
 
-    client.receive(ConnectedMessage(id))
+    client.deliver(ConnectedMessage(id))
   }
 
   override def disconnect(client: ClientId) = {
@@ -32,7 +32,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
   /**
    * Receive a message from a client
    */
-  override def receive(client: ClientId, message: ToServerMessage) = message match {
+  override def deliver(client: ClientId, message: ToServerMessage) = message match {
     case LoginMessage(checkCode, version, nickname) =>
       eventBus.send(PlayerJoined(client, nickname))
 
@@ -45,11 +45,11 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
 
 
   override def send(id: ClientId, message: ToClientMessage): Unit = {
-    interfaces(id).receive(message)
+    interfaces(id).deliver(message)
   }
 
   override def sendToAll(message: ToClientMessage): Unit = {
-    interfaces.values.foreach(_.receive(message))
+    interfaces.values.foreach(_.deliver(message))
   }
 
 

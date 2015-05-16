@@ -12,5 +12,5 @@ trait ClientInterface {
   /**
    * Receive a message from the server.
    */
-  def receive(message: ToClientMessage)
+  def deliver(message: ToClientMessage)
 }

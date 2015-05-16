@@ -15,7 +15,7 @@ class ClientSideMessageHandler(log: Log, client: ClientInterface) extends Simple
     handle(m.asInstanceOf[ToClientMessage])
   }
 
-  private def handle(m: ToClientMessage) = client.receive(m)
+  private def handle(m: ToClientMessage) = client.deliver(m)
 
 
   override def channelInactive(ctx: ChannelHandlerContext): Unit = {
