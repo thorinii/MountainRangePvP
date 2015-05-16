@@ -129,9 +129,11 @@ object MessageCodec {
     buf.writeLong(e.entityId)
     writeId(buf, e.player)
     writeVector(buf, e.position)
+    writeVector(buf, e.aim)
   }
 
-  private def readPlayerEntity(buf: ByteBuf) = PlayerEntity(buf.readLong(), readId(buf), readVector(buf))
+  private def readPlayerEntity(buf: ByteBuf) = PlayerEntity(buf.readLong(), readId(buf),
+                                                            readVector(buf), readVector(buf))
 
 
   private def writeInputCommand(buf: ByteBuf, c: InputCommand) = {

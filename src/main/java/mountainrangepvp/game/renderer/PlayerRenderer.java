@@ -75,7 +75,7 @@ public class PlayerRenderer {
             return;
         }
 
-        Vector2 dir = new Vector2(1, 0); // TODO: fix in #41; player.getGunDirection();
+        Vector2 dir = player.aim();
 
         if (dir.x < 0) {
             batch.draw(armsTexture,
