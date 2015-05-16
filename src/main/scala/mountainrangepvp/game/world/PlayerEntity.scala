@@ -7,4 +7,5 @@ import com.badlogic.gdx.math.Vector2
  * Not all players/clients have a PlayerEntity under their name at a given time.
  */
 case class PlayerEntity(entityId: Long, player: ClientId,
-                        position: Vector2, aim: Vector2)
+                        position: Vector2, aim: Vector2,
+                        velocity: Vector2)

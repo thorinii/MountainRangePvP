@@ -31,7 +31,9 @@ case class Snapshot(seed: Int,
 
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
-    copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position, new Vector2(0, 0)))
+    copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId,
+                                                        position, new Vector2(0, 0),
+                                                        new Vector2(1+Math.random().toFloat*60, 30)))
 
   def removePlayerEntity(playerId: ClientId) =
     copy(playerEntities = playerEntities.filterNot(_.player == playerId))
