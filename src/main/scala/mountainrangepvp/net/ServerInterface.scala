@@ -23,7 +23,7 @@ trait ServerInterface {
 
 
   /**
-   * Receive a message from a client
+   * Send a message to the server.
    */
-  def receive(clientId: ClientId, message: ToServerMessage)
+  def deliver(clientId: ClientId, message: ToServerMessage)
 }

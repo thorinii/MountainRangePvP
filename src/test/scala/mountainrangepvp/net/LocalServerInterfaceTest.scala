@@ -31,7 +31,7 @@ class LocalServerInterfaceTest {
 
     override def disconnected() = {}
 
-    override def receive(message: ToClientMessage): Unit = message match {
+    override def deliver(message: ToClientMessage): Unit = message match {
       case ConnectedMessage(id) =>
         this.id = id
 

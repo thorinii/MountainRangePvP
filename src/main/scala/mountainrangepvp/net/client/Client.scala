@@ -39,7 +39,11 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
 
 
   private def subscribe() = {
-    eventBus.subscribe((e: InputCommandEvent) => server.receive(id, CommandMessage(e.command)))
+    eventBus.subscribe((e: InputCommandEvent) => send(CommandMessage(e.command)))
+  }
+
+  private def send(message: ToServerMessage) = {
+    if (online) server.deliver(id, message)
   }
 
   private class ClientInterfaceImpl extends ClientInterface {
@@ -54,18 +58,19 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
     override def disconnected() = {
       if (online) {
         eventBus.send(ServerDisconnect)
+        online = false
       }
     }
 
-    override def receive(message: ToClientMessage) = message match {
+    override def deliver(message: ToClientMessage) = message match {
       case ConnectedMessage(id) =>
         Client.this.id = id
         log.setName("client" + id.id)
-        server.receive(id, LoginMessage(NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname))
+        server.deliver(id, LoginMessage(NetworkConstants.CHECK_CODE, NetworkConstants.VERSION, nickname))
 
       case PingMessage(pingId) =>
         setLoggedIn()
-        server.receive(id, PongMessage(pingId))
+        server.deliver(id, PongMessage(pingId))
 
       case PingedMessage(lag) =>
         setLoggedIn()
