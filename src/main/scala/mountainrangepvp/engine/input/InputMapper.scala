@@ -9,6 +9,7 @@ import mountainrangepvp.engine.input.Bindings._
 class InputMapper {
   private var emptyStates: Map[String, Boolean] = Map.empty
   private var mouseButtons: Map[MouseButton, String] = Map.empty
+  private var keys: Map[Int, String] = Map.empty
 
   def addState(name: String) = {
     emptyStates += name -> false
@@ -16,6 +17,10 @@ class InputMapper {
 
   def bindMouseButton(button: MouseButton, action: String) = {
     mouseButtons += (button -> action)
+  }
+
+  def bindKeyboard(key: Int, action: String) = {
+    keys += (key -> action)
   }
 
   def map(state: InputState) = {
@@ -27,6 +32,8 @@ class InputMapper {
       }
     }
 
+    state.keys.flatMap(keys.get).foreach(mapped += _ -> true)
+
     mapped
   }
 }
@@ -35,7 +42,7 @@ class InputMapper {
 /**
  * The current state of the input system.
  */
-case class InputState(mouse: Vector2, mouseButtons: Int) {
+case class InputState(mouse: Vector2, mouseButtons: Int, keys: Set[Int]) {
   def buttonDown(b: Bindings.MouseButton) = b match {
     case MouseLeft => (mouseButtons & 1) != 0
     case MouseMiddle => (mouseButtons & 2) != 0
