@@ -64,7 +64,8 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     var nextSnapshot = snapshot
 
     _clientInputState = _clientInputState.map { case (id, state) =>
-      nextSnapshot = nextSnapshot.aim(id, state.aimDirection)
+      nextSnapshot = nextSnapshot
+                     .playerUpdate(id, state.run, state.aimDirection)
 
       if (state.firing)
         nextSnapshot = nextSnapshot.addShot(id, state.aimDirection)
@@ -105,6 +106,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
       if (newVel.y < 0 || newVel.y < 1)
         newVel.y = 0
     }
+
+    if (newVel.x.abs < 1)
+      newVel.x = 0
 
     playerEntity.copy(position = newPos, velocity = newVel)
   }
