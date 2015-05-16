@@ -39,7 +39,7 @@ class Client(log: Log, eventBus: EventBus, server: ServerInterface, nickname: St
 
 
   private def subscribe() = {
-    eventBus.subscribe((e: FireRequestEvent) => server.receive(id, FireShotMessage(e.direction)))
+    eventBus.subscribe((e: InputCommandEvent) => server.receive(id, CommandMessage(e.command)))
   }
 
   private class ClientInterfaceImpl extends ClientInterface {

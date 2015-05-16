@@ -38,9 +38,9 @@ object MessageCodec {
       buf.writeInt(4)
       writeSnapshot(buf, snapshot)
 
-    case FireShotMessage(direction) =>
+    case CommandMessage(command) =>
       buf.writeInt(6)
-      writeVector(buf, direction)
+      writeInputCommand(buf, command)
 
     case PingMessage(id) =>
       buf.writeInt(8)
@@ -70,7 +70,7 @@ object MessageCodec {
         SnapshotMessage(readSnapshot(buf))
 
       case 6 =>
-        FireShotMessage(readVector(buf))
+        CommandMessage(readInputCommand(buf))
 
       case 8 =>
         PingMessage(buf.readInt())
@@ -97,7 +97,7 @@ object MessageCodec {
     for (e <- snapshot.playerEntities) writePlayerEntity(buf, e)
 
     buf.writeInt(snapshot.shots.size)
-    for(s <- snapshot.shots) writeShot(buf, s)
+    for (s <- snapshot.shots) writeShot(buf, s)
   }
 
   private def readSnapshot(buf: ByteBuf) = {
@@ -132,6 +132,18 @@ object MessageCodec {
   }
 
   private def readPlayerEntity(buf: ByteBuf) = PlayerEntity(buf.readLong(), readId(buf), readVector(buf))
+
+
+  private def writeInputCommand(buf: ByteBuf, c: InputCommand) = {
+    buf.writeFloat(c.run)
+    buf.writeBoolean(c.jump)
+    buf.writeBoolean(c.fire)
+    writeVector(buf, c.aimDirection)
+  }
+
+  private def readInputCommand(buf: ByteBuf) = InputCommand(buf.readFloat(),
+                                                            buf.readBoolean(),
+                                                            buf.readBoolean(), readVector(buf))
 
 
   private def writeId(buf: ByteBuf, id: ClientId) = {
