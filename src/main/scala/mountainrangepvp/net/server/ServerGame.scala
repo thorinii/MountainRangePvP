@@ -67,7 +67,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
       nextSnapshot = nextSnapshot.updatePlayer(id, e => {
         val newVel = e.velocity.cpy()
         if (newVel.x.abs <= PlayerEntity.RunSpeed)
-          newVel.x = lerp(newVel.x, state.run * PlayerEntity.RunSpeed, 0.5f)
+          newVel.x = lerp(newVel.x, state.run * PlayerEntity.RunSpeed, if (e.onGround) 0.5f else 0.1f)
+        if (state.jump && e.onGround)
+          newVel.y += PlayerEntity.JumpImpulse
         e.copy(aim = state.aimDirection, velocity = newVel)
       })
 
@@ -104,8 +106,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
     val slice = _terrain.getSlice(newPos.x.toInt, PlayerEntity.Width)
     val highestPoint = slice.getHighestPoint
+    val onGround = newPos.y < highestPoint
 
-    if (newPos.y < highestPoint) {
+    if (onGround) {
       newPos.y = highestPoint
       if (newVel.y < 0 || newVel.y < 1)
         newVel.y = 0
@@ -114,7 +117,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     if (newVel.x.abs < 1)
       newVel.x = 0
 
-    playerEntity.copy(position = newPos, velocity = newVel)
+    playerEntity.copy(position = newPos, velocity = newVel, onGround = onGround)
   }
 
   private def lerp(x: Float, target: Float, alpha: Float) =
