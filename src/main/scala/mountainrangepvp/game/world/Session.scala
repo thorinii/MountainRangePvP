@@ -30,9 +30,9 @@ class Session(log: Log, eventBus: EventBus,
 
   def getCameraCentre = camera.centre
 
-  def localPlayer: Option[PlayerEntity] = snapshot.getPlayerEntity(localId)
+  def localPlayerEntity: Option[PlayerEntity] = snapshot.getPlayerEntity(localId)
 
   def update(dt: Float) = {
-    localPlayer.foreach { p => camera = camera.centreOn(p) }
+    localPlayerEntity.foreach { p => camera = camera.centreOn(p) }
   }
 }

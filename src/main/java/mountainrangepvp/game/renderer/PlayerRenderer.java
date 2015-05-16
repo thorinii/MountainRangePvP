@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
+import mountainrangepvp.game.world.ClientId;
 import mountainrangepvp.game.world.PlayerEntity;
 import mountainrangepvp.game.world.Snapshot;
 import scala.collection.JavaConversions;
@@ -46,7 +47,7 @@ public class PlayerRenderer {
                 "player/spawn-bubble.png"));
     }
 
-    public void render(Vector2 scroll, Snapshot snapshot) {
+    public void render(Vector2 scroll, Snapshot snapshot, boolean alive) {
         batch.begin();
 
         for (PlayerEntity player : JavaConversions.asJavaIterable(snapshot.playerEntities())) {
@@ -54,10 +55,8 @@ public class PlayerRenderer {
             drawPlayer(player, nickname, scroll);
         }
 
-        // TODO: fix this in #40
-        if (false) { // !playerManager.getLocalPlayer().isAlive()) {
+        if (!alive)
             drawDeathMessage();
-        }
 
         batch.end();
     }
