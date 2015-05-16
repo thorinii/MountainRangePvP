@@ -44,17 +44,8 @@ case class Snapshot(seed: Int,
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
 
 
-  def playerUpdate(playerId: ClientId, run: Float, direction: Vector2) =
-    copy(playerEntities = playerEntities.map(e => if (e.player == playerId) {
-      val newVel = e.velocity.cpy()
-      if (newVel.x.abs <= PlayerEntity.RunSpeed)
-        newVel.x = lerp(newVel.x, run * PlayerEntity.RunSpeed, 0.5f)
-
-      e.copy(aim = direction, velocity = newVel)
-    } else e))
-
-  private def lerp(x: Float, target: Float, alpha: Float) =
-    x + alpha * (target - x)
+  def updatePlayer(playerId: ClientId, f: PlayerEntity => PlayerEntity) =
+    copy(playerEntities = playerEntities.map(e => if (e.player == playerId) f(e) else e))
 }
 
 case class Player(id: ClientId, nickname: String)
