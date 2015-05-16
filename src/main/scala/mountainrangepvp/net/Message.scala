@@ -2,8 +2,7 @@ package mountainrangepvp.net
 
 import java.time.Duration
 
-import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.game.world.{ClientId, Snapshot}
+import mountainrangepvp.game.world.{ClientId, InputCommand, Snapshot}
 
 
 sealed trait Message
@@ -21,7 +20,7 @@ case class LoginMessage(checkCode: Int, version: Int, nickname: String) extends 
 case class SnapshotMessage(snapshot: Snapshot) extends ToClientMessage
 
 
-case class FireShotMessage(direction: Vector2) extends ToServerMessage
+case class CommandMessage(command: InputCommand) extends ToServerMessage
 
 
 case class PingMessage(id: Int) extends ToClientMessage

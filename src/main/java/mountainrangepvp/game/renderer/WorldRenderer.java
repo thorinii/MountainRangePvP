@@ -80,12 +80,14 @@ public class WorldRenderer {
         drawCrosshair();
 
         String pingMillis = String.valueOf(pingTime.toMillis());
+        int entityCount = session.getSnapshot().playerEntities().size() + session.getSnapshot().shots().size();
 
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);
         textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
         textRenderer.drawString(batch, eventBus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
         textRenderer.drawString(batch, pingMillis + " ms ping", 10, screen.y - 50);
+        textRenderer.drawString(batch, entityCount + " entities", 10, screen.y - 70);
         textRenderer.setColour(Color.BLACK);
     }
 

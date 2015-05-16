@@ -9,11 +9,18 @@ import com.badlogic.gdx.{Input, InputProcessor}
 class StateAccumulatingInputProcessor(screenHeight: Int) extends InputProcessor {
   private var mouseButtons = 0
   private val mousePosition = new Vector2(0, 0)
+  private var keys: Set[Int] = Set.empty
 
 
-  def keyDown(keycode: Int): Boolean = true
+  def keyDown(keycode: Int): Boolean = {
+    keys += keycode
+    true
+  }
 
-  def keyUp(keycode: Int): Boolean = true
+  def keyUp(keycode: Int): Boolean = {
+    keys -= keycode
+    true
+  }
 
   def keyTyped(character: Char): Boolean = true
 
@@ -53,6 +60,6 @@ class StateAccumulatingInputProcessor(screenHeight: Int) extends InputProcessor 
 
 
   def getState = {
-    InputState(mousePosition, mouseButtons)
+    InputState(mousePosition, mouseButtons, keys)
   }
 }

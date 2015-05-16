@@ -1,51 +1,47 @@
 package mountainrangepvp.game.input
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.engine.input.{ActionMapper, StateAccumulatingInputProcessor, Bindings, DelayedRepeatingAction}
+import com.badlogic.gdx.Input.Keys
+import mountainrangepvp.engine.input.{Bindings, InputMapper, StateAccumulatingInputProcessor}
 import mountainrangepvp.engine.util.EventBus
 import mountainrangepvp.game.world._
 
 class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
-  private val actionMapper = new ActionMapper
+  private val inputMapper = new InputMapper
   private val inputProcessor = new StateAccumulatingInputProcessor(screenHeight)
-
-
-  actionMapper.addAction("fire", new DelayedRepeatingAction(state => {
-    val direction = state.mouse.cpy().sub(screenWidth/2, screenHeight/2).nor()
-    eventBus.send(new FireRequestEvent(direction))
-
-    0.1f
-  }))
-
-  actionMapper.bindMouseButton(Bindings.MouseLeft, "fire")
-
 
   def register() {
     Gdx.input.setInputProcessor(inputProcessor)
   }
 
   def update(dt: Float): Unit = {
-    val state = inputProcessor.getState
-    actionMapper.update(state, dt)
+    val rawState = inputProcessor.getState
+    val inputState = inputMapper.map(rawState)
+
+    val aim = rawState.mouse.cpy().sub(screenWidth / 2, screenHeight / 2).nor()
+    val run = (if (inputState("left")) -1 else 0) + (if (inputState("right")) 1 else 0)
+
+    eventBus.send(InputCommandEvent(
+      InputCommand(run = run,
+                   jump = inputState("jump"),
+                   fire = inputState("fire"),
+                   aimDirection = aim)))
   }
 
-  private def aimAtCrosshair(player: Old_Player) {
-    val x: Int = Gdx.input.getX
-    val y: Int = Gdx.graphics.getHeight - Gdx.input.getY
-    val target: Vector2 = new Vector2(x, y)
-    target.x -= Gdx.graphics.getWidth / 2
-    target.y -= Gdx.graphics.getHeight / 2
-    target.nor
-    val dir: Vector2 = player.getGunDirection
-    val lerpSpeed: Float = Math.min(0.8f, Math.max(0.3f, 10f / player.getVelocity.x))
-    dir.lerp(target, lerpSpeed)
-  }
 
-  private def doShooting(player: Old_Player) {
-    val pos: Vector2 = player.getCentralPosition
-    eventBus.send(new FireRequestEvent(player.getGunDirection.cpy))
-    val kickback: Vector2 = player.getGunDirection.cpy.scl(-90f)
-    player.getVelocity.add(kickback)
-  }
+  inputMapper.addState("fire")
+  inputMapper.bindMouseButton(Bindings.MouseLeft, "fire")
+
+  inputMapper.addState("left")
+  inputMapper.bindKeyboard(Keys.LEFT, "left")
+  inputMapper.bindKeyboard(Keys.A, "left")
+
+  inputMapper.addState("right")
+  inputMapper.bindKeyboard(Keys.RIGHT, "right")
+  inputMapper.bindKeyboard(Keys.D, "right")
+
+  inputMapper.addState("jump")
+  inputMapper.bindKeyboard(Keys.UP, "jump")
+  inputMapper.bindKeyboard(Keys.W, "jump")
+  inputMapper.bindKeyboard(Keys.SPACE, "jump")
 }

@@ -17,16 +17,17 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   def going: Boolean = _going
 
 
-  private val _emptySnapshot = Snapshot.empty(0, false)
+  private val _emptySnapshot = Snapshot.empty(0, teamsOn = false)
 
   private var _snapshot = _emptySnapshot
 
 
   private var _nextEntityId: Long = 0
 
+  private var _clientInputState: Map[ClientId, InputState] = Map.empty
 
-  @volatile
-  private var _multiLagTimer = MultiLagTimer()
+
+  private val _multiLagTimer = MultiLagTimer()
 
   def lag(client: ClientId): Option[Duration] = _multiLagTimer.lagFor(client)
 
@@ -43,6 +44,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   def update(dt: Float) = {
     eventBus.flushPendingMessages()
+    _snapshot = processInput(dt, _snapshot)
 
     _snapshot = step(dt, _snapshot)
 
@@ -58,20 +60,36 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     _snapshot =
       _snapshot.join(e.id, e.nickname)
       .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random() * 500 - 250).toFloat, 100))
+    _clientInputState += e.id -> InputState()
 
     _nextEntityId += 1
   })
 
   eventBus.subscribe((e: PlayerLeft) => {
-    log.info(e.id + " disconnected")
+    log.info(e.id + " " + _snapshot.nicknameFor(e.id) + " disconnected")
     _snapshot =
       _snapshot.leave(e.id)
       .removePlayerEntity(e.id)
+    _clientInputState -= e.id
   })
 
-  eventBus.subscribe((e: PlayerFireRequestEvent) => {
-    _snapshot = _snapshot.addShot(e.playerId, new Vector2(0, 0), e.direction)
+  eventBus.subscribe((e: InputCommandReceivedEvent) => {
+    _clientInputState += e.playerId -> _clientInputState(e.playerId).accumulate(e.command)
   })
+
+
+  def processInput(dt: Float, snapshot: Snapshot): Snapshot = {
+    var nextSnapshot = snapshot
+
+    _clientInputState = _clientInputState.map { case (id, state) =>
+      if (state.firing)
+        nextSnapshot = nextSnapshot.addShot(id, state.aimDirection)
+
+      id -> state.nextFrame(dt)
+    }
+
+    nextSnapshot
+  }
 
 
   def step(dt: Float, snapshot: Snapshot): Snapshot = {

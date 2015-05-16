@@ -6,26 +6,35 @@ import mountainrangepvp.engine.input.Bindings._
 /**
  * Maps from raw key and mouse events to actions.
  */
-class ActionMapper {
-  private var actions: Map[String, Action] = Map.empty
+class InputMapper {
+  private var emptyStates: Map[String, Boolean] = Map.empty
   private var mouseButtons: Map[MouseButton, String] = Map.empty
+  private var keys: Map[Int, String] = Map.empty
 
-  def addAction(name: String, action: Action) = {
-    actions += (name -> action)
+  def addState(name: String) = {
+    emptyStates += name -> false
   }
 
   def bindMouseButton(button: MouseButton, action: String) = {
     mouseButtons += (button -> action)
   }
 
-  def update(state: InputState, dt: Float) = {
-    actions.values.foreach(_.update(dt))
+  def bindKeyboard(key: Int, action: String) = {
+    keys += (key -> action)
+  }
+
+  def map(state: InputState) = {
+    var mapped = emptyStates
 
     List(MouseLeft, MouseMiddle, MouseRight).foreach { b =>
       if (state.buttonDown(b)) {
-        mouseButtons.get(b).map(actions.apply).foreach(_.fire(state))
+        mouseButtons.get(b).foreach(state => mapped += state -> true)
       }
     }
+
+    state.keys.flatMap(keys.get).foreach(mapped += _ -> true)
+
+    mapped
   }
 }
 
@@ -33,7 +42,7 @@ class ActionMapper {
 /**
  * The current state of the input system.
  */
-case class InputState(mouse: Vector2, mouseButtons: Int) {
+case class InputState(mouse: Vector2, mouseButtons: Int, keys: Set[Int]) {
   def buttonDown(b: Bindings.MouseButton) = b match {
     case MouseLeft => (mouseButtons & 1) != 0
     case MouseMiddle => (mouseButtons & 2) != 0

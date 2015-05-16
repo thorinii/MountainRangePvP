@@ -39,8 +39,8 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     case PongMessage(id) =>
     // TODO: send to ServerGame
 
-    case FireShotMessage(direction: Vector2) =>
-      eventBus.send(PlayerFireRequestEvent(client, direction))
+    case CommandMessage(command) =>
+      eventBus.send(InputCommandReceivedEvent(client, command))
   }
 
 
