@@ -82,10 +82,10 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     var nextSnapshot = snapshot
 
     _clientInputState = _clientInputState.map { case (id, state) =>
-      if (state.fire)
+      if (state.firing)
         nextSnapshot = nextSnapshot.addShot(id, state.aimDirection)
 
-      id -> state.nextFrame
+      id -> state.nextFrame(dt)
     }
 
     nextSnapshot
