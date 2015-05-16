@@ -31,7 +31,7 @@ case class Snapshot(seed: Int,
 
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
-    copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position))
+    copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId, position, new Vector2(0, 0)))
 
   def removePlayerEntity(playerId: ClientId) =
     copy(playerEntities = playerEntities.filterNot(_.player == playerId))
@@ -40,6 +40,10 @@ case class Snapshot(seed: Int,
 
 
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
+
+
+  def aim(playerId: ClientId, direction: Vector2) =
+    copy(playerEntities = playerEntities.map(e => if (e.player == playerId) e.copy(aim = direction) else e))
 }
 
 case class Player(id: ClientId, nickname: String)
