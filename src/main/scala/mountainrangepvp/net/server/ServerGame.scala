@@ -4,7 +4,7 @@ import java.time.Duration
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{ClientId, PlayerEntity, Shot, Snapshot}
+import mountainrangepvp.game.world._
 import mountainrangepvp.net.{MultiLagTimer, SnapshotMessage}
 
 /**
@@ -27,16 +27,19 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   private var _clientInputState: Map[ClientId, InputState] = Map.empty
 
 
+  private var _terrain: Terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
+
+
   private val _multiLagTimer = MultiLagTimer()
 
   def lag(client: ClientId): Option[Duration] = _multiLagTimer.lagFor(client)
-
 
   def sendPingQuery(): Unit = {
   }
 
   def pong(id: ClientId, pingId: Int): Unit = {
   }
+
 
   def shutdown() = {
     _going = false
@@ -47,6 +50,10 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     _snapshot = processInput(dt, _snapshot)
 
     _snapshot = step(dt, _snapshot)
+
+
+    if (_snapshot.seed != _terrain.getSeed)
+      _terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
 
     out.sendToAll(SnapshotMessage(_snapshot))
     eventBus.resetMessagesPerFrame()
@@ -85,10 +92,20 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   def stepPlayerEntity(dt: Float, playerEntity: PlayerEntity) = {
     val newVel = playerEntity.velocity.cpy()
-                  .add(0, -9.81f * 1)
+                 .add(0, -9.81f * 1)
     val newPos = newVel.cpy()
                  .scl(dt)
                  .add(playerEntity.position)
+
+    val slice = _terrain.getSlice(newPos.x.toInt, PlayerEntity.Width)
+    val highestPoint = slice.getHighestPoint
+
+    if (newPos.y < highestPoint) {
+      newPos.y = highestPoint
+      if (newVel.y < 0 || newVel.y < 1)
+        newVel.y = 0
+    }
+
     playerEntity.copy(position = newPos, velocity = newVel)
   }
 
@@ -99,7 +116,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     log.info(e.id + " " + e.nickname + " connected")
     _snapshot =
       _snapshot.join(e.id, e.nickname)
-      .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random() * 500 - 250).toFloat, 100))
+      .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random() * 800 - 40).toFloat, 100))
     _clientInputState += e.id -> InputState()
 
     _nextEntityId += 1

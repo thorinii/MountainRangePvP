@@ -14,7 +14,6 @@ import scala.collection.JavaConversions;
  * @author lachlan
  */
 public class PlayerRenderer {
-    private static final int PLAYER_WIDTH = 40;
     private static final int PLAYER_HEIGHT = 100;
 
     private final int width, height;
@@ -67,7 +66,7 @@ public class PlayerRenderer {
         Vector2 pos = player.position().cpy();
         pos.sub(scroll);
 
-        if (pos.x < -PLAYER_WIDTH || pos.x > width) {
+        if (pos.x < -PlayerEntity.Width() || pos.x > width) {
             return;
         }
         if (pos.y < -PLAYER_HEIGHT || pos.y > height) {
@@ -111,7 +110,7 @@ public class PlayerRenderer {
         // TODO: fix in #51
         if (false) { // player.isSpawnBubbleOn()) {
             batch.draw(spawnBubbleTexture,
-                       pos.x + PLAYER_WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
+                       pos.x + PlayerEntity.Width() / 2 - spawnBubbleTexture.getWidth() / 2,
                        pos.y + PLAYER_HEIGHT / 2 - spawnBubbleTexture.
                                getHeight() / 2);
         }
