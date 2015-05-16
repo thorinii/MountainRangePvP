@@ -69,8 +69,10 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
       .removePlayerEntity(e.id)
   })
 
-  eventBus.subscribe((e: PlayerFireRequestEvent) => {
-    _snapshot = _snapshot.addShot(e.playerId, new Vector2(0, 0), e.direction)
+  eventBus.subscribe((e: InputCommandReceivedEvent) => {
+    val command = e.command
+    if (command.fire)
+      _snapshot = _snapshot.addShot(e.playerId, new Vector2(0, 0), command.aimDirection)
   })
 
 
