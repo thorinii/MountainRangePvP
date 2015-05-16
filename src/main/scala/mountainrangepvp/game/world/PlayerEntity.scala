@@ -9,10 +9,11 @@ import com.badlogic.gdx.math.Vector2
 object PlayerEntity {
   val Width = 40
   val RunSpeed = 400
+  val JumpImpulse = 400
 }
 
 case class PlayerEntity(entityId: Long, player: ClientId,
                         position: Vector2, aim: Vector2,
-                        velocity: Vector2) {
+                        velocity: Vector2, onGround: Boolean) {
   // TODO: add gun height vector lazy val
 }
