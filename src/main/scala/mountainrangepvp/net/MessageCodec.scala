@@ -97,7 +97,7 @@ object MessageCodec {
     for (e <- snapshot.playerEntities) writePlayerEntity(buf, e)
 
     buf.writeInt(snapshot.shots.size)
-    for(s <- snapshot.shots) writeShot(buf, s)
+    for (s <- snapshot.shots) writeShot(buf, s)
   }
 
   private def readSnapshot(buf: ByteBuf) = {
@@ -135,11 +135,15 @@ object MessageCodec {
 
 
   private def writeInputCommand(buf: ByteBuf, c: InputCommand) = {
+    buf.writeFloat(c.run)
+    buf.writeBoolean(c.jump)
     buf.writeBoolean(c.fire)
     writeVector(buf, c.aimDirection)
   }
 
-  private def readInputCommand(buf: ByteBuf) = InputCommand(buf.readBoolean(), readVector(buf))
+  private def readInputCommand(buf: ByteBuf) = InputCommand(buf.readFloat(),
+                                                            buf.readBoolean(),
+                                                            buf.readBoolean(), readVector(buf))
 
 
   private def writeId(buf: ByteBuf, id: ClientId) = {
