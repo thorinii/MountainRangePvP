@@ -6,26 +6,28 @@ import mountainrangepvp.engine.input.Bindings._
 /**
  * Maps from raw key and mouse events to actions.
  */
-class ActionMapper {
-  private var actions: Map[String, Action] = Map.empty
+class InputMapper {
+  private var emptyStates: Map[String, Boolean] = Map.empty
   private var mouseButtons: Map[MouseButton, String] = Map.empty
 
-  def addAction(name: String, action: Action) = {
-    actions += (name -> action)
+  def addState(name: String) = {
+    emptyStates += name -> false
   }
 
   def bindMouseButton(button: MouseButton, action: String) = {
     mouseButtons += (button -> action)
   }
 
-  def update(state: InputState, dt: Float) = {
-    actions.values.foreach(_.update(dt))
+  def map(state: InputState) = {
+    var mapped = emptyStates
 
     List(MouseLeft, MouseMiddle, MouseRight).foreach { b =>
       if (state.buttonDown(b)) {
-        mouseButtons.get(b).map(actions.apply).foreach(_.fire(state))
+        mouseButtons.get(b).foreach(state => mapped += state -> true)
       }
     }
+
+    mapped
   }
 }
 
