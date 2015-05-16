@@ -4,7 +4,7 @@ import java.time.Duration
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world.{ClientId, Shot, Snapshot}
+import mountainrangepvp.game.world.{ClientId, PlayerEntity, Shot, Snapshot}
 import mountainrangepvp.net.{MultiLagTimer, SnapshotMessage}
 
 /**
@@ -53,6 +53,44 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   }
 
 
+  def processInput(dt: Float, snapshot: Snapshot): Snapshot = {
+    var nextSnapshot = snapshot
+
+    _clientInputState = _clientInputState.map { case (id, state) =>
+      nextSnapshot = nextSnapshot.aim(id, state.aimDirection)
+
+      if (state.firing)
+        nextSnapshot = nextSnapshot.addShot(id, state.aimDirection)
+
+      id -> state.nextFrame(dt)
+    }
+
+    nextSnapshot
+  }
+
+
+  def step(dt: Float, snapshot: Snapshot): Snapshot = {
+    snapshot.copy(
+      shots = snapshot.shots.map(s => stepShot(dt, s)).filter(_.isAlive),
+      playerEntities = snapshot.playerEntities.map(e => stepPlayerEntity(dt, e))
+    )
+  }
+
+  def stepShot(dt: Float, shot: Shot) = {
+    val newPos = shot.direction.cpy()
+                 .scl(Shot.SHOT_SPEED * dt)
+                 .add(shot.position)
+    shot.copy(position = newPos, age = shot.age + dt)
+  }
+
+  def stepPlayerEntity(dt: Float, playerEntity: PlayerEntity) = {
+    val newPos = playerEntity.velocity.cpy()
+                 .scl(dt)
+                 .add(playerEntity.position)
+    playerEntity.copy(position = newPos)
+  }
+
+
   eventBus.subscribe((_: ShutdownEvent) => shutdown())
 
   eventBus.subscribe((e: PlayerJoined) => {
@@ -76,34 +114,4 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   eventBus.subscribe((e: InputCommandReceivedEvent) => {
     _clientInputState += e.playerId -> _clientInputState(e.playerId).accumulate(e.command)
   })
-
-
-  def processInput(dt: Float, snapshot: Snapshot): Snapshot = {
-    var nextSnapshot = snapshot
-
-    _clientInputState = _clientInputState.map { case (id, state) =>
-      nextSnapshot = nextSnapshot.aim(id, state.aimDirection)
-
-      if (state.firing)
-        nextSnapshot = nextSnapshot.addShot(id, state.aimDirection)
-
-      id -> state.nextFrame(dt)
-    }
-
-    nextSnapshot
-  }
-
-
-  def step(dt: Float, snapshot: Snapshot): Snapshot = {
-    snapshot.copy(
-      shots = snapshot.shots.map(s => stepShot(dt, s)).filter(_.isAlive)
-    )
-  }
-
-  def stepShot(dt: Float, shot: Shot) = {
-    val newpos = shot.direction.cpy()
-                 .scl(Shot.SHOT_SPEED * dt)
-                 .add(shot.position)
-    shot.copy(position = newpos, age = shot.age + dt)
-  }
 }
