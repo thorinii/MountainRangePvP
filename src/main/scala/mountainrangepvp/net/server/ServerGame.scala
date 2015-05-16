@@ -84,10 +84,12 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   }
 
   def stepPlayerEntity(dt: Float, playerEntity: PlayerEntity) = {
-    val newPos = playerEntity.velocity.cpy()
+    val newVel = playerEntity.velocity.cpy()
+                  .add(0, -9.81f * 1)
+    val newPos = newVel.cpy()
                  .scl(dt)
                  .add(playerEntity.position)
-    playerEntity.copy(position = newPos)
+    playerEntity.copy(position = newPos, velocity = newVel)
   }
 
 
