@@ -98,24 +98,55 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   }
 
   def stepPlayerEntity(dt: Float, playerEntity: PlayerEntity) = {
+    val oldX = playerEntity.position.x
+
     val newVel = playerEntity.velocity.cpy()
-                 .add(0, -9.81f * 10)
+                 .add(0, if (playerEntity.onGround) 0 else -9.81f * 15)
     val newPos = newVel.cpy()
                  .scl(dt)
                  .add(playerEntity.position)
 
-    val slice = _terrain.getSlice(newPos.x.toInt, PlayerEntity.Width)
-    val highestPoint = slice.getHighestPoint
-    val onGround = newPos.y < highestPoint
+    var slice: Terrain#Slice = null
+    var unwalkable = true
+    var movements = 0
+    do {
+      slice = _terrain.getSlice(newPos.x.toInt, PlayerEntity.Width)
 
-    if (onGround) {
-      newPos.y = highestPoint
-      if (newVel.y < 0 || newVel.y < 1)
-        newVel.y = 0
+      val highestPoint = slice.getHighestPoint
+      unwalkable = highestPoint > newPos.y + PlayerEntity.MaxWalkingGradient
+      if (unwalkable) {
+        val maxHeightAllowed = PlayerEntity.MaxWalkingGradient + newPos.y.toInt
+        val left = slice.getLeftIndexAbove(maxHeightAllowed)
+        val right = slice.getRightIndexAbove(maxHeightAllowed)
+
+        if (left > 0) {
+          if (left < 20)
+            newPos.x += left
+          else
+            newPos.x -= PlayerEntity.Width - left + 1
+        } else if (right < PlayerEntity.Width - 1) {
+          if (right > 20)
+            newPos.x -= PlayerEntity.Width - right
+          else
+            newPos.x += right + 1
+        } else {
+          println(left + " - " + right)
+          newPos.y = highestPoint
+        }
+      }
+
+      movements += 1
+    } while (unwalkable && movements < 100)
+
+    if ((oldX - newPos.x).abs > 20) {
+      newPos.x = oldX + 20 * Math.signum(oldX - newPos.x)
     }
 
-    if (newVel.x.abs < 1)
-      newVel.x = 0
+    val onGround = if (slice.getHighestPoint >= newPos.y) {
+      newPos.y = slice.getHighestPoint
+      newVel.y = newVel.y.max(0)
+      true
+    } else false
 
     playerEntity.copy(position = newPos, velocity = newVel, onGround = onGround)
   }
