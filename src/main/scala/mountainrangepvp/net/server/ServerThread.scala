@@ -24,6 +24,9 @@ object ServerThread {
             Thread.sleep((updateInterval * 1000).toInt)
           } catch {
             case _: InterruptedException => // do nothing; the while loop will stop when it's time
+            case e =>
+              log.crash("Uncaught exception in ServerThread", e)
+              throw e
           }
         }
       }
