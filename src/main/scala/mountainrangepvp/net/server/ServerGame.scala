@@ -106,44 +106,26 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
                  .scl(dt)
                  .add(playerEntity.position)
 
-    var slice: Terrain#Slice = null
-    var unwalkable = true
-    var movements = 0
-    do {
-      slice = _terrain.getSlice(newPos.x.toInt, PlayerEntity.Width)
+    var point = _terrain.getSample(newPos.x.toInt)
 
-      val highestPoint = slice.getHighestPoint
-      unwalkable = highestPoint > newPos.y + PlayerEntity.MaxWalkingGradient
-      if (unwalkable) {
-        val maxHeightAllowed = PlayerEntity.MaxWalkingGradient + newPos.y.toInt
-        val left = slice.getLeftIndexAbove(maxHeightAllowed)
-        val right = slice.getRightIndexAbove(maxHeightAllowed)
+    if (point - newPos.y > PlayerEntity.MaxWalkingGradient) {
+      val maxX = newPos.x
+      val direction = if (maxX < oldX) -1 else 1
+      newPos.x = oldX
 
-        if (left > 0) {
-          if (left < 20)
-            newPos.x += left
-          else
-            newPos.x -= PlayerEntity.Width - left + 1
-        } else if (right < PlayerEntity.Width - 1) {
-          if (right > 20)
-            newPos.x -= PlayerEntity.Width - right
-          else
-            newPos.x += right + 1
-        } else {
-          println(left + " - " + right)
-          newPos.y = highestPoint
-        }
+      var walkable = true
+      while (walkable) {
+        newPos.x += direction
+        point = _terrain.getSample(newPos.x.toInt)
+        walkable = point - newPos.y <= PlayerEntity.MaxWalkingGradient
       }
 
-      movements += 1
-    } while (unwalkable && movements < 100)
-
-    if ((oldX - newPos.x).abs > 20) {
-      newPos.x = oldX + 20 * Math.signum(oldX - newPos.x)
+      newPos.x -= direction
+      point = _terrain.getSample(newPos.x.toInt)
     }
 
-    val onGround = if (slice.getHighestPoint >= newPos.y) {
-      newPos.y = slice.getHighestPoint
+    val onGround = if (point > newPos.y) {
+      newPos.y = point
       newVel.y = newVel.y.max(0)
       true
     } else false
