@@ -22,10 +22,10 @@ class EventBus {
   private val allDispatchers: mutable.ListBuffer[EventHandler[Event]] = mutable.ListBuffer.empty
   private val pendingMessages: util.Queue[Event] = new LinkedBlockingQueue[Event]
   private val messagesPerFrame: AtomicInteger = new AtomicInteger(0)
-  private var _dispatchThread: Thread = Thread.currentThread()
+  private var _dispatchThread: Option[Thread] = None
 
   def setDispatchThread(t: Thread) = {
-    _dispatchThread = t
+    _dispatchThread = Some(t)
   }
 
   def subscribe[T <: Event](eventClass: Class[T], handler: EventHandler[T]): Unit = {
@@ -55,7 +55,7 @@ class EventBus {
   }
 
   def send(event: Event) = {
-    if (Thread.currentThread eq _dispatchThread) dispatch(event)
+    if (_dispatchThread.isDefined && (Thread.currentThread eq _dispatchThread.get)) dispatch(event)
     else pendingMessages.offer(event)
   }
 

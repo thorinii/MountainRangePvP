@@ -5,7 +5,7 @@ import java.time.Duration
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world._
-import mountainrangepvp.net.{MultiLagTimer, SnapshotMessage}
+import mountainrangepvp.net.{MultiLagTimer, PingMessage, PingedMessage, SnapshotMessage}
 
 /**
  * Container of game systems.
@@ -30,15 +30,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   private var _terrain: Terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
 
 
-  private val _multiLagTimer = MultiLagTimer()
+  private var _multiLagTimer = MultiLagTimer()
 
   def lag(client: ClientId): Option[Duration] = _multiLagTimer.lagFor(client)
-
-  def sendPingQuery(): Unit = {
-  }
-
-  def pong(id: ClientId, pingId: Int): Unit = {
-  }
 
 
   def shutdown() = {
@@ -46,6 +40,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   }
 
   def update(dt: Float) = {
+    sendPingQuery()
     eventBus.flushPendingMessages()
     _snapshot = processInput(dt, _snapshot)
 
@@ -59,6 +54,12 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     eventBus.resetMessagesPerFrame()
   }
 
+  private def sendPingQuery(): Unit = {
+    val now = System.currentTimeMillis()
+    _snapshot.players.foreach { id =>
+      _multiLagTimer = _multiLagTimer.start(id.id, now)(pingId => out.send(id.id, PingMessage(pingId)))
+    }
+  }
 
   def processInput(dt: Float, snapshot: Snapshot): Snapshot = {
     var nextSnapshot = snapshot
@@ -155,6 +156,11 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
       _snapshot.leave(e.id)
       .removePlayerEntity(e.id)
     _clientInputState -= e.id
+  })
+
+  eventBus.subscribe((e: PongEvent) => {
+    val now = System.currentTimeMillis()
+    _multiLagTimer = _multiLagTimer.stop(e.id, e.pingId, now) { time => out.send(e.id, PingedMessage(time)) }
   })
 
   eventBus.subscribe((e: InputCommandReceivedEvent) => {
