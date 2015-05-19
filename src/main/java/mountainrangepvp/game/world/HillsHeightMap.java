@@ -17,10 +17,15 @@ public class HillsHeightMap extends AbstractHeightMap {
 
     public HillsHeightMap(int originalSeed) {
         this.originalSeed = originalSeed;
-        this.seed = originalSeed ^ (originalSeed << 2) ^ (originalSeed << 4) ^ (originalSeed << 6) ^ (originalSeed << 8);
+        this.seed =
+                originalSeed ^
+                        ((originalSeed << 2) + 10) ^
+                        ((originalSeed << 4) + 883) ^
+                        ((originalSeed << 6) + 78) ^
+                        ((originalSeed << 8) + 43);
         this.noise = new Noise();
 
-        makeWalls = false;
+        makeWalls = true;
         origin = false;
     }
 
@@ -31,11 +36,6 @@ public class HillsHeightMap extends AbstractHeightMap {
 
     @Override
     public int getSample(int x) {
-        if(true)
-            return -10;
-
-        x = Math.abs(x);
-
         if (origin && x == 0) {
             return -10000;
         }
@@ -50,8 +50,7 @@ public class HillsHeightMap extends AbstractHeightMap {
         // Regular terrain
         return (int) (0.2f * sample(x)
                 + 0.8f * (sample(x - 1) + sample(x - 2) + sample(x - 3)
-                + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6) - 4100;
-
+                + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6);
     }
 
     private float sample(float x) {

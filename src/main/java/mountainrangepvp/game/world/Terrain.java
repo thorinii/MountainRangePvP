@@ -133,7 +133,7 @@ public class Terrain {
             return highest;
         }
 
-        public int getHighestIndex() {
+        public int getHighestLeftIndex() {
             int highest = get(0);
             int index = 0;
 
@@ -148,31 +148,47 @@ public class Terrain {
             return index;
         }
 
-        public int getLowestPoint() {
-            int lowest = get(0);
+        public int getLeftIndexAbove(int above) {
+            int lowest = Integer.MAX_VALUE;
+            int index = -1;
 
-            for (int i = 1; i < size; i++) {
+            for (int i = 0; i < size; i++) {
                 int p = get(i);
-                if (p < lowest)
-                    lowest = p;
-            }
-
-            return lowest;
-        }
-
-        public int getLowestIndex() {
-            int lowest = get(0);
-            int index = 0;
-
-            for (int i = 1; i < size; i++) {
-                int p = get(i);
-                if (p < lowest) {
+                if (p >= above && p < lowest) {
                     lowest = p;
                     index = i;
                 }
             }
 
             return index;
+        }
+
+        public int getRightIndexAbove(int above) {
+            int lowest = Integer.MAX_VALUE;
+            int index = -1;
+
+            for (int i = size - 1; i >= 0; i--) {
+                int p = get(i);
+                if (p >= above && p < lowest) {
+                    lowest = p;
+                    index = i;
+                }
+            }
+
+            return index;
+        }
+
+        public int getLowestPoint() {
+            int lowest = Integer.MAX_VALUE;
+
+            for (int i = 0; i < size; i++) {
+                int p = get(i);
+                if (p < lowest) {
+                    lowest = p;
+                }
+            }
+
+            return lowest;
         }
     }
 }
