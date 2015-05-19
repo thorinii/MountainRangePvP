@@ -44,7 +44,6 @@ object ServerThread {
       }
     }, "Server Update")
 
-    eventBus.setDispatchThread(thread)
     thread.start()
     localInterface
   }
