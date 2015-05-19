@@ -29,6 +29,8 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   private var _terrain: Terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
 
+  private val _physicsSystem = new PhysicsSystem
+
 
   private var _multiLagTimer = MultiLagTimer()
 
@@ -42,9 +44,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   def update(dt: Float) = {
     sendPingQuery()
     eventBus.flushPendingMessages()
-    _snapshot = processInput(dt, _snapshot)
 
-    _snapshot = step(dt, _snapshot)
+    _snapshot = processInput(dt, _snapshot)
+    _snapshot = _physicsSystem.step(dt, _terrain, _snapshot)
 
 
     if (_snapshot.seed != _terrain.getSeed)
@@ -81,57 +83,6 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     }
 
     nextSnapshot
-  }
-
-
-  def step(dt: Float, snapshot: Snapshot): Snapshot = {
-    snapshot.copy(
-      shots = snapshot.shots.map(s => stepShot(dt, s)).filter(_.isAlive),
-      playerEntities = snapshot.playerEntities.map(e => stepPlayerEntity(dt, e))
-    )
-  }
-
-  def stepShot(dt: Float, shot: Shot) = {
-    val newPos = shot.direction.cpy()
-                 .scl(Shot.SHOT_SPEED * dt)
-                 .add(shot.position)
-    shot.copy(position = newPos, age = shot.age + dt)
-  }
-
-  def stepPlayerEntity(dt: Float, playerEntity: PlayerEntity) = {
-    val oldX = playerEntity.position.x
-
-    val newVel = playerEntity.velocity.cpy()
-                 .add(0, if (playerEntity.onGround) 0 else -9.81f * 15)
-    val newPos = newVel.cpy()
-                 .scl(dt)
-                 .add(playerEntity.position)
-
-    var point = _terrain.getSample(newPos.x.toInt)
-
-    if (point - newPos.y > PlayerEntity.MaxWalkingGradient) {
-      val maxX = newPos.x
-      val direction = if (maxX < oldX) -1 else 1
-      newPos.x = oldX
-
-      var walkable = true
-      while (walkable) {
-        newPos.x += direction
-        point = _terrain.getSample(newPos.x.toInt)
-        walkable = point - newPos.y <= PlayerEntity.MaxWalkingGradient
-      }
-
-      newPos.x -= direction
-      point = _terrain.getSample(newPos.x.toInt)
-    }
-
-    val onGround = if (point > newPos.y) {
-      newPos.y = point
-      newVel.y = newVel.y.max(0)
-      true
-    } else false
-
-    playerEntity.copy(position = newPos, velocity = newVel, onGround = onGround)
   }
 
   private def lerp(x: Float, target: Float, alpha: Float) =
