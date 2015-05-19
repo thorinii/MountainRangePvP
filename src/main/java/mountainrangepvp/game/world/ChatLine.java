@@ -31,10 +31,6 @@ public class ChatLine {
         return text;
     }
 
-    public long getTime() {
-        return time;
-    }
-
     public boolean isOld() {
         return System.currentTimeMillis() - time > OLD_TIME;
     }
@@ -42,9 +38,5 @@ public class ChatLine {
     @Override
     public String toString() {
         return playerName + ": " + text;
-    }
-
-    public boolean isServer() {
-        return player == null;
     }
 }
