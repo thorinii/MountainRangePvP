@@ -2,6 +2,8 @@ package mountainrangepvp.net.server
 
 import mountainrangepvp.engine.util.{EventBus, Log}
 
+import scala.concurrent.duration._
+
 /**
  * The network-protocol agnostic thing that runs the world. All calls are asynchronous.
  */
@@ -17,15 +19,28 @@ object ServerThread {
 
     val thread = new Thread(new Runnable {
       override def run(): Unit = {
-        while (server.going) {
-          server.update(updateInterval)
-
-          try {
-            Thread.sleep((updateInterval * 1000).toInt)
-          } catch {
-            case _: InterruptedException => // do nothing; the while loop will stop when it's time
+        try {
+          while (server.going) {
+            frame()
           }
+        } catch {
+          case _: InterruptedException => // just kill the thread
+          case e: Exception =>
+            log.crash("Uncaught exception in ServerThread", e)
+            throw e
         }
+      }
+
+      private def frame() = {
+        val start = System.nanoTime()
+        server.update(updateInterval)
+        val end = System.nanoTime()
+
+        val delta = (end - start).nanos.toMillis
+        val sleep = (updateInterval * 1000).toInt - delta
+
+        if (sleep > 1)
+          Thread.sleep((updateInterval * 1000).toInt)
       }
     }, "Server Update")
 
@@ -33,4 +48,5 @@ object ServerThread {
     thread.start()
     localInterface
   }
+
 }
