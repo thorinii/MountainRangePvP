@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
-import mountainrangepvp.game.world.ClientId;
 import mountainrangepvp.game.world.PlayerEntity;
 import mountainrangepvp.game.world.Snapshot;
 import scala.collection.JavaConversions;
@@ -124,8 +123,8 @@ public class PlayerRenderer {
     private void drawDeathMessage() {
         textRenderer.setSize(50);
         textRenderer.drawStringCentred(batch, "You were shot",
-                                       (int) width / 2,
-                                       (int) height / 2);
+                                       width / 2,
+                                       height / 2);
         textRenderer.setSize(20);
     }
 }
