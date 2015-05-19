@@ -75,7 +75,7 @@ public class WorldRenderer {
         playerRenderer.render(scroll, session.getSnapshot(), session.localPlayerEntity().isDefined());
         chatRenderer.render(session.chatManager());
         leaderboardRenderer.render(scroll, session.playerManager());
-        miniMapRenderer.render(scroll, session.playerManager(), session.getTerrain());
+        miniMapRenderer.render(scroll, session.getSnapshot(), session.getTerrain());
 
         drawCrosshair();
 

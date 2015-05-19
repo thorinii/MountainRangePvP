@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.PlayerManager;
-import mountainrangepvp.game.world.Old_Player;
+import mountainrangepvp.game.world.PlayerEntity;
+import mountainrangepvp.game.world.Snapshot;
 import mountainrangepvp.game.world.Terrain;
 import mountainrangepvp.game.world.Terrain.Slice;
+import scala.collection.JavaConversions;
 
 /**
  * @author lachlan
@@ -47,13 +48,13 @@ public class MiniMapRenderer {
         };
     }
 
-    public void render(Vector2 scroll, PlayerManager playerManager, Terrain terrain) {
+    public void render(Vector2 scroll, Snapshot snapshot, Terrain terrain) {
         batch.begin();
         batch.draw(background, width - SHIFT - WIDTH, height - SHIFT - HEIGHT,
                    WIDTH, HEIGHT);
 
         drawTerrain(scroll, terrain);
-        drawPlayers(scroll, playerManager);
+        drawPlayers(scroll, snapshot);
 
         batch.draw(border, width - SHIFT - 20 - WIDTH,
                    height - SHIFT - 20 - HEIGHT,
@@ -90,12 +91,9 @@ public class MiniMapRenderer {
         }
     }
 
-    private void drawPlayers(Vector2 scroll, PlayerManager playerManager) {
-        for (Old_Player player : playerManager.getPlayers()) {
-            if (!player.isAlive())
-                continue;
-
-            Vector2 pos = player.getCentralPosition();
+    private void drawPlayers(Vector2 scroll, Snapshot snapshot) {
+        for (PlayerEntity player : JavaConversions.asJavaIterable(snapshot.playerEntities())) {
+            Vector2 pos = player.position().cpy();
             pos.sub(scroll);
 
             pos.x -= width / 2;
@@ -110,9 +108,9 @@ public class MiniMapRenderer {
             pos.x += width - SHIFT - WIDTH + WIDTH / 2;
             pos.y += height - SHIFT - HEIGHT + HEIGHT / 2;
 
-            Texture head = headTextures[player.getTeam().ordinal()];
+            Texture head = headTextures[0];
 
-            Vector2 dir = player.getGunDirection();
+            Vector2 dir = player.aim();
             batch.draw(head,
                        pos.x - head.getWidth() / 2,
                        pos.y - head.getHeight() / 2, // Position
