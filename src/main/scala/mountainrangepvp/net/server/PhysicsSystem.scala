@@ -1,5 +1,6 @@
 package mountainrangepvp.net.server
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.game.world._
 
 /**
@@ -9,51 +10,65 @@ class PhysicsSystem {
 
   def step(dt: Float, terrain: Terrain, snapshot: Snapshot): Snapshot = {
     snapshot.copy(
-      shots = snapshot.shots.map(s => stepShot(dt, s)).filter(_.isAlive),
-      playerEntities = snapshot.playerEntities.map(e => stepPlayerEntity(dt, terrain, e))
+      shots = snapshot.shots.map(s => stepEntity(dt, terrain, s)).filter(_.isAlive),
+      playerEntities = snapshot.playerEntities.map(e => stepEntity(dt, terrain, e))
     )
   }
 
-  def stepShot(dt: Float, shot: ShotEntity) = {
-    val newPos = shot.velocity.cpy()
-                 .scl(dt)
-                 .add(shot.position)
-    shot.copy(position = newPos, age = shot.age + dt)
+  private def stepEntity[T <: Entity](dt: Float, terrain: Terrain, entity: T): T = {
+    val gravity = entity.gravity
+
+    val nvel = entity.velocity.cpy()
+               .add(0, gravity)
+    val npos = nvel.cpy()
+               .scl(dt)
+               .add(entity.position)
+
+    val onGround = if (entity.standsOnTerrain) {
+      val standing = standOnGround(terrain, entity.position, npos)
+      if (standing)
+        nvel.y = 0
+      standing
+    } else {
+      collideWithGround(terrain, npos)
+    }
+
+    entity match {
+      case s: ShotEntity => s.next(dt, npos, nvel, onGround).asInstanceOf[T]
+      case p: PlayerEntity => p.next(dt, npos, nvel, onGround).asInstanceOf[T]
+    }
   }
 
-  def stepPlayerEntity(dt: Float, terrain: Terrain, playerEntity: PlayerEntity) = {
-    val oldX = playerEntity.position.x
+  private def standOnGround(terrain: Terrain, opos: Vector2, npos: Vector2) = {
+    val oldX = opos.x
 
-    val newVel = playerEntity.velocity.cpy()
-                 .add(0, if (playerEntity.onGround) 0 else -9.81f * 15)
-    val newPos = newVel.cpy()
-                 .scl(dt)
-                 .add(playerEntity.position)
+    var point = terrain.getSample(npos.x.toInt)
 
-    var point = terrain.getSample(newPos.x.toInt)
-
-    if (point - newPos.y > PlayerEntity.MaxWalkingGradient) {
-      val maxX = newPos.x
+    if (point - npos.y > PlayerEntity.MaxWalkingGradient) {
+      val maxX = npos.x
       val direction = if (maxX < oldX) -1 else 1
-      newPos.x = oldX
+      npos.x = oldX
 
       var walkable = true
       while (walkable) {
-        newPos.x += direction
-        point = terrain.getSample(newPos.x.toInt)
-        walkable = point - newPos.y <= PlayerEntity.MaxWalkingGradient
+        npos.x += direction
+        point = terrain.getSample(npos.x.toInt)
+        walkable = point - npos.y <= PlayerEntity.MaxWalkingGradient
       }
 
-      newPos.x -= direction
-      point = terrain.getSample(newPos.x.toInt)
+      npos.x -= direction
+      point = terrain.getSample(npos.x.toInt)
     }
 
-    val onGround = if (point > newPos.y) {
-      newPos.y = point
-      newVel.y = newVel.y.max(0)
+    val onGround = if (point > npos.y) {
+      npos.y = point
       true
     } else false
+    onGround
+  }
 
-    playerEntity.copy(position = newPos, velocity = newVel, onGround = onGround)
+  private def collideWithGround(terrain: Terrain, pos: Vector2) = {
+    var point = terrain.getSample(pos.x.toInt)
+    point > pos.y
   }
 }

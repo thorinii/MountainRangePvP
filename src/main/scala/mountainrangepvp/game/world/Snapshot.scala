@@ -29,7 +29,7 @@ case class Snapshot(seed: Int,
   def addShot(entityId: Long, playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =
     copy(shots = shots + ShotEntity(entityId, playerId,
                                     base, direction.cpy().scl(ShotEntity.Speed),
-                                    0f))
+                                    false, 0f))
 
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =

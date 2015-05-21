@@ -115,17 +115,18 @@ object MessageCodec {
   private def readPlayer(buf: ByteBuf) = Player(readId(buf), readString(buf))
 
 
-  private def writeShot(buf: ByteBuf, shot: ShotEntity) = {
-    buf.writeLong(shot.id)
-    writeId(buf, shot.owner)
-    writeVector(buf, shot.position)
-    writeVector(buf, shot.velocity)
-    buf.writeFloat(shot.age)
+  private def writeShot(buf: ByteBuf, e: ShotEntity) = {
+    buf.writeLong(e.id)
+    writeId(buf, e.owner)
+    writeVector(buf, e.position)
+    writeVector(buf, e.velocity)
+    buf.writeBoolean(e.onGround)
+    buf.writeFloat(e.age)
   }
 
   private def readShot(buf: ByteBuf) = ShotEntity(buf.readLong(), readId(buf),
                                                   readVector(buf), readVector(buf),
-                                                  buf.readFloat())
+                                                  buf.readBoolean(), buf.readFloat())
 
 
   private def writePlayerEntity(buf: ByteBuf, e: PlayerEntity) = {
