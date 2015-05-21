@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
-import mountainrangepvp.game.world.ClientId;
 import mountainrangepvp.game.world.PlayerEntity;
 import mountainrangepvp.game.world.Snapshot;
 import scala.collection.JavaConversions;
@@ -46,21 +45,7 @@ public class PlayerRenderer {
                 "player/spawn-bubble.png"));
     }
 
-    public void render(Vector2 scroll, Snapshot snapshot, boolean alive) {
-        batch.begin();
-
-        for (PlayerEntity player : JavaConversions.asJavaIterable(snapshot.playerEntities())) {
-            String nickname = snapshot.nicknameFor(player.player());
-            drawPlayer(player, nickname, scroll);
-        }
-
-        if (!alive)
-            drawDeathMessage();
-
-        batch.end();
-    }
-
-    private void drawPlayer(PlayerEntity player, String nickname, Vector2 scroll) {
+    public void renderPlayer(Vector2 scroll, PlayerEntity player, String nickname) {
         Texture tex = bodyTextures[0];
 
         Vector2 pos = player.position().cpy();
@@ -119,13 +104,5 @@ public class PlayerRenderer {
         textRenderer.drawString(batch, nickname,
                                 (int) pos.x,
                                 (int) pos.y + PLAYER_HEIGHT + 20);
-    }
-
-    private void drawDeathMessage() {
-        textRenderer.setSize(50);
-        textRenderer.drawStringCentred(batch, "You were shot",
-                                       (int) width / 2,
-                                       (int) height / 2);
-        textRenderer.setSize(20);
     }
 }

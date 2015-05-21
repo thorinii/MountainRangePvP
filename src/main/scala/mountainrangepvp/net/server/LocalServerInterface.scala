@@ -36,8 +36,8 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
     case LoginMessage(checkCode, version, nickname) =>
       eventBus.send(PlayerJoined(client, nickname))
 
-    case PongMessage(id) =>
-    // TODO: send to ServerGame
+    case PongMessage(pingId) =>
+      eventBus.send(PongEvent(client, pingId))
 
     case CommandMessage(command) =>
       eventBus.send(InputCommandReceivedEvent(client, command))
@@ -45,7 +45,7 @@ class LocalServerInterface(log: Log, eventBus: EventBus) extends ServerInterface
 
 
   override def send(id: ClientId, message: ToClientMessage): Unit = {
-    interfaces(id).deliver(message)
+    interfaces.get(id).foreach(_.deliver(message))
   }
 
   override def sendToAll(message: ToClientMessage): Unit = {

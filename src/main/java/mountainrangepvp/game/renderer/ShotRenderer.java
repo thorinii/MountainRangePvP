@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.Shot;
+import mountainrangepvp.game.world.ShotEntity;
 import mountainrangepvp.game.world.Snapshot;
 import scala.collection.JavaConversions;
 
@@ -22,27 +22,20 @@ public class ShotRenderer {
         shotTexture = new Texture(Gdx.files.internal("shot/shot.png"));
     }
 
-    public void render(final Vector2 scroll, Snapshot snapshot) {
-        batch.begin();
+    public void renderShot(Vector2 scroll, ShotEntity shot) {
+        Vector2 position = shot.position().cpy()
+                .sub(scroll);
 
-        Vector2 position = new Vector2();
-        for (Shot shot : JavaConversions.asJavaIterable(snapshot.shots())) {
-            position.set(shot.position())
-                    .sub(scroll);
+        float angle = shot.velocity().angle();
 
-            Vector2 dir = shot.direction();
-
-            batch.draw(shotTexture,
-                       position.x, position.y,
-                       0, 0, // Origin
-                       shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
-                       1, 1, // Scale
-                       dir.angle(), // Rotation
-                       0, 0, // Src XY
-                       shotTexture.getWidth(), shotTexture.getHeight(), // Src WH
-                       false, false); // Flip
-        }
-
-        batch.end();
+        batch.draw(shotTexture,
+                   position.x, position.y,
+                   0, 0, // Origin
+                   shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
+                   1, 1, // Scale
+                   angle, // Rotation
+                   0, 0, // Src XY
+                   shotTexture.getWidth(), shotTexture.getHeight(), // Src WH
+                   false, false); // Flip
     }
 }

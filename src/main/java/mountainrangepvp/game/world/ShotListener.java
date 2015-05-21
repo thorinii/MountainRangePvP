@@ -5,9 +5,9 @@ package mountainrangepvp.game.world;
  */
 public interface ShotListener {
 
-    public void shotAdd(Shot shot);
+    public void shotAdd(ShotEntity shot);
 
-    public void shotTerrainCollision(Shot shot);
+    public void shotTerrainCollision(ShotEntity shot);
 
-    public void shotPlayerCollision(Shot shot, Old_Player player);
+    public void shotPlayerCollision(ShotEntity shot, Old_Player player);
 }

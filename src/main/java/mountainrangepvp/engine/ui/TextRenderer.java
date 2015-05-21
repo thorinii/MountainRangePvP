@@ -14,7 +14,6 @@ public class TextRenderer {
     private final FreeTypeFontGenerator generator;
     private final BitmapFont[] fonts;
     private BitmapFont current;
-    private Color c;
 
     public TextRenderer() {
         generator = new FreeTypeFontGenerator(Gdx.files.

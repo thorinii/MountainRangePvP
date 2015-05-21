@@ -31,8 +31,7 @@ public class WorldRenderer {
 
     private final BackgroundRenderer backgroundRenderer;
     private final TerrainRenderer terrainRenderer;
-    private final PlayerRenderer playerRenderer;
-    private final ShotRenderer shotRenderer;
+    private final EntityRenderer entityRenderer;
     private final ChatRenderer chatRenderer;
     private final MiniMapRenderer miniMapRenderer;
     private final LeaderboardRenderer leaderboardRenderer;
@@ -58,8 +57,7 @@ public class WorldRenderer {
 
         backgroundRenderer = new BackgroundRenderer(batch);
         terrainRenderer = new TerrainRenderer(batch);
-        playerRenderer = new PlayerRenderer(batch, textRenderer);
-        shotRenderer = new ShotRenderer(batch);
+        entityRenderer = new EntityRenderer(batch, textRenderer);
         chatRenderer = new ChatRenderer(batch, textRenderer);
         miniMapRenderer = new MiniMapRenderer(batch);
         leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer);
@@ -70,9 +68,8 @@ public class WorldRenderer {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         backgroundRenderer.render(scroll);
-        shotRenderer.render(scroll, session.getSnapshot());
+        entityRenderer.render(scroll, session.getSnapshot(), session.localPlayerEntity().isDefined());
         terrainRenderer.render(scroll, session.getTerrain());
-        playerRenderer.render(scroll, session.getSnapshot(), session.localPlayerEntity().isDefined());
         chatRenderer.render(session.chatManager());
         leaderboardRenderer.render(scroll, session.playerManager());
         miniMapRenderer.render(scroll, session.getSnapshot(), session.getTerrain());
@@ -80,7 +77,7 @@ public class WorldRenderer {
         drawCrosshair();
 
         String pingMillis = String.valueOf(pingTime.toMillis());
-        int entityCount = session.getSnapshot().playerEntities().size() + session.getSnapshot().shots().size();
+        int entityCount = session.getSnapshot().entities().size();
 
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);

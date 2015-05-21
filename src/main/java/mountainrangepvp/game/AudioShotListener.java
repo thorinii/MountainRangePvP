@@ -18,7 +18,7 @@ public class AudioShotListener implements ShotListener {
     }
 
     @Override
-    public void shotAdd(Shot shot) {
+    public void shotAdd(ShotEntity shot) {
         Old_Player lp = playerManager.getLocalPlayer();
 
         Vector2 diff = shot.position().cpy().sub(lp.getPosition());
@@ -26,10 +26,10 @@ public class AudioShotListener implements ShotListener {
     }
 
     @Override
-    public void shotTerrainCollision(Shot shot) {
+    public void shotTerrainCollision(ShotEntity shot) {
     }
 
     @Override
-    public void shotPlayerCollision(Shot shot, Old_Player player) {
+    public void shotPlayerCollision(ShotEntity shot, Old_Player player) {
     }
 }
