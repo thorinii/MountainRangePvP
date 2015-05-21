@@ -12,9 +12,18 @@ import mountainrangepvp.net.{MultiLagTimer, PingMessage, PingedMessage, Snapshot
  */
 class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
+  private var _nextEntityId: Long = 0
+
+  private val idGenerator = () => {
+    val id = _nextEntityId
+    _nextEntityId += 1
+    id
+  }
+
+
   private val _physicsSystem = new PhysicsSystem
 
-  private val _inputSystem = new InputSystem
+  private val _inputSystem = new InputSystem(idGenerator)
 
 
   private var _going = true
@@ -25,9 +34,6 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
   private val _emptySnapshot = Snapshot.empty(0, teamsOn = false)
 
   private var _snapshot = _emptySnapshot
-
-
-  private var _nextEntityId: Long = 0
 
 
   private var _terrain: Terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
@@ -70,10 +76,8 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     log.info(e.id + " " + e.nickname + " connected")
     _snapshot =
       _snapshot.join(e.id, e.nickname)
-      .addPlayerEntity(_nextEntityId, e.id, new Vector2((Math.random() * 800 - 40).toFloat, 100))
+      .addPlayerEntity(idGenerator(), e.id, new Vector2((Math.random() * 800 - 40).toFloat, 100))
     _inputSystem.join(e.id)
-
-    _nextEntityId += 1
   })
 
   eventBus.subscribe((e: PlayerLeft) => {

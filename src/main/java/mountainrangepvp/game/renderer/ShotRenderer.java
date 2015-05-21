@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.Shot;
+import mountainrangepvp.game.world.ShotEntity;
 import mountainrangepvp.game.world.Snapshot;
 import scala.collection.JavaConversions;
 
@@ -26,7 +26,7 @@ public class ShotRenderer {
         batch.begin();
 
         Vector2 position = new Vector2();
-        for (Shot shot : JavaConversions.asJavaIterable(snapshot.shots())) {
+        for (ShotEntity shot : JavaConversions.asJavaIterable(snapshot.shots())) {
             position.set(shot.position())
                     .sub(scroll);
 

@@ -1,6 +1,6 @@
 package mountainrangepvp.net.server
 
-import mountainrangepvp.game.world.{Snapshot, Shot, Terrain, PlayerEntity}
+import mountainrangepvp.game.world._
 
 /**
  * Steps the entities forward and computes collisions.
@@ -14,9 +14,9 @@ class PhysicsSystem {
     )
   }
 
-  def stepShot(dt: Float, shot: Shot) = {
+  def stepShot(dt: Float, shot: ShotEntity) = {
     val newPos = shot.direction.cpy()
-                 .scl(Shot.SHOT_SPEED * dt)
+                 .scl(ShotEntity.SHOT_SPEED * dt)
                  .add(shot.position)
     shot.copy(position = newPos, age = shot.age + dt)
   }
