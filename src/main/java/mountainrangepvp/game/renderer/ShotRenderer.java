@@ -30,14 +30,14 @@ public class ShotRenderer {
             position.set(shot.position())
                     .sub(scroll);
 
-            Vector2 dir = shot.direction();
+            float angle = shot.velocity().angle();
 
             batch.draw(shotTexture,
                        position.x, position.y,
                        0, 0, // Origin
                        shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
                        1, 1, // Scale
-                       dir.angle(), // Rotation
+                       angle, // Rotation
                        0, 0, // Src XY
                        shotTexture.getWidth(), shotTexture.getHeight(), // Src WH
                        false, false); // Flip
