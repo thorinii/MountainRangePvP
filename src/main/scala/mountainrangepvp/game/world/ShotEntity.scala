@@ -12,8 +12,15 @@ object ShotEntity {
 
 case class ShotEntity(id: Long, owner: ClientId,
                       position: Vector2, velocity: Vector2,
-                      age: Float) extends Entity {
+                      onGround: Boolean, age: Float) extends Entity {
   var time = 0f
 
   def isAlive = age < ShotEntity.MaxAge
+
+  val gravity = 0f
+
+  val standsOnTerrain = false
+
+  def next(dt: Float, npos: Vector2, nvel: Vector2, onGround: Boolean) =
+    copy(position = npos, velocity = nvel, age = age + dt, onGround = onGround)
 }
