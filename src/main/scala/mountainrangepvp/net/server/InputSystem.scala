@@ -5,7 +5,7 @@ import mountainrangepvp.game.world.{ClientId, InputCommand, PlayerEntity, Snapsh
 /**
  * Created by lachlan on 21/05/15.
  */
-class InputSystem {
+class InputSystem(idGenerator: () => Long) {
   private var clientInputState: Map[ClientId, InputState] = Map.empty
 
   def join(id: ClientId) =
@@ -35,7 +35,7 @@ class InputSystem {
     next = next.updatePlayer(id, e => processPlayerMovement(state, e))
 
     if (state.firing)
-      next = next.addShot(id, state.aimDirection)
+      next = next.addShot(idGenerator(), id, state.aimDirection)
 
     (next, state.nextFrame(dt))
   }

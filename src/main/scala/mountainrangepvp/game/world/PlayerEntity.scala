@@ -13,8 +13,9 @@ object PlayerEntity {
   val MaxWalkingGradient = 30
 }
 
-case class PlayerEntity(entityId: Long, player: ClientId,
+case class PlayerEntity(id: Long, player: ClientId,
                         position: Vector2, aim: Vector2,
-                        velocity: Vector2, onGround: Boolean) {
+                        velocity: Vector2, onGround: Boolean) extends Entity {
+
   // TODO: add gun height vector lazy val
 }

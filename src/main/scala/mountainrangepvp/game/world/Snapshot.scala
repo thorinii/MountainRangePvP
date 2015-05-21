@@ -14,20 +14,20 @@ case class Snapshot(seed: Int,
                     teamsOn: Boolean,
                     players: Set[Player],
                     playerEntities: Set[PlayerEntity],
-                    shots: Set[Shot]) {
+                    shots: Set[ShotEntity]) {
 
   def join(playerId: ClientId, nickname: String) = copy(players = players + Player(playerId, nickname))
 
   def leave(playerId: ClientId) = copy(players = players.filterNot(_.id == playerId))
 
 
-  def addShot(playerId: ClientId, direction: Vector2): Snapshot =
-    addShot(playerId,
+  def addShot(entityId: Long, playerId: ClientId, direction: Vector2): Snapshot =
+    addShot(entityId, playerId,
             playerEntities.find(_.player == playerId).map(_.position).getOrElse(new Vector2(0, 0)),
             direction)
 
-  def addShot(playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =
-    copy(shots = shots + Shot(playerId, base, direction, 0f))
+  def addShot(entityId: Long, playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =
+    copy(shots = shots + ShotEntity(entityId, playerId, base, direction, 0f))
 
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
