@@ -15,8 +15,8 @@ class PhysicsSystem {
   }
 
   def stepShot(dt: Float, shot: ShotEntity) = {
-    val newPos = shot.direction.cpy()
-                 .scl(ShotEntity.SHOT_SPEED * dt)
+    val newPos = shot.velocity.cpy()
+                 .scl(dt)
                  .add(shot.position)
     shot.copy(position = newPos, age = shot.age + dt)
   }

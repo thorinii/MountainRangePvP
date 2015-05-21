@@ -8,4 +8,5 @@ import com.badlogic.gdx.math.Vector2
 abstract class Entity {
   val id: Long
   val position: Vector2
+  val velocity: Vector2
 }
