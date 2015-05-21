@@ -93,18 +93,14 @@ object MessageCodec {
     buf.writeInt(snapshot.players.size)
     for (p <- snapshot.players) writePlayer(buf, p)
 
-    buf.writeInt(snapshot.playerEntities.size)
-    for (e <- snapshot.playerEntities) writePlayerEntity(buf, e)
-
-    buf.writeInt(snapshot.shots.size)
-    for (s <- snapshot.shots) writeShot(buf, s)
+    buf.writeInt(snapshot.entities.size)
+    for (e <- snapshot.entities) writeEntity(buf, e)
   }
 
   private def readSnapshot(buf: ByteBuf) = {
     Snapshot(buf.readInt(), buf.readBoolean(),
              0.until(buf.readInt()).map(_ => readPlayer(buf)).toSet,
-             0.until(buf.readInt()).map(_ => readPlayerEntity(buf)).toSet,
-             0.until(buf.readInt()).map(_ => readShot(buf)).toSet)
+             0.until(buf.readInt()).map(_ => readEntity(buf)).toSet)
   }
 
   private def writePlayer(buf: ByteBuf, player: Player) = {
@@ -113,6 +109,24 @@ object MessageCodec {
   }
 
   private def readPlayer(buf: ByteBuf) = Player(readId(buf), readString(buf))
+
+
+  private def writeEntity(buf: ByteBuf, e: Entity) = e match {
+    case s: ShotEntity =>
+      buf.writeByte(1)
+      writeShot(buf, s)
+
+    case p: PlayerEntity =>
+      buf.writeByte(2)
+      writePlayerEntity(buf, p)
+  }
+
+  private def readEntity(buf: ByteBuf) = {
+    buf.readInt() match {
+      case 1 => readShot(buf)
+      case 2 => readPlayerEntity(buf)
+    }
+  }
 
 
   private def writeShot(buf: ByteBuf, e: ShotEntity) = {

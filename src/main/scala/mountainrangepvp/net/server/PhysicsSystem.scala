@@ -10,12 +10,11 @@ class PhysicsSystem {
 
   def step(dt: Float, terrain: Terrain, snapshot: Snapshot): Snapshot = {
     snapshot.copy(
-      shots = snapshot.shots.map(s => stepEntity(dt, terrain, s)).filter(_.isAlive),
-      playerEntities = snapshot.playerEntities.map(e => stepEntity(dt, terrain, e))
+      entities = snapshot.entities.map(e => stepEntity(dt, terrain, e))
     )
   }
 
-  private def stepEntity[T <: Entity](dt: Float, terrain: Terrain, entity: T): T = {
+  private def stepEntity(dt: Float, terrain: Terrain, entity: Entity): Entity = {
     val gravity = entity.gravity
 
     val nvel = entity.velocity.cpy()
@@ -27,15 +26,15 @@ class PhysicsSystem {
     val onGround = if (entity.standsOnTerrain) {
       val standing = standOnGround(terrain, entity.position, npos)
       if (standing)
-        nvel.y = 0
+        nvel.y = nvel.y.max(0)
       standing
     } else {
       collideWithGround(terrain, npos)
     }
 
     entity match {
-      case s: ShotEntity => s.next(dt, npos, nvel, onGround).asInstanceOf[T]
-      case p: PlayerEntity => p.next(dt, npos, nvel, onGround).asInstanceOf[T]
+      case s: ShotEntity => s.next(dt, npos, nvel, onGround)
+      case p: PlayerEntity => p.next(dt, npos, nvel, onGround)
     }
   }
 

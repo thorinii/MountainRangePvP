@@ -18,9 +18,7 @@ class EntityRenderer(batch: SpriteBatch, textRenderer: TextRenderer) {
   def render(scroll: Vector2, snapshot: Snapshot, isLocalPlayerAlive: Boolean) = {
     batch.begin()
 
-    for (e <- snapshot.playerEntities)
-      renderEntity(snapshot, scroll, e)
-    for (e <- snapshot.shots)
+    for (e <- snapshot.entities)
       renderEntity(snapshot, scroll, e)
 
     if (!isLocalPlayerAlive) drawDeathMessage()

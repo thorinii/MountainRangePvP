@@ -77,7 +77,7 @@ public class WorldRenderer {
         drawCrosshair();
 
         String pingMillis = String.valueOf(pingTime.toMillis());
-        int entityCount = session.getSnapshot().playerEntities().size() + session.getSnapshot().shots().size();
+        int entityCount = session.getSnapshot().entities().size();
 
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);

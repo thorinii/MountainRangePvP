@@ -7,14 +7,15 @@ import com.badlogic.gdx.math.Vector2
  */
 object Snapshot {
   def empty(seed: Int, teamsOn: Boolean) = Snapshot(seed, teamsOn,
-                                                    Set.empty, Set.empty, Set.empty)
+                                                    Set.empty, Set.empty)
 }
 
 case class Snapshot(seed: Int,
                     teamsOn: Boolean,
                     players: Set[Player],
-                    playerEntities: Set[PlayerEntity],
-                    shots: Set[ShotEntity]) {
+                    entities: Set[Entity]) {
+
+  lazy val playerEntities = entities.filter(_.isInstanceOf[PlayerEntity]).map(_.asInstanceOf[PlayerEntity])
 
   def join(playerId: ClientId, nickname: String) = copy(players = players + Player(playerId, nickname))
 
@@ -23,31 +24,40 @@ case class Snapshot(seed: Int,
 
   def addShot(entityId: Long, playerId: ClientId, direction: Vector2): Snapshot =
     addShot(entityId, playerId,
-            playerEntities.find(_.player == playerId).map(_.position).getOrElse(new Vector2(0, 0)),
+            getPlayerEntity(playerId).map(_.position).getOrElse(new Vector2(0, 0)),
             direction)
 
   def addShot(entityId: Long, playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =
-    copy(shots = shots + ShotEntity(entityId, playerId,
-                                    base, direction.cpy().scl(ShotEntity.Speed),
-                                    false, 0f))
+    copy(entities = entities + ShotEntity(entityId, playerId,
+                                          base, direction.cpy().scl(ShotEntity.Speed),
+                                          false, 0f))
 
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
-    copy(playerEntities = playerEntities + PlayerEntity(entityId, playerId,
-                                                        position, new Vector2(0, 0),
-                                                        new Vector2(0, 0), false))
+    copy(entities = entities + PlayerEntity(entityId, playerId,
+                                            position, new Vector2(0, 0),
+                                            new Vector2(0, 0), false))
 
   def removePlayerEntity(playerId: ClientId) =
-    copy(playerEntities = playerEntities.filterNot(_.player == playerId))
+    copy(entities = entities.filterNot {
+      case PlayerEntity(_, pid, _, _, _, _) => pid == playerId
+      case _ => false
+    })
 
-  def getPlayerEntity(playerId: ClientId) = playerEntities.find(_.player == playerId)
+  def getPlayerEntity(playerId: ClientId) = entities.find {
+    case PlayerEntity(_, pid, _, _, _, _) => pid == playerId
+    case _ => false
+  }.map(_.asInstanceOf[PlayerEntity])
 
 
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
 
 
   def updatePlayer(playerId: ClientId, f: PlayerEntity => PlayerEntity) =
-    copy(playerEntities = playerEntities.map(e => if (e.player == playerId) f(e) else e))
+    copy(entities = entities.map {
+      case p@PlayerEntity(_, pid, _, _, _, _) if (pid == playerId) => f(p)
+      case e => e
+    })
 }
 
 case class Player(id: ClientId, nickname: String)
