@@ -1,5 +1,6 @@
 package mountainrangepvp.net.server
 
+import com.badlogic.gdx.math.MathUtils
 import mountainrangepvp.game.world.{ClientId, InputCommand, PlayerEntity, Snapshot}
 
 /**
@@ -44,7 +45,7 @@ class InputSystem(idGenerator: () => Long) {
     val newVel = e.velocity.cpy()
 
     if (newVel.x.abs <= PlayerEntity.RunSpeed)
-      newVel.x = lerp(newVel.x, state.run * PlayerEntity.RunSpeed, if (e.onGround) 0.5f else 0.1f)
+      newVel.x = MathUtils.lerp(newVel.x, state.run * PlayerEntity.RunSpeed, if (e.onGround) 0.5f else 0.1f)
 
     if (state.jump && e.onGround)
       newVel.y += PlayerEntity.JumpImpulse
@@ -52,8 +53,4 @@ class InputSystem(idGenerator: () => Long) {
     e.copy(aim = state.aimPoint.cpy().add(0, -PlayerEntity.GunHeight).nor(),
            velocity = newVel)
   }
-
-
-  private def lerp(x: Float, target: Float, alpha: Float) =
-    x + alpha * (target - x)
 }
