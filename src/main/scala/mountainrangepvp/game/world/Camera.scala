@@ -6,9 +6,9 @@ import com.badlogic.gdx.math.{MathUtils, Vector2}
  * Holds the point the camera is centred on.
  */
 case class Camera(centre: Vector2) {
-  val RunningLookAhead = 250
-  val AimingLookAhead = 100
-  val VerticalShift = +70
+  val RunningLookAhead = 170
+  val AimingLookAhead = 70
+  val VerticalShift = +50
 
   def centreOn(player: PlayerEntity) = {
     val target = player.position.cpy()
