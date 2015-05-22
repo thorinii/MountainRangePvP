@@ -35,12 +35,12 @@ class InputSystem(idGenerator: () => Long) {
     next = next.updatePlayer(id, e => processPlayerMovement(state, e))
 
     if (state.firing)
-      next = next.addShot(idGenerator(), id, state.aimDirection)
+      next = next.addShot(idGenerator(), id, state.aimPoint.cpy().add(0, -PlayerEntity.GunHeight).nor())
 
     (next, state.nextFrame(dt))
   }
 
-  private def processPlayerMovement(state:InputState, e: PlayerEntity): PlayerEntity = {
+  private def processPlayerMovement(state: InputState, e: PlayerEntity): PlayerEntity = {
     val newVel = e.velocity.cpy()
 
     if (newVel.x.abs <= PlayerEntity.RunSpeed)
@@ -49,7 +49,8 @@ class InputSystem(idGenerator: () => Long) {
     if (state.jump && e.onGround)
       newVel.y += PlayerEntity.JumpImpulse
 
-    e.copy(aim = state.aimDirection, velocity = newVel)
+    e.copy(aim = state.aimPoint.cpy().add(0, -PlayerEntity.GunHeight).nor(),
+           velocity = newVel)
   }
 
 

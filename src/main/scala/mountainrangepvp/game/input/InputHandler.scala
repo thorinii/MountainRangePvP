@@ -2,7 +2,8 @@ package mountainrangepvp.game.input
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
-import mountainrangepvp.engine.input.{Bindings, InputMapper, StateAccumulatingInputProcessor}
+import com.badlogic.gdx.math.Vector2
+import mountainrangepvp.engine.input.{Bindings, InputMapper, InputState, StateAccumulatingInputProcessor}
 import mountainrangepvp.engine.util.EventBus
 import mountainrangepvp.game.world._
 
@@ -14,11 +15,11 @@ class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
     Gdx.input.setInputProcessor(inputProcessor)
   }
 
-  def update(dt: Float): Unit = {
+  def update(dt: Float, camera: Vector2): Unit = {
     val rawState = inputProcessor.getState
     val inputState = inputMapper.map(rawState)
 
-    val aim = rawState.mouse.cpy().sub(screenWidth / 2, screenHeight / 2).nor()
+    val aim = crosshairRelativeToPlayer(camera, rawState)
     val run = (if (inputState("left")) -1 else 0) + (if (inputState("right")) 1 else 0)
 
     eventBus.send(InputCommandEvent(
@@ -27,6 +28,11 @@ class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
                    fire = inputState("fire"),
                    aimDirection = aim)))
   }
+
+  def crosshairRelativeToPlayer(camera: Vector2, rawState: InputState): Vector2 =
+    rawState.mouse.cpy()
+    .sub(screenWidth / 2, screenHeight / 2)
+    .add(camera)
 
 
   inputMapper.addState("fire")

@@ -90,7 +90,7 @@ public class ClientGame {
         eventBus.flushPendingMessages();
 
         if (session != null) {
-            inputHandler.update(config.TIMESTEP);
+            inputHandler.update(config.TIMESTEP, session.getCameraRelativeToPlayer());
             session.update(dt);
         }
 

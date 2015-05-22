@@ -24,7 +24,7 @@ case class Snapshot(seed: Int,
 
   def addShot(entityId: Long, playerId: ClientId, direction: Vector2): Snapshot =
     addShot(entityId, playerId,
-            getPlayerEntity(playerId).map(_.position).getOrElse(new Vector2(0, 0)),
+            getPlayerEntity(playerId).map(_.position).getOrElse(Vector2.Zero).cpy().add(0, PlayerEntity.GunHeight),
             direction)
 
   def addShot(entityId: Long, playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =

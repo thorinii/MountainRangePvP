@@ -30,6 +30,8 @@ class Session(log: Log, eventBus: EventBus,
 
   def getCameraCentre = camera.centre
 
+  def getCameraRelativeToPlayer = getCameraCentre.cpy().sub(localPlayerEntity.map(_.position).getOrElse(Vector2.Zero))
+
   def localPlayerEntity: Option[PlayerEntity] = snapshot.getPlayerEntity(localId)
 
   def update(dt: Float) = {
