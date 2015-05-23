@@ -21,14 +21,14 @@ case class InputState(private val runRaw: Float,
                       jump: Boolean,
                       private val fire: Boolean,
                       private val fireTimer: Float,
-                      aimDirection: Vector2,
+                      aimPoint: Vector2,
                       private val acc: Int) {
   def accumulate(command: InputCommand): InputState =
     InputState(runRaw + command.run,
                jump = command.jump,
                fire = command.fire,
                fireTimer,
-               if (acc == 0) command.aimDirection else aimDirection,
+               if (acc == 0) command.aimDirection else aimPoint,
                acc + 1)
 
   def run = runRaw.max(-1f).min(1f)
@@ -40,6 +40,6 @@ case class InputState(private val runRaw: Float,
                jump = false,
                fire = false,
                if (firing) 0 else fireTimer + dt,
-               aimDirection,
+               aimPoint,
                0)
 }

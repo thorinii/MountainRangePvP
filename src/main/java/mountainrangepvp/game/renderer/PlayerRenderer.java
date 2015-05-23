@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.game.world.PlayerEntity;
-import mountainrangepvp.game.world.Snapshot;
-import scala.collection.JavaConversions;
 
 /**
  * @author lachlan
@@ -51,12 +49,11 @@ public class PlayerRenderer {
         Vector2 pos = player.position().cpy();
         pos.sub(scroll);
 
-        if (pos.x < -PlayerEntity.Width() || pos.x > width) {
+        if (isPlayerOutsideScreen(pos))
             return;
-        }
-        if (pos.y < -PLAYER_HEIGHT || pos.y > height) {
-            return;
-        }
+
+        pos.x -= PlayerEntity.Width() / 2;
+
 
         Vector2 dir = player.aim();
 
@@ -104,5 +101,9 @@ public class PlayerRenderer {
         textRenderer.drawString(batch, nickname,
                                 (int) pos.x,
                                 (int) pos.y + PLAYER_HEIGHT + 20);
+    }
+
+    private boolean isPlayerOutsideScreen(Vector2 pos) {
+        return pos.x < -PlayerEntity.Width() || pos.x > width || pos.y < -PLAYER_HEIGHT || pos.y > height;
     }
 }

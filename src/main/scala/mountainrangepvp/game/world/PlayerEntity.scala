@@ -11,6 +11,7 @@ object PlayerEntity {
   val RunSpeed = 400
   val JumpImpulse = 1000
   val MaxWalkingGradient = 30
+  val GunHeight = 57
 }
 
 case class PlayerEntity(id: Long, player: ClientId,
