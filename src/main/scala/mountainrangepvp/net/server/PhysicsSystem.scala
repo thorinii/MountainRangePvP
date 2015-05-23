@@ -8,17 +8,24 @@ import mountainrangepvp.game.world._
  */
 class PhysicsSystem {
 
-  def step(dt: Float, terrain: Terrain, snapshot: Snapshot): Snapshot = {
-    snapshot.copy(
-      entities = snapshot.entities.map(e => stepEntity(dt, terrain, e))
+  def step(dt: Float, terrain: Terrain, snapshot: Snapshot): (Snapshot, Set[Collision]) = {
+    val (stepped, collisions) =
+      snapshot.entities.map(e => stepEntity(dt, terrain, e)).
+      foldLeft((Set.empty[Entity], Set.empty[Collision])) {
+        case ((es, cs), (e, c)) => (es + e, cs ++ c)
+      }
+
+
+    val nextSnapshot = snapshot.copy(
+      entities = stepped
     )
+
+    (nextSnapshot, collisions)
   }
 
-  private def stepEntity(dt: Float, terrain: Terrain, entity: Entity): Entity = {
-    val gravity = entity.gravity
-
+  private def stepEntity(dt: Float, terrain: Terrain, entity: Entity): (Entity, List[Collision]) = {
     val nvel = entity.velocity.cpy()
-               .add(0, gravity)
+               .add(0, entity.gravity)
     val npos = nvel.cpy()
                .scl(dt)
                .add(entity.position)
@@ -32,10 +39,12 @@ class PhysicsSystem {
       collideWithGround(terrain, npos)
     }
 
-    entity match {
+    val nextEntity = entity match {
       case s: ShotEntity => s.next(dt, npos, nvel, onGround)
       case p: PlayerEntity => p.next(dt, npos, nvel, onGround)
     }
+
+    (nextEntity, List.empty)
   }
 
   private def standOnGround(terrain: Terrain, opos: Vector2, npos: Vector2) = {

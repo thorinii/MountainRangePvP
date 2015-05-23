@@ -25,6 +25,8 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
   private val _inputSystem = new InputSystem(idGenerator)
 
+  private val _collisionResponse = new CollisionResponse()
+
 
   private var _going = true
 
@@ -52,11 +54,12 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     sendPingQuery()
     eventBus.flushPendingMessages()
 
-    _snapshot = _inputSystem.process(dt, _snapshot)
-    _snapshot = _physicsSystem.step(dt, _terrain, _snapshot)
-
     if (_snapshot.seed != _terrain.getSeed)
       _terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
+
+    _snapshot = _inputSystem.process(dt, _snapshot)
+    val (physicsSnapshot, collisions) = _physicsSystem.step(dt, _terrain, _snapshot)
+    _snapshot = _collisionResponse.process(physicsSnapshot, collisions)
 
     out.sendToAll(SnapshotMessage(_snapshot))
     eventBus.resetMessagesPerFrame()
