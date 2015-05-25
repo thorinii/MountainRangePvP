@@ -12,5 +12,11 @@ abstract class Entity {
   val onGround: Boolean
 
   def gravity: Float
+
   val standsOnTerrain: Boolean
+
+  override final def equals(obj: scala.Any): Boolean = obj match {
+    case o: Entity => o.id == this.id && o.getClass == this.getClass
+    case _ => false
+  }
 }

@@ -1,6 +1,7 @@
 package mountainrangepvp.net.server
 
 import java.time.Duration
+import java.util.concurrent.atomic.AtomicLong
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
@@ -12,13 +13,9 @@ import mountainrangepvp.net.{MultiLagTimer, PingMessage, PingedMessage, Snapshot
  */
 class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
-  private var _nextEntityId: Long = 0
+  private val _nextEntityId = new AtomicLong(0)
 
-  private val idGenerator = () => {
-    val id = _nextEntityId
-    _nextEntityId += 1
-    id
-  }
+  private val idGenerator = () => _nextEntityId.incrementAndGet()
 
 
   private val _physicsSystem = new PhysicsSystem
