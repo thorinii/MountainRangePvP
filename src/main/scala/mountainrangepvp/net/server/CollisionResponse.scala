@@ -8,12 +8,14 @@ import mountainrangepvp.game.world.{Entity, PlayerEntity, ShotEntity, Snapshot}
 class CollisionResponse {
   def process(snapshot: Snapshot, collisions: Set[Collision]) = {
     var toDelete = Set.empty[Long]
+
     collisions.foreach {
       case EntityToGroundCollision(e: ShotEntity, _) =>
         toDelete += e.id
 
       case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, p) =>
-        println(player.player + " " + shot.id + " @ " + p)
+        if (shot.owner != player.player)
+          toDelete += shot.id
 
       case _ => None
     }

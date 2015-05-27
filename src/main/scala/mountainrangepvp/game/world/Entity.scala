@@ -81,7 +81,7 @@ case class Rectangle(a: Vector2, b: Vector2) extends Shape {
   val topRight = b
   val bottomLeft = a
   val bottomRight = new Vector2(b.x, a.y)
-  lazy val gdxRect = new GdxRect(a.x, a.y, width, height)
+  private[Rectangle] lazy val gdxRect = new GdxRect(a.x, a.y, width, height)
 
   override def sweep(o: Shape) = o match {
     case Rectangle(oa, ob) => Rectangle(new Vector2(a.x.min(oa.x), a.y.min(oa.y)),
