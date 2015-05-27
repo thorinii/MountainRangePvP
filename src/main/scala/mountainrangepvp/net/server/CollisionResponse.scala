@@ -7,18 +7,17 @@ import mountainrangepvp.game.world.{Entity, PlayerEntity, ShotEntity, Snapshot}
  */
 class CollisionResponse {
   def process(snapshot: Snapshot, collisions: Set[Collision]) = {
-    var toDelete = Set.empty[Long]
-
-    collisions.foreach {
+    val toDelete: Set[Long] = collisions.map {
       case EntityToGroundCollision(e: ShotEntity, _) =>
-        toDelete += e.id
+        List(e.id)
 
-      case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, p) =>
-        if (shot.owner != player.player)
-          toDelete += shot.id
+      case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, _) =>
+        if (killsPlayer(shot, player)) {
+          List(shot.id, player.id)
+        } else List.empty
 
-      case _ => None
-    }
+      case _ => List.empty
+    }.flatten
 
     val newEntities = snapshot.entities
                       .filterNot(e => toDelete.contains(e.id))
@@ -26,7 +25,11 @@ class CollisionResponse {
     snapshot.copy(entities = newEntities)
   }
 
-  def isAlive(e: Entity) = e match {
+  private def killsPlayer(shot: ShotEntity, player: PlayerEntity): Boolean = {
+    shot.owner != player.player
+  }
+
+  private def isAlive(e: Entity) = e match {
     case s: ShotEntity => s.isAlive
     case _ => true
   }
