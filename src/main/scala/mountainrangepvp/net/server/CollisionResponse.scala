@@ -1,6 +1,6 @@
 package mountainrangepvp.net.server
 
-import mountainrangepvp.game.world.{Entity, ShotEntity, Snapshot}
+import mountainrangepvp.game.world.{Entity, PlayerEntity, ShotEntity, Snapshot}
 
 /**
  * Handles collisions between shots, terrain, and players
@@ -12,11 +12,11 @@ class CollisionResponse {
       case EntityToGroundCollision(e: ShotEntity, _) =>
         toDelete += e.id
 
+      case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, p) =>
+        println(player.player + " " + shot.id + " @ " + p)
+
       case _ => None
     }
-
-    if (snapshot.entities.nonEmpty)
-      println(snapshot.entities.groupBy(_.id).map(_._2.size).toList.max)
 
     val newEntities = snapshot.entities
                       .filterNot(e => toDelete.contains(e.id))

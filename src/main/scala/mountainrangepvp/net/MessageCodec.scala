@@ -57,7 +57,7 @@ object MessageCodec {
 
   def decode(buf: ByteBuf): Message = {
     val `type` = buf.readInt()
-    `type` match {
+    val message = `type` match {
       case 1 =>
         ConnectedMessage(readId(buf))
 
@@ -84,6 +84,12 @@ object MessageCodec {
       case _ =>
         throw new UnsupportedOperationException
     }
+
+    if (buf.readableBytes() > 0) {
+      throw new IllegalStateException("Did not read all bytes in message " + message)
+    }
+
+    message
   }
 
   private def writeSnapshot(buf: ByteBuf, snapshot: Snapshot) = {
@@ -98,9 +104,13 @@ object MessageCodec {
   }
 
   private def readSnapshot(buf: ByteBuf) = {
-    Snapshot(buf.readInt(), buf.readBoolean(),
-             0.until(buf.readInt()).map(_ => readPlayer(buf)).toSet,
-             0.until(buf.readInt()).map(_ => readEntity(buf)).toSet)
+    val seed = buf.readInt()
+    val teamsOn = buf.readBoolean()
+    val playerCount = buf.readInt()
+    val players = 0.until(playerCount).map(_ => readPlayer(buf)).toSet
+    val entitiesCount = buf.readInt()
+    val entities = 0.until(entitiesCount).map(_ => readEntity(buf)).toSet
+    Snapshot(seed, teamsOn, players, entities)
   }
 
   private def writePlayer(buf: ByteBuf, player: Player) = {
@@ -121,8 +131,8 @@ object MessageCodec {
       writePlayerEntity(buf, p)
   }
 
-  private def readEntity(buf: ByteBuf) = {
-    buf.readInt() match {
+  private def readEntity(buf: ByteBuf): Entity = {
+    buf.readByte() match {
       case 1 => readShot(buf)
       case 2 => readPlayerEntity(buf)
     }

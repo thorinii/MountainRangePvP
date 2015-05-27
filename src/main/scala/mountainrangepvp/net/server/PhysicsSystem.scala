@@ -9,21 +9,29 @@ import mountainrangepvp.game.world._
 class PhysicsSystem {
 
   def step(dt: Float, terrain: Terrain, snapshot: Snapshot): (Snapshot, Set[Collision]) = {
-    val (stepped, collisions) =
+    val (stepped, sweptShapes, groundCollisions) =
       snapshot.entities.map(e => stepEntity(dt, terrain, e)).
-      foldLeft((Set.empty[Entity], Set.empty[Collision])) {
-        case ((es, cs), (e, c)) => (es + e, cs ++ c)
+      foldLeft((Set.empty[Entity], Map.empty[Entity, Shape], Set.empty[Collision])) {
+        case ((es, ss, cs), (e, s, c)) => (es + e, ss + (e -> s), cs ++ c)
       }
+
+
+    val entityCollisions = for (
+      (entityA, sweptA) <- sweptShapes;
+      (entityB, sweptB) <- sweptShapes
+      if entityA != entityB
+      if sweptA.intersects(sweptB)) yield
+      EntityToEntityCollision.of(entityA, entityB, sweptA.intersectionPoint(sweptB))
 
 
     val nextSnapshot = snapshot.copy(
       entities = stepped
     )
 
-    (nextSnapshot, collisions)
+    (nextSnapshot, groundCollisions ++ entityCollisions)
   }
 
-  private def stepEntity(dt: Float, terrain: Terrain, entity: Entity): (Entity, List[Collision]) = {
+  private def stepEntity(dt: Float, terrain: Terrain, entity: Entity): (Entity, Shape, List[Collision]) = {
     val nvel = entity.velocity.cpy()
                .add(0, entity.gravity)
     val npos = nvel.cpy()
@@ -43,8 +51,9 @@ class PhysicsSystem {
       case s: ShotEntity => s.next(dt, npos, nvel, groundCollision.isDefined)
       case p: PlayerEntity => p.next(dt, npos, nvel, groundCollision.isDefined)
     }
+    val sweep = entity.bounds.sweep(nextEntity.bounds)
 
-    (nextEntity, groundCollision.toList)
+    (nextEntity, sweep, groundCollision.toList)
   }
 
   private def standOnGround(terrain: Terrain, opos: Vector2, npos: Vector2) = {

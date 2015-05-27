@@ -13,6 +13,8 @@ object ShotEntity {
 case class ShotEntity(id: Long, owner: ClientId,
                       position: Vector2, velocity: Vector2,
                       onGround: Boolean, age: Float) extends Entity {
+  override val bounds = Point(position)
+
   var time = 0f
 
   def isAlive = age < ShotEntity.MaxAge

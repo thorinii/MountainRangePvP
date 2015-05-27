@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2
  */
 object PlayerEntity {
   val Width = 40
+  val Height = 100
   val RunSpeed = 400
   val JumpImpulse = 1000
   val MaxWalkingGradient = 30
@@ -17,8 +18,8 @@ object PlayerEntity {
 case class PlayerEntity(id: Long, player: ClientId,
                         position: Vector2, aim: Vector2,
                         velocity: Vector2, onGround: Boolean) extends Entity {
-
-  // TODO: add gun height vector lazy val
+  override val bounds = Rectangle(position.cpy().sub(PlayerEntity.Width/2, 0),
+                                  position.cpy().add(PlayerEntity.Width/2, PlayerEntity.Height))
 
   def gravity = if (onGround) 0 else -9.81f * 15
 
