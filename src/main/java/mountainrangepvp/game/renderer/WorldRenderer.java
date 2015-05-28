@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.game.world.Session;
+import mountainrangepvp.game.world.Snapshot;
 
 import java.time.Duration;
 
@@ -34,7 +35,7 @@ public class WorldRenderer {
     private final EntityRenderer entityRenderer;
     private final ChatRenderer chatRenderer;
     private final MiniMapRenderer miniMapRenderer;
-    private final LeaderboardRenderer leaderboardRenderer;
+    private final LeaderBoardRenderer leaderBoardRenderer;
 
     private final Texture crossHairTexture;
 
@@ -60,24 +61,26 @@ public class WorldRenderer {
         entityRenderer = new EntityRenderer(batch, textRenderer);
         chatRenderer = new ChatRenderer(batch, textRenderer);
         miniMapRenderer = new MiniMapRenderer(batch);
-        leaderboardRenderer = new LeaderboardRenderer(batch, textRenderer);
+        leaderBoardRenderer = new LeaderBoardRenderer(batch, textRenderer);
     }
 
     public void render(Vector2 scroll, Duration pingTime) {
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        Snapshot snapshot = session.getSnapshot();
+
         backgroundRenderer.render(scroll);
-        entityRenderer.render(scroll, session.getSnapshot(), session.localPlayerEntity().isDefined());
+        entityRenderer.render(scroll, snapshot, session.localPlayerEntity().isDefined());
         terrainRenderer.render(scroll, session.getTerrain());
         chatRenderer.render(session.chatManager());
-        leaderboardRenderer.render(scroll, session.playerManager());
-        miniMapRenderer.render(scroll, session.getSnapshot(), session.getTerrain());
+        leaderBoardRenderer.render(snapshot);
+        miniMapRenderer.render(scroll, snapshot, session.getTerrain());
 
         drawCrosshair();
 
         String pingMillis = String.valueOf(pingTime.toMillis());
-        int entityCount = session.getSnapshot().entities().size();
+        int entityCount = snapshot.entities().size();
 
         textRenderer.setSize(15);
         textRenderer.setColour(Color.RED);

@@ -3,17 +3,18 @@ package mountainrangepvp.game.renderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import mountainrangepvp.engine.ui.TextRenderer;
-import mountainrangepvp.game.world.Old_Player;
-import mountainrangepvp.game.world.PlayerManager;
+import mountainrangepvp.game.world.ClientId;
+import mountainrangepvp.game.world.LeaderBoard;
+import mountainrangepvp.game.world.Snapshot;
+import scala.collection.JavaConversions;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @author lachlan
  */
-public class LeaderboardRenderer {
+public class LeaderBoardRenderer {
 
     private final SpriteBatch batch;
     private final TextRenderer textRenderer;
@@ -22,7 +23,7 @@ public class LeaderboardRenderer {
 
     private final int width, height;
 
-    public LeaderboardRenderer(SpriteBatch batch, TextRenderer textRenderer) {
+    public LeaderBoardRenderer(SpriteBatch batch, TextRenderer textRenderer) {
         this.batch = batch;
         this.textRenderer = textRenderer;
 
@@ -37,24 +38,23 @@ public class LeaderboardRenderer {
         height = Gdx.graphics.getHeight();
     }
 
-    public void render(Vector2 scroll, PlayerManager playerManager) {
-        List<Old_Player> topPlayers = playerManager.getPlayersByHits(3);
-
+    public void render(Snapshot snapshot) {
         int x = 20;
         int y = height - 20;
 
         batch.begin();
-        for (Old_Player p : topPlayers) {
-            if (p.getHits() == 0)
+        for (Map.Entry<ClientId, LeaderBoard.Stats> e : JavaConversions.mapAsJavaMap(snapshot.leaderBoard().players()).entrySet()) {
+            ClientId player = e.getKey();
+            LeaderBoard.Stats stats = e.getValue();
+
+            if (stats.hits() == 0)
                 continue;
 
-            Texture tex = bodyTextures[p.getTeam().ordinal()];
-
-            String text = p.getName() + " " + p.getHits();
-            textRenderer.drawString(batch, text, x + tex.getWidth() + 20, y);
-
-
+            Texture tex = bodyTextures[0];
             batch.draw(tex, x, y - tex.getWidth() * 5 / 6);
+
+            String text = snapshot.nicknameFor(player) + " " + stats.hits() + "/" + stats.deaths();
+            textRenderer.drawString(batch, text, x + tex.getWidth() + 20, y);
 
             y -= 40;
         }
