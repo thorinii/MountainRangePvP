@@ -8,13 +8,15 @@ import com.badlogic.gdx.math.Vector2
 object Snapshot {
   def empty(seed: Int, teamsOn: Boolean) = Snapshot(seed, teamsOn,
                                                     Set.empty, LeaderBoard(),
-                                                    Set.empty)
+                                                    Set.empty,
+                                                    List.empty)
 }
 
 case class Snapshot(seed: Int,
                     teamsOn: Boolean,
                     players: Set[Player], leaderBoard: LeaderBoard,
-                    entities: Set[Entity]) {
+                    entities: Set[Entity],
+                    respawnTimers: List[RespawnTimer]) {
 
   lazy val playerEntities = entities.filter(_.isInstanceOf[PlayerEntity]).map(_.asInstanceOf[PlayerEntity])
 
@@ -23,6 +25,14 @@ case class Snapshot(seed: Int,
 
   def leave(playerId: ClientId) =
     copy(players = players.filterNot(_.id == playerId), leaderBoard = leaderBoard.leave(playerId))
+
+
+  def addRespawnTimer(player: ClientId, timeToRespawn: Float) = {
+    if (respawnTimers.exists(_.player == player))
+      this
+    else
+      copy(respawnTimers = RespawnTimer(player, timeToRespawn) :: respawnTimers)
+  }
 
 
   def addShot(entityId: Long, playerId: ClientId, direction: Vector2): Snapshot =
@@ -57,6 +67,26 @@ case class Snapshot(seed: Int,
       case p@PlayerEntity(_, pid, _, _, _, _) if pid == playerId => f(p)
       case e => e
     })
+
+
+  def tickTimers(dt: Float) =
+    copy(respawnTimers = respawnTimers.map(_.tick(dt)))
+
+  def removeExpiredTimers =
+    copy(respawnTimers = respawnTimers.filterNot(_.expired))
+
+
+  def headlessPlayers = players.filterNot(player => entities.exists {
+    case PlayerEntity(_, pid, _, _, _, _) if pid == player.id => true
+    case _ => false
+  })
 }
 
 case class Player(id: ClientId, nickname: String)
+
+
+case class RespawnTimer(player: ClientId, timeLeft: Float) {
+  def tick(dt: Float) = RespawnTimer(player, timeLeft - dt)
+
+  def expired = timeLeft <= 0
+}

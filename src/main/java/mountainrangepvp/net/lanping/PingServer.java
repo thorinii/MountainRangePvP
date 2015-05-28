@@ -1,7 +1,6 @@
 package mountainrangepvp.net.lanping;
 
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.mp.MultiplayerConstants;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -31,7 +30,7 @@ public class PingServer {
                 try {
                     while (!Thread.currentThread().isInterrupted()) {
                         ping();
-                        Thread.sleep(1000 / MultiplayerConstants.PING_RATE);
+                        Thread.sleep(1000 / PingConstants.PING_RATE);
                     }
                 } catch (InterruptedException ex) {
                     // shut down
@@ -48,10 +47,10 @@ public class PingServer {
     }
 
     private DatagramPacket makePacket() {
-        byte[] data = MultiplayerConstants.PING_DATA;
+        byte[] data = PingConstants.PING_DATA;
         return new DatagramPacket(data, data.length,
-                                  MultiplayerConstants.MULTICAST_ADDRESS,
-                                  MultiplayerConstants.MULTICAST_PORT);
+                                  PingConstants.MULTICAST_ADDRESS,
+                                  PingConstants.MULTICAST_PORT);
     }
 
     private void ping() {

@@ -9,8 +9,6 @@ import mountainrangepvp.game.world.LeaderBoard;
 import mountainrangepvp.game.world.Snapshot;
 import scala.collection.JavaConversions;
 
-import java.util.Map;
-
 /**
  * @author lachlan
  */
@@ -43,10 +41,8 @@ public class LeaderBoardRenderer {
         int y = height - 20;
 
         batch.begin();
-        for (Map.Entry<ClientId, LeaderBoard.Stats> e : JavaConversions.mapAsJavaMap(snapshot.leaderBoard().players()).entrySet()) {
-            ClientId player = e.getKey();
-            LeaderBoard.Stats stats = e.getValue();
-
+        for (LeaderBoard.Stats stats : JavaConversions.asJavaIterable(snapshot.leaderBoard().sortedByHighest().take(4))) {
+            ClientId player = stats.player();
             if (stats.hits() == 0)
                 continue;
 

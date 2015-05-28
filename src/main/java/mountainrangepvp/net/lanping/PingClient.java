@@ -1,7 +1,6 @@
 package mountainrangepvp.net.lanping;
 
 import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.mp.MultiplayerConstants;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -25,8 +24,8 @@ public class PingClient {
     }
 
     public void start() throws IOException {
-        socket = new MulticastSocket(MultiplayerConstants.MULTICAST_PORT);
-        socket.joinGroup(MultiplayerConstants.MULTICAST_ADDRESS);
+        socket = new MulticastSocket(PingConstants.MULTICAST_PORT);
+        socket.joinGroup(PingConstants.MULTICAST_ADDRESS);
 
         packet = makePacket();
 
@@ -38,7 +37,7 @@ public class PingClient {
                         read();
                         process();
 
-                        Thread.sleep(1000 / MultiplayerConstants.PING_RATE);
+                        Thread.sleep(1000 / PingConstants.PING_RATE);
                     }
                 } catch (InterruptedException ex) {
                     log.fine("Ping Client shutting down");
@@ -55,7 +54,7 @@ public class PingClient {
     }
 
     private DatagramPacket makePacket() {
-        byte[] data = new byte[MultiplayerConstants.PING_DATA.length];
+        byte[] data = new byte[PingConstants.PING_DATA.length];
         return new DatagramPacket(data, data.length);
     }
 
@@ -72,7 +71,7 @@ public class PingClient {
     private void process() {
         byte[] data = packet.getData();
 
-        if (Arrays.equals(data, MultiplayerConstants.PING_DATA)) {
+        if (Arrays.equals(data, PingConstants.PING_DATA)) {
             ServerData server = new ServerData(packet.getAddress().
                     getHostAddress());
 
@@ -88,7 +87,7 @@ public class PingClient {
         List<ServerData> list = new ArrayList<>();
 
         for (ServerData server : tmp) {
-            if (server.getFreshness() < MultiplayerConstants.PING_SERVER_FRESHNESS) {
+            if (server.getFreshness() < PingConstants.PING_SERVER_FRESHNESS) {
                 list.add(server);
             }
         }

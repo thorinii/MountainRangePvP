@@ -9,6 +9,8 @@ import io.netty.channel.ChannelHandlerContext
 import mountainrangepvp.game.world._
 import mountainrangepvp.net._
 
+import scala.collection.immutable.SortedSet
+
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
  */
@@ -106,7 +108,8 @@ object MessageCodec {
     Snapshot(buf.readInt(),
              buf.readBoolean(),
              readSet(buf, readPlayer), readLeaderBoard(buf),
-             readSet(buf, readEntity))
+             readSet(buf, readEntity),
+             List.empty)
 
 
   private def writePlayer(buf: ByteBuf, player: Player) = {
@@ -118,20 +121,21 @@ object MessageCodec {
 
 
   private def writeLeaderBoard(buf: ByteBuf, leaderBoard: LeaderBoard) = {
-    writeMap(buf, leaderBoard.players, writeId, writeLeaderBoardStats)
+    writeSet(buf, leaderBoard.players, writeLeaderBoardStats)
   }
 
   private def readLeaderBoard(buf: ByteBuf) =
-    LeaderBoard(readMap(buf, readId, readLeaderBoardStats))
+    LeaderBoard(readSet(buf, readLeaderBoardStats))
 
 
   private def writeLeaderBoardStats(buf: ByteBuf, stats: LeaderBoard.Stats) = {
+    writeId(buf, stats.player)
     buf.writeInt(stats.hits)
     buf.writeInt(stats.deaths)
   }
 
   private def readLeaderBoardStats(buf: ByteBuf) =
-    LeaderBoard.Stats(buf.readInt(), buf.readInt())
+    LeaderBoard.Stats(readId(buf), buf.readInt(), buf.readInt())
 
 
   private def writeEntity(buf: ByteBuf, e: Entity) = e match {
@@ -221,20 +225,6 @@ object MessageCodec {
     val x = buf.readFloat()
     val y = buf.readFloat()
     new Vector2(x, y)
-  }
-
-
-  private def writeMap[K, V](buf: ByteBuf, map: Map[K, V], keyWriter: (ByteBuf, K) => ByteBuf, valueWriter: (ByteBuf, V) => ByteBuf) = {
-    buf.writeInt(map.size)
-    map.foreach { case (key, value) =>
-      keyWriter(buf, key)
-      valueWriter(buf, value)
-    }
-  }
-
-  private def readMap[K, V](buf: ByteBuf, keyReader: ByteBuf => K, valueReader: ByteBuf => V): Map[K, V] = {
-    val count = buf.readInt()
-    0.until(count).map(_ => keyReader(buf) -> valueReader(buf)).toMap
   }
 
 

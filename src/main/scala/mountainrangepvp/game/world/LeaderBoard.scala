@@ -6,38 +6,43 @@ import mountainrangepvp.game.world.LeaderBoard.Stats
  * Holds the hit/death stats for players.
  */
 object LeaderBoard {
-  def apply() = new LeaderBoard(Map.empty)
+
+
+  def apply() = new LeaderBoard(Set.empty)
 
   object Stats {
-    def apply() = new Stats(0, 0)
+    def apply(player: ClientId) = new Stats(player, 0, 0)
   }
 
-  case class Stats(hits: Int, deaths: Int) {
-    def plusHit = Stats(hits + 1, deaths)
+  case class Stats(player: ClientId, hits: Int, deaths: Int) {
+    def plusHit = copy(hits = hits + 1)
 
-    def plusDeath = Stats(hits, deaths + 1)
+    def plusDeath = copy(deaths = deaths + 1)
+
+    def ratio = hits.toFloat / deaths.toFloat
   }
 
 }
 
-case class LeaderBoard(players: Map[ClientId, Stats]) {
-  def join(player: ClientId): LeaderBoard = LeaderBoard(players + (player -> Stats()))
+case class LeaderBoard(players: Set[Stats]) {
 
-  def leave(player: ClientId): LeaderBoard = LeaderBoard(players - player)
+  def sortedByHighest = players.toList.sortBy(_.ratio).reverse
+
+  def join(player: ClientId): LeaderBoard = LeaderBoard(players + Stats(player))
+
+  def leave(player: ClientId): LeaderBoard = LeaderBoard(players.filterNot(_.player == player))
 
   def addAll(hitPairs: Iterable[(ClientId, ClientId)]): LeaderBoard =
     hitPairs.foldLeft(this)((lb, pair) => lb.add(pair))
 
   /**
    * Adds a hit pair to the leader board.
-   * @param hitPair Killer -> Deceased
-   * @return
+   * @param hitPair Shooter -> Deceased
    */
   def add(hitPair: (ClientId, ClientId)): LeaderBoard =
-    copy(players.map {
-      case (id, stats) if id == hitPair._1 => id -> stats.plusHit
-      case (id, stats) if id == hitPair._2 => id -> stats.plusDeath
-      case e => e
+    copy(players.map { stats =>
+      if (stats.player == hitPair._1) stats.plusHit
+      else if (stats.player == hitPair._2) stats.plusDeath
+      else stats
     })
-
 }

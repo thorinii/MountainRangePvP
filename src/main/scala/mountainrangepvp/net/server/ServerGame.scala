@@ -57,6 +57,9 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     _snapshot = _inputSystem.process(dt, _snapshot)
     val (physicsSnapshot, collisions) = _physicsSystem.step(dt, _terrain, _snapshot)
     _snapshot = _collisionResponse.process(physicsSnapshot, collisions)
+    _snapshot = _snapshot.tickTimers(dt)
+    _snapshot = processTimers(_snapshot)
+
 
     out.sendToAll(SnapshotMessage(_snapshot))
     eventBus.resetMessagesPerFrame()
@@ -67,6 +70,15 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     _snapshot.players.foreach { id =>
       _multiLagTimer = _multiLagTimer.start(id.id, now)(pingId => out.send(id.id, PingMessage(pingId)))
     }
+  }
+
+  private def processTimers(snapshot: Snapshot): Snapshot = {
+    val nextSnapshot = snapshot.respawnTimers.filter(_.expired).foldLeft(snapshot) { (next, timer) =>
+      next.addPlayerEntity(idGenerator(), timer.player, new Vector2((Math.random() * 800 - 40).toFloat, 100))
+    }
+    nextSnapshot.headlessPlayers.foldLeft(nextSnapshot) { (next, player) =>
+      next.addRespawnTimer(player.id, 3)
+    }.removeExpiredTimers
   }
 
 
