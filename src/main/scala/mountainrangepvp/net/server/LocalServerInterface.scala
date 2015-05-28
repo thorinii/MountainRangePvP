@@ -2,7 +2,6 @@ package mountainrangepvp.net.server
 
 import java.util.concurrent.atomic.AtomicLong
 
-import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
 import mountainrangepvp.game.world._
 import mountainrangepvp.net._

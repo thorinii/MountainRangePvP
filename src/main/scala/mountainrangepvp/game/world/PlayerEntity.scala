@@ -18,8 +18,8 @@ object PlayerEntity {
 case class PlayerEntity(id: Long, player: ClientId,
                         position: Vector2, aim: Vector2,
                         velocity: Vector2, onGround: Boolean) extends Entity {
-  override val bounds = Rectangle(position.cpy().sub(PlayerEntity.Width/2, 0),
-                                  position.cpy().add(PlayerEntity.Width/2, PlayerEntity.Height))
+  override val bounds = Rectangle(position.cpy().sub(PlayerEntity.Width / 2, 0),
+                                  position.cpy().add(PlayerEntity.Width / 2, PlayerEntity.Height))
 
   def gravity = if (onGround) 0 else -9.81f * 15
 

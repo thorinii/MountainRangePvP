@@ -17,4 +17,4 @@ object EntityToEntityCollision {
   }
 }
 
-case class EntityToEntityCollision private (a: Entity, b: Entity, at: Vector2) extends Collision(a)
+case class EntityToEntityCollision private(a: Entity, b: Entity, at: Vector2) extends Collision(a)
