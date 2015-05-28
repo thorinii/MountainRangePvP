@@ -13,6 +13,13 @@ object PlayerEntity {
   val JumpImpulse = 1000
   val MaxWalkingGradient = 30
   val GunHeight = 57
+
+  def apply(id: Long, player: ClientId, position: Vector2) =
+    new PlayerEntity(id, player,
+                 position,
+                 velocity = new Vector2(0, 0),
+                 aim = new Vector2(0, 0),
+                 onGround = false)
 }
 
 case class PlayerEntity(id: Long, player: ClientId,

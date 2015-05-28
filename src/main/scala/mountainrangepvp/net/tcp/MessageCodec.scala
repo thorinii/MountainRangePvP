@@ -104,7 +104,7 @@ object MessageCodec {
   private def readSnapshot(buf: ByteBuf) =
     Snapshot(buf.readInt(),
              buf.readBoolean(),
-             readSet(buf, readPlayer),
+             readSet(buf, readPlayer), LeaderBoard(),
              readSet(buf, readEntity))
 
 

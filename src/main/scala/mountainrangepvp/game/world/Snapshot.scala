@@ -7,19 +7,22 @@ import com.badlogic.gdx.math.Vector2
  */
 object Snapshot {
   def empty(seed: Int, teamsOn: Boolean) = Snapshot(seed, teamsOn,
-                                                    Set.empty, Set.empty)
+                                                    Set.empty, LeaderBoard(),
+                                                    Set.empty)
 }
 
 case class Snapshot(seed: Int,
                     teamsOn: Boolean,
-                    players: Set[Player],
+                    players: Set[Player], leaderBoard: LeaderBoard,
                     entities: Set[Entity]) {
 
   lazy val playerEntities = entities.filter(_.isInstanceOf[PlayerEntity]).map(_.asInstanceOf[PlayerEntity])
 
-  def join(playerId: ClientId, nickname: String) = copy(players = players + Player(playerId, nickname))
+  def join(playerId: ClientId, nickname: String) =
+    copy(players = players + Player(playerId, nickname), leaderBoard = leaderBoard.join(playerId))
 
-  def leave(playerId: ClientId) = copy(players = players.filterNot(_.id == playerId))
+  def leave(playerId: ClientId) =
+    copy(players = players.filterNot(_.id == playerId), leaderBoard = leaderBoard.leave(playerId))
 
 
   def addShot(entityId: Long, playerId: ClientId, direction: Vector2): Snapshot =
@@ -28,15 +31,11 @@ case class Snapshot(seed: Int,
             direction)
 
   def addShot(entityId: Long, playerId: ClientId, base: Vector2, direction: Vector2): Snapshot =
-    copy(entities = entities + ShotEntity(entityId, playerId,
-                                          base, direction.cpy().scl(ShotEntity.Speed),
-                                          false, 0f))
+    copy(entities = entities + ShotEntity(entityId, playerId, base, direction))
 
 
   def addPlayerEntity(entityId: Long, playerId: ClientId, position: Vector2) =
-    copy(entities = entities + PlayerEntity(entityId, playerId,
-                                            position, new Vector2(0, 0),
-                                            new Vector2(0, 0), false))
+    copy(entities = entities + PlayerEntity(entityId, playerId, position))
 
   def removePlayerEntity(playerId: ClientId) =
     copy(entities = entities.filterNot {
@@ -55,7 +54,7 @@ case class Snapshot(seed: Int,
 
   def updatePlayer(playerId: ClientId, f: PlayerEntity => PlayerEntity) =
     copy(entities = entities.map {
-      case p@PlayerEntity(_, pid, _, _, _, _) if (pid == playerId) => f(p)
+      case p@PlayerEntity(_, pid, _, _, _, _) if pid == playerId => f(p)
       case e => e
     })
 }
