@@ -8,7 +8,7 @@ import mountainrangepvp.engine.util.{EventBus, Log}
  */
 class Session(log: Log, eventBus: EventBus,
               localId: ClientId, baseSnapshot: Snapshot,
-              val playerManager: PlayerManager, val chatManager: ChatManager) {
+              val chatManager: ChatManager) {
   private var snapshot = baseSnapshot
   private var camera = new Camera(new Vector2(0, 0))
   private var terrain: Terrain = null
