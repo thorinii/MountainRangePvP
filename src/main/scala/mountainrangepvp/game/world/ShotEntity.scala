@@ -30,4 +30,7 @@ case class ShotEntity(id: Long, owner: ClientId,
 
   def next(dt: Float, npos: Vector2, nvel: Vector2, onGround: Boolean) =
     copy(position = npos, velocity = nvel, age = age + dt, onGround = onGround)
+
+  def retarget(from: Vector2, direction: Vector2) = copy(position = from,
+                                                         velocity = direction.cpy().scl(ShotEntity.Speed))
 }

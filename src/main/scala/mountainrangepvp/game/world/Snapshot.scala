@@ -49,12 +49,12 @@ case class Snapshot(seed: Int,
 
   def removePlayerEntity(playerId: ClientId) =
     copy(entities = entities.filterNot {
-      case PlayerEntity(_, pid, _, _, _, _) => pid == playerId
+      case p: PlayerEntity => p.player == playerId
       case _ => false
     })
 
   def getPlayerEntity(playerId: ClientId) = entities.find {
-    case PlayerEntity(_, pid, _, _, _, _) => pid == playerId
+    case p: PlayerEntity => p.player == playerId
     case _ => false
   }.map(_.asInstanceOf[PlayerEntity])
 
@@ -64,7 +64,7 @@ case class Snapshot(seed: Int,
 
   def updatePlayer(playerId: ClientId, f: PlayerEntity => PlayerEntity) =
     copy(entities = entities.map {
-      case p@PlayerEntity(_, pid, _, _, _, _) if pid == playerId => f(p)
+      case p: PlayerEntity if p.player == playerId => f(p)
       case e => e
     })
 
@@ -77,7 +77,7 @@ case class Snapshot(seed: Int,
 
 
   def headlessPlayers = players.filterNot(player => entities.exists {
-    case PlayerEntity(_, pid, _, _, _, _) if pid == player.id => true
+    case p: PlayerEntity if p.player == player.id => true
     case _ => false
   })
 }

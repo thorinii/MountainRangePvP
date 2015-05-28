@@ -89,8 +89,7 @@ public class PlayerRenderer {
                    tex.getWidth(), tex.getHeight(), // Src WH
                    dir.x > 0, false);
 
-        // TODO: fix in #51
-        if (false) { // player.isSpawnBubbleOn()) {
+        if (player.hasBubble()) { // player.isSpawnBubbleOn()) {
             batch.draw(spawnBubbleTexture,
                        pos.x + PlayerEntity.Width() / 2 - spawnBubbleTexture.getWidth() / 2,
                        pos.y + PLAYER_HEIGHT / 2 - spawnBubbleTexture.

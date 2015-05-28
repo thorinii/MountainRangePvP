@@ -1,5 +1,6 @@
 package mountainrangepvp.net.server
 
+import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.game.world._
 
 /**
@@ -7,11 +8,8 @@ import mountainrangepvp.game.world._
  */
 class CollisionResponse {
   def process(snapshot: Snapshot, collisions: Set[Collision]) = {
-    val toDelete = entitiesToDelete(collisions)
     val hitShots = shotsThatHit(collisions)
-
-    val newEntities = snapshot.entities
-                      .filterNot(e => toDelete.contains(e.id))
+    val newEntities = processEntities(snapshot, collisions)
                       .filter(isAlive)
 
     snapshot.copy(entities = newEntities,
@@ -19,21 +17,38 @@ class CollisionResponse {
   }
 
 
-  private def entitiesToDelete(collisions: Set[Collision]): Set[Long] =
-    collisions.flatMap {
+  private def processEntities(snapshot: Snapshot, collisions: Set[Collision]): Set[Entity] =
+    collisions.foldLeft(snapshot.entities)((entities, collision) => collision match {
       case EntityToGroundCollision(e: ShotEntity, _) =>
-        List(e.id)
+        entities.filterNot(_.id == e.id)
 
       case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, _) =>
-        if (killsPlayer(shot, player)) {
-          List(shot.id, player.id)
-        } else List.empty
+        if (bouncesOffPlayer(shot, player))
+          entities.map {
+            case s: ShotEntity if s.id == shot.id => ricochet(s, player)
+            case e => e
+          }
+        else if (killsPlayer(shot, player))
+          entities.filterNot(_.id == shot.id).filterNot(_.id == player.id)
+        else entities
 
-      case _ => List.empty
-    }
+      case _ => entities
+    })
+
+  private def bouncesOffPlayer(shot: ShotEntity, player: PlayerEntity) =
+    shot.owner != player.player && player.hasBubble
 
   private def killsPlayer(shot: ShotEntity, player: PlayerEntity) =
-    shot.owner != player.player
+    shot.owner != player.player && !player.hasBubble
+
+  private def ricochet(shot: ShotEntity, player: PlayerEntity) = {
+    val playerCentre = player.position.cpy().add(0, PlayerEntity.Height / 2f)
+
+    val direction = shot.position.cpy().sub(playerCentre).nor()
+    val position = direction.cpy().scl(PlayerEntity.BubbleRadius).add(playerCentre)
+
+    shot.retarget(position, direction)
+  }
 
 
   private def shotsThatHit(collisions: Set[Collision]): Set[(ClientId, ClientId)] =

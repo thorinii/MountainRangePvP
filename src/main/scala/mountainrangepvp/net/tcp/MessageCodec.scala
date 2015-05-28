@@ -9,8 +9,6 @@ import io.netty.channel.ChannelHandlerContext
 import mountainrangepvp.game.world._
 import mountainrangepvp.net._
 
-import scala.collection.immutable.SortedSet
-
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
  */
@@ -177,11 +175,13 @@ object MessageCodec {
     writeVector(buf, e.aim)
     writeVector(buf, e.velocity)
     buf.writeBoolean(e.onGround)
+    buf.writeFloat(e.bubbleTimer)
   }
 
   private def readPlayerEntity(buf: ByteBuf) = PlayerEntity(buf.readLong(), readId(buf),
                                                             readVector(buf), readVector(buf),
-                                                            readVector(buf), buf.readBoolean())
+                                                            readVector(buf), buf.readBoolean(),
+                                                            buf.readFloat())
 
 
   private def writeInputCommand(buf: ByteBuf, c: InputCommand) = {
