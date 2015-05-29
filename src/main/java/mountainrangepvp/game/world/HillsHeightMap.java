@@ -9,23 +9,33 @@ public class HillsHeightMap extends AbstractHeightMap {
     private static final int WALL_WIDTH = 50;
     private static final int WALL_DISTANCE = 3000;
     private static final int WALL_HEIGHT = 110;
+    private final int originalSeed;
     private final int seed;
     private final Noise noise;
     private boolean makeWalls;
     private boolean origin;
 
-    public HillsHeightMap(int seed) {
-        this.seed = seed ^ (seed << 2) ^ (seed << 4) ^ (seed << 6) ^ (seed << 8);
+    public HillsHeightMap(int originalSeed) {
+        this.originalSeed = originalSeed;
+        this.seed =
+                originalSeed ^
+                        ((originalSeed << 2) + 10) ^
+                        ((originalSeed << 4) + 883) ^
+                        ((originalSeed << 6) + 78) ^
+                        ((originalSeed << 8) + 43);
         this.noise = new Noise();
 
-        makeWalls = false;
+        makeWalls = true;
         origin = false;
     }
 
     @Override
-    public int getSample(int x) {
-        x = Math.abs(x);
+    public int getSeed() {
+        return originalSeed;
+    }
 
+    @Override
+    public int getSample(int x) {
         if (origin && x == 0) {
             return -10000;
         }
@@ -41,7 +51,6 @@ public class HillsHeightMap extends AbstractHeightMap {
         return (int) (0.2f * sample(x)
                 + 0.8f * (sample(x - 1) + sample(x - 2) + sample(x - 3)
                 + sample(x + 1) + sample(x + 2) + sample(x + 3)) / 6);
-
     }
 
     private float sample(float x) {

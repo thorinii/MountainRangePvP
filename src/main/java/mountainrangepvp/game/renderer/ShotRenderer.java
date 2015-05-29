@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.Shot;
-import mountainrangepvp.game.world.ShotManager;
+import mountainrangepvp.game.world.ShotEntity;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author lachlan
@@ -18,30 +18,31 @@ public class ShotRenderer {
     public ShotRenderer(SpriteBatch batch) {
         this.batch = batch;
 
-        shotTexture = new Texture(Gdx.files.internal("shot/shot.png"));
+        shotTexture = new Texture(Gdx.files.internal("shot/shot-ball.png"));
     }
 
-    public void render(Vector2 scroll, ShotManager shotManager) {
-        batch.begin();
+    public void renderShot(Vector2 scroll, ShotEntity shot) {
+        int prevSrc = batch.getBlendSrcFunc();
+        int prevDst = batch.getBlendDstFunc();
 
-        for (Shot shot : shotManager.getShots()) {
-            Vector2 shotPos = shot.position();
-            shotPos.sub(scroll);
+        batch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-            Vector2 dir = shot.direction;
-            dir.angle();
+        Vector2 position = shot.position().cpy()
+                .sub(scroll);
 
-            batch.draw(shotTexture,
-                       shotPos.x, shotPos.y, // Position
-                       0, 0, // Origin
-                       shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
-                       1, 1, // Scale
-                       dir.angle(), // Rotation
-                       0, 0, // Src XY
-                       shotTexture.getWidth(), shotTexture.getHeight(), // Src WH
-                       false, false); // Flip
-        }
+        float angle = shot.velocity().angle();
 
-        batch.end();
+        batch.draw(shotTexture,
+                   position.x, position.y,
+                   0, 0, // Origin
+                   shotTexture.getWidth(), shotTexture.getHeight(), // Dst WH
+                   1, 1, // Scale
+                   angle, // Rotation
+                   0, 0, // Src XY
+                   shotTexture.getWidth(), shotTexture.getHeight(), // Src WH
+                   false, false); // Flip
+
+
+        batch.setBlendFunction(prevSrc, prevDst);
     }
 }

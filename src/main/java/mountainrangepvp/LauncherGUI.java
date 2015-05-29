@@ -1,10 +1,10 @@
 package mountainrangepvp;
 
-import mountainrangepvp.game.mp.lanping.PingClient;
-import mountainrangepvp.game.mp.lanping.PingClient.ServerData;
-import mountainrangepvp.game.settings.GameSettings;
-import mountainrangepvp.game.world.Player.Team;
-import mountainrangepvp.util.Log;
+import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.game.GameSettings;
+import mountainrangepvp.game.world.Old_Player.Team;
+import mountainrangepvp.net.lanping.PingClient;
+import mountainrangepvp.net.lanping.PingClient.ServerData;
 
 import javax.swing.*;
 import javax.swing.Timer;
@@ -23,6 +23,7 @@ import java.util.prefs.Preferences;
  */
 public class LauncherGUI extends javax.swing.JFrame {
 
+    private final Log log;
     private final Preferences prefs = Preferences.userNodeForPackage(
             LauncherGUI.class);
     private DefaultListModel<String> serversListModel;
@@ -33,13 +34,15 @@ public class LauncherGUI extends javax.swing.JFrame {
      * Creates new form LauncherGUI
      */
     public LauncherGUI() {
+        this.log = new Log("launcher");
+
         initComponents();
 
         try {
-            pingClient = new PingClient();
+            pingClient = new PingClient(log);
             pingClient.start();
         } catch (IOException ioe) {
-            Log.warn("Could not start PingClient", ioe);
+            log.warn("Could not start PingClient", ioe);
         }
 
         serversListModel = new DefaultListModel<>();
@@ -449,7 +452,7 @@ public class LauncherGUI extends javax.swing.JFrame {
             teamBox.setSelectedIndex(prefs.getInt("team-colour", 0));
             gameTypeTeamBtn.setSelected(prefs.getBoolean("team-mode-on", false));
         } catch (Exception e) {
-            Log.warn("Could not load prefs", e);
+            log.warn("Could not load prefs", e);
         }
     }
 
@@ -468,11 +471,11 @@ public class LauncherGUI extends javax.swing.JFrame {
                     getSelectedItem());
         }
 
-        config.server = mpTypeServerBtn.isSelected();
+        config.hosting = mpTypeServerBtn.isSelected();
         config.serverIP = serverIPTxt.getText();
 
-        config.playerName = playerNameTxt.getText();
-        config.teamModeOn = (config.server) ? gameTypeTeamBtn.isSelected() : true;
+        config.nickname = playerNameTxt.getText();
+        config.teamsOn = (config.hosting) ? gameTypeTeamBtn.isSelected() : true;
 
         switch ((String) teamBox.getSelectedItem()) {
             case "Blue":
@@ -489,7 +492,7 @@ public class LauncherGUI extends javax.swing.JFrame {
                 break;
         }
 
-        Main.startGame(config);
+        new Main(config).startGame();
     }
 
     private void fullscreenBtnItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_fullscreenBtnItemStateChanged
@@ -541,9 +544,6 @@ public class LauncherGUI extends javax.swing.JFrame {
         return graphicsDevice.getDisplayModes();
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void laf() {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /*

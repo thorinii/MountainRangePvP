@@ -1,16 +1,19 @@
 package mountainrangepvp.game.renderer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.game.world.Player;
-import mountainrangepvp.game.world.PlayerManager;
+import mountainrangepvp.engine.ui.TextRenderer;
+import mountainrangepvp.game.world.PlayerEntity;
+import org.lwjgl.opengl.GL11;
 
 /**
  * @author lachlan
  */
 public class PlayerRenderer {
+    private static final int PLAYER_HEIGHT = 100;
 
     private final int width, height;
     private final SpriteBatch batch;
@@ -42,39 +45,19 @@ public class PlayerRenderer {
                 "player/spawn-bubble.png"));
     }
 
-    public void render(Vector2 scroll, PlayerManager playerManager) {
-        batch.begin();
+    public void renderPlayer(Vector2 scroll, PlayerEntity player, String nickname) {
+        Texture tex = bodyTextures[0];
 
-        for (Player player : playerManager.getPlayers()) {
-            if (player.isAlive()) {
-                drawPlayer(player, scroll);
-            }
-        }
-
-        if (!playerManager.getLocalPlayer().isAlive()) {
-            drawDeathMessage();
-        }
-
-        batch.end();
-    }
-
-    private void drawPlayer(Player player, Vector2 scroll) {
-        Texture tex = bodyTextures[player.getTeam().ordinal()];
-
-        Vector2 pos = player.getPosition().cpy();
+        Vector2 pos = player.position().cpy();
         pos.sub(scroll);
 
-        if (pos.x < -Player.WIDTH || pos.x > width) {
+        if (isPlayerOutsideScreen(pos))
             return;
-        }
-        if (pos.y < -Player.HEIGHT || pos.y > height) {
-            return;
-        }
 
-        Vector2 ppos = player.getPosition().cpy();
-        ppos.x += Player.WIDTH / 2;
-        ppos.y += 60;
-        Vector2 dir = player.getGunDirection();
+        pos.x -= PlayerEntity.Width() / 2;
+
+
+        Vector2 dir = player.aim();
 
         if (dir.x < 0) {
             batch.draw(armsTexture,
@@ -108,24 +91,27 @@ public class PlayerRenderer {
                    tex.getWidth(), tex.getHeight(), // Src WH
                    dir.x > 0, false);
 
-        if (player.isSpawnBubbleOn()) {
+        if (player.hasBubble()) {
+            int prevSrc = batch.getBlendSrcFunc();
+            int prevDst = batch.getBlendDstFunc();
+
+            batch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             batch.draw(spawnBubbleTexture,
-                       pos.x + Player.WIDTH / 2 - spawnBubbleTexture.getWidth() / 2,
-                       pos.y + Player.HEIGHT / 2 - spawnBubbleTexture.
+                       pos.x + PlayerEntity.Width() / 2 - spawnBubbleTexture.getWidth() / 2,
+                       pos.y + PLAYER_HEIGHT / 2 - spawnBubbleTexture.
                                getHeight() / 2);
+
+            batch.setBlendFunction(prevSrc, prevDst);
         }
 
         textRenderer.setSize(20);
-        textRenderer.drawString(batch, player.getName(),
+        textRenderer.setColour(new Color(0.5f, 0.5f, 0.5f, 1));
+        textRenderer.drawString(batch, nickname,
                                 (int) pos.x,
-                                (int) pos.y + Player.HEIGHT + 20);
+                                (int) pos.y + PLAYER_HEIGHT + 20);
     }
 
-    private void drawDeathMessage() {
-        textRenderer.setSize(50);
-        textRenderer.drawStringCentred(batch, "You were shot",
-                                       (int) width / 2,
-                                       (int) height / 2);
-        textRenderer.setSize(20);
+    private boolean isPlayerOutsideScreen(Vector2 pos) {
+        return pos.x < -PlayerEntity.Width() || pos.x > width || pos.y < -PLAYER_HEIGHT || pos.y > height;
     }
 }

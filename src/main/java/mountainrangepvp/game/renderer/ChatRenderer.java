@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.game.world.ChatLine;
 import mountainrangepvp.game.world.ChatManager;
-import mountainrangepvp.game.world.Player;
+import mountainrangepvp.game.world.Old_Player;
 
 /**
  * @author lachlan
@@ -48,7 +49,7 @@ public class ChatRenderer {
             if (line.getText().startsWith("/"))
                 continue;
 
-            Player p = line.getPlayer();
+            Old_Player p = line.getPlayer();
             String name = line.getPlayerName();
 
             String text;
