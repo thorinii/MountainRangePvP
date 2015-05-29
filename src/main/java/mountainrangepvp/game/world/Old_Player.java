@@ -14,15 +14,11 @@ public class Old_Player {
     }
 
     private final String name;
-    private final int id;
     private final Team team;
     private final Vector2 position;
 
-    private int hits;
-
-    public Old_Player(String name, int id, Team team) {
+    public Old_Player(String name, Team team) {
         this.name = name;
-        this.id = id;
         this.team = team;
 
         this.position = new Vector2(0, 0);
@@ -34,14 +30,6 @@ public class Old_Player {
 
     public Vector2 getPosition() {
         return position;
-    }
-
-    public int getID() {
-        return id;
-    }
-
-    public int getHits() {
-        return hits;
     }
 
     public Team getTeam() {

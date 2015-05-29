@@ -103,10 +103,9 @@ public class ClientGame {
 
     private void handleSnapshot(Snapshot s) {
         if (session == null) {
-            PlayerManager playerManager = new PlayerManager(config.nickname, config.team);
             ChatManager chatManager = new ChatManager();
 
-            session = new Session(log, eventBus, localId, s, playerManager, chatManager);
+            session = new Session(log, eventBus, localId, s, chatManager);
 
             gameScreen = new GameScreen(log, eventBus, session);
         }

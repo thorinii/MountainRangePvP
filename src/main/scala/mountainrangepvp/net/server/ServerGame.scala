@@ -1,6 +1,7 @@
 package mountainrangepvp.net.server
 
 import java.time.Duration
+import java.util.concurrent.atomic.AtomicLong
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.engine.util.{EventBus, Log}
@@ -12,18 +13,16 @@ import mountainrangepvp.net.{MultiLagTimer, PingMessage, PingedMessage, Snapshot
  */
 class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
 
-  private var _nextEntityId: Long = 0
+  private val _nextEntityId = new AtomicLong(0)
 
-  private val idGenerator = () => {
-    val id = _nextEntityId
-    _nextEntityId += 1
-    id
-  }
+  private val idGenerator = () => _nextEntityId.incrementAndGet()
 
 
   private val _physicsSystem = new PhysicsSystem
 
   private val _inputSystem = new InputSystem(idGenerator)
+
+  private val _collisionResponse = new CollisionResponse()
 
 
   private var _going = true
@@ -52,11 +51,15 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     sendPingQuery()
     eventBus.flushPendingMessages()
 
-    _snapshot = _inputSystem.process(dt, _snapshot)
-    _snapshot = _physicsSystem.step(dt, _terrain, _snapshot)
-
     if (_snapshot.seed != _terrain.getSeed)
       _terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
+
+    _snapshot = _inputSystem.process(dt, _snapshot)
+    val (physicsSnapshot, collisions) = _physicsSystem.step(dt, _terrain, _snapshot)
+    _snapshot = _collisionResponse.process(physicsSnapshot, collisions)
+    _snapshot = _snapshot.tickTimers(dt)
+    _snapshot = processTimers(_snapshot)
+
 
     out.sendToAll(SnapshotMessage(_snapshot))
     eventBus.resetMessagesPerFrame()
@@ -67,6 +70,15 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     _snapshot.players.foreach { id =>
       _multiLagTimer = _multiLagTimer.start(id.id, now)(pingId => out.send(id.id, PingMessage(pingId)))
     }
+  }
+
+  private def processTimers(snapshot: Snapshot): Snapshot = {
+    val nextSnapshot = snapshot.respawnTimers.filter(_.expired).foldLeft(snapshot) { (next, timer) =>
+      next.addPlayerEntity(idGenerator(), timer.player, new Vector2((Math.random() * 800 - 40).toFloat, 100))
+    }
+    nextSnapshot.headlessPlayers.foldLeft(nextSnapshot) { (next, player) =>
+      next.addRespawnTimer(player.id, 3)
+    }.removeExpiredTimers
   }
 
 

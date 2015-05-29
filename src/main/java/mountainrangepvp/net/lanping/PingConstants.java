@@ -1,4 +1,4 @@
-package mountainrangepvp.game.mp;
+package mountainrangepvp.net.lanping;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -6,7 +6,7 @@ import java.net.UnknownHostException;
 /**
  * @author lachlan
  */
-public class MultiplayerConstants {
+public class PingConstants {
 
     public static final int CHECK_CODE = 0x01FA12D33;
     public static final int VERSION = 5;

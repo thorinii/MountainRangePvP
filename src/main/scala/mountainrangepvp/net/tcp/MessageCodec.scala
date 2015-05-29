@@ -1,4 +1,4 @@
-package mountainrangepvp.net
+package mountainrangepvp.net.tcp
 
 import java.nio.charset.StandardCharsets
 import java.time.Duration
@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import mountainrangepvp.game.world._
+import mountainrangepvp.net._
 
 /**
  * De/encodes messages into Netty {@link ByteBuf}s
@@ -57,7 +58,7 @@ object MessageCodec {
 
   def decode(buf: ByteBuf): Message = {
     val `type` = buf.readInt()
-    `type` match {
+    val message = `type` match {
       case 1 =>
         ConnectedMessage(readId(buf))
 
@@ -84,24 +85,30 @@ object MessageCodec {
       case _ =>
         throw new UnsupportedOperationException
     }
+
+    if (buf.readableBytes() > 0) {
+      throw new IllegalStateException("Did not read all bytes in message " + message)
+    }
+
+    message
   }
+
 
   private def writeSnapshot(buf: ByteBuf, snapshot: Snapshot) = {
     buf.writeInt(snapshot.seed)
     buf.writeBoolean(snapshot.teamsOn)
-
-    buf.writeInt(snapshot.players.size)
-    for (p <- snapshot.players) writePlayer(buf, p)
-
-    buf.writeInt(snapshot.entities.size)
-    for (e <- snapshot.entities) writeEntity(buf, e)
+    writeSet(buf, snapshot.players, writePlayer)
+    writeLeaderBoard(buf, snapshot.leaderBoard)
+    writeSet(buf, snapshot.entities, writeEntity)
   }
 
-  private def readSnapshot(buf: ByteBuf) = {
-    Snapshot(buf.readInt(), buf.readBoolean(),
-             0.until(buf.readInt()).map(_ => readPlayer(buf)).toSet,
-             0.until(buf.readInt()).map(_ => readEntity(buf)).toSet)
-  }
+  private def readSnapshot(buf: ByteBuf) =
+    Snapshot(buf.readInt(),
+             buf.readBoolean(),
+             readSet(buf, readPlayer), readLeaderBoard(buf),
+             readSet(buf, readEntity),
+             List.empty)
+
 
   private def writePlayer(buf: ByteBuf, player: Player) = {
     writeId(buf, player.id)
@@ -109,6 +116,24 @@ object MessageCodec {
   }
 
   private def readPlayer(buf: ByteBuf) = Player(readId(buf), readString(buf))
+
+
+  private def writeLeaderBoard(buf: ByteBuf, leaderBoard: LeaderBoard) = {
+    writeSet(buf, leaderBoard.players, writeLeaderBoardStats)
+  }
+
+  private def readLeaderBoard(buf: ByteBuf) =
+    LeaderBoard(readSet(buf, readLeaderBoardStats))
+
+
+  private def writeLeaderBoardStats(buf: ByteBuf, stats: LeaderBoard.Stats) = {
+    writeId(buf, stats.player)
+    buf.writeInt(stats.hits)
+    buf.writeInt(stats.deaths)
+  }
+
+  private def readLeaderBoardStats(buf: ByteBuf) =
+    LeaderBoard.Stats(readId(buf), buf.readInt(), buf.readInt())
 
 
   private def writeEntity(buf: ByteBuf, e: Entity) = e match {
@@ -121,8 +146,8 @@ object MessageCodec {
       writePlayerEntity(buf, p)
   }
 
-  private def readEntity(buf: ByteBuf) = {
-    buf.readInt() match {
+  private def readEntity(buf: ByteBuf): Entity = {
+    buf.readByte() match {
       case 1 => readShot(buf)
       case 2 => readPlayerEntity(buf)
     }
@@ -150,11 +175,13 @@ object MessageCodec {
     writeVector(buf, e.aim)
     writeVector(buf, e.velocity)
     buf.writeBoolean(e.onGround)
+    buf.writeFloat(e.bubbleTimer)
   }
 
   private def readPlayerEntity(buf: ByteBuf) = PlayerEntity(buf.readLong(), readId(buf),
                                                             readVector(buf), readVector(buf),
-                                                            readVector(buf), buf.readBoolean())
+                                                            readVector(buf), buf.readBoolean(),
+                                                            buf.readFloat())
 
 
   private def writeInputCommand(buf: ByteBuf, c: InputCommand) = {
@@ -175,6 +202,7 @@ object MessageCodec {
 
   private def readId(buf: ByteBuf) = ClientId(buf.readLong())
 
+
   private def writeString(buf: ByteBuf, string: String) = {
     val bytes = string.getBytes(StandardCharsets.UTF_8)
     buf.writeInt(bytes.length)
@@ -188,6 +216,7 @@ object MessageCodec {
     new String(bytes)
   }
 
+
   private def writeVector(buf: ByteBuf, v: Vector2) = {
     buf.writeFloat(v.x).writeFloat(v.y)
   }
@@ -196,5 +225,16 @@ object MessageCodec {
     val x = buf.readFloat()
     val y = buf.readFloat()
     new Vector2(x, y)
+  }
+
+
+  private def writeSet[T](buf: ByteBuf, set: Set[T], writer: (ByteBuf, T) => ByteBuf) = {
+    buf.writeInt(set.size)
+    set.foreach(item => writer(buf, item))
+  }
+
+  private def readSet[T](buf: ByteBuf, reader: ByteBuf => T) = {
+    val count = buf.readInt()
+    0.until(count).map(_ => reader(buf)).toSet
   }
 }

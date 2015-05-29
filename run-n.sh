@@ -13,7 +13,6 @@ sleep 1
 
 for (( i=1; i <= $CLIENTS; i++ ))
 do
-    echo "Client $i"
     java -jar $JAR client localhost "ClientUser $i" &
 done
 

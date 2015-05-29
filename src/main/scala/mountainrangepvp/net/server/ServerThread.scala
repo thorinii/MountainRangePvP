@@ -40,7 +40,7 @@ object ServerThread {
         val sleep = (updateInterval * 1000).toInt - delta
 
         if (sleep > 1)
-          Thread.sleep((updateInterval * 1000).toInt)
+          Thread.sleep(sleep)
       }
     }, "Server Update")
 
