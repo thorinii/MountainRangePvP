@@ -1,24 +1,43 @@
 Mountain Range PvP
 ==================
 
-A 2D player vs player game, played on a heightmap that was originally a mountain range (now its just hills). 
+A 2D TPS PvP shooter game, played on a heightmap that was originally a mountain
+range (now it's just hills).
 
-For a precompiled version download [1.0](http://devlog.terrifictales.net/wp-content/uploads/2013/03/wpid-mountainrangepvp-v1.0.jar), or download any other from [this blog](http://devlog.terrifictales.net/). The precompiled jars are compiled, packaged, and uploaded by my [Project Builder](http://github.com/ThorinII/ProjectBuilder).
-
+Written in a mix of Java and Scala, with LibGDX.
 
 Compiling
 =========
 
-Download the source code. All the libraries *should* be in the libs folder, so that running the command:
+Uses SBT to build.
+
+To build the jar:
 
 ```bash
-$ ant jar
+$ sbt assembly
 ```
 
-should properly compile the project. Note the source code is written using __Java 1.7__.
+and the jar will be:
+
+`target/scala-${SCALA_VERSION}/mountainrangepvp-assembly-${MRPVP_VERSION}.jar`
+
 
 
 Running
 =======
 
-Run the jar file as you normally would. Start a server, or connect to an existing LAN server. LAN servers should automatically be picked up by the multicast ping system.
+Run the executable jar, or with SBT `sbt run`.
+
+Start a server, or connect to an existing LAN server. LAN servers should
+automatically be picked up by the multicast ping system.
+
+To skip the launcher, use the command line options:
+
+`java -jar mountainrangepvp.jar <mode>`
+
+where mode is one of:
+
+```
+client <server ip> <username>
+server <username>
+```
