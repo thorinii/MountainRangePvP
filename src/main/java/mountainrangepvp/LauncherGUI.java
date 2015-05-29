@@ -2,7 +2,7 @@ package mountainrangepvp;
 
 import mountainrangepvp.engine.util.Log;
 import mountainrangepvp.game.GameSettings;
-import mountainrangepvp.game.world.Old_Player.Team;
+import mountainrangepvp.game.world.Team;
 import mountainrangepvp.net.lanping.PingClient;
 import mountainrangepvp.net.lanping.PingClient.ServerData;
 
