@@ -13,8 +13,7 @@ import mountainrangepvp.game.world.Terrain;
  */
 public class TerrainRenderer {
 
-    private static final Color BASE_COLOUR = new Color(0.5451f, 0.3686f, 0.2314f,
-                                                       1);
+    private static final Color BASE_COLOUR = new Color(0, 0, 0, 1f);
 
     private final int width, height;
 

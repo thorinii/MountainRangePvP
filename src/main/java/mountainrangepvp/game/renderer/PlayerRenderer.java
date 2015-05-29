@@ -1,6 +1,7 @@
 package mountainrangepvp.game.renderer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -91,13 +92,20 @@ public class PlayerRenderer {
                    dir.x > 0, false);
 
         if (player.hasBubble()) {
+            int prevSrc = batch.getBlendSrcFunc();
+            int prevDst = batch.getBlendDstFunc();
+
+            batch.setBlendFunction(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
             batch.draw(spawnBubbleTexture,
                        pos.x + PlayerEntity.Width() / 2 - spawnBubbleTexture.getWidth() / 2,
                        pos.y + PLAYER_HEIGHT / 2 - spawnBubbleTexture.
                                getHeight() / 2);
+
+            batch.setBlendFunction(prevSrc, prevDst);
         }
 
         textRenderer.setSize(20);
+        textRenderer.setColour(new Color(0.5f, 0.5f, 0.5f, 1));
         textRenderer.drawString(batch, nickname,
                                 (int) pos.x,
                                 (int) pos.y + PLAYER_HEIGHT + 20);

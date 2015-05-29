@@ -13,7 +13,7 @@ object PlayerEntity {
   val JumpImpulse = 1000
   val MaxWalkingGradient = 30
   val GunHeight = 57
-  val BubbleTime = 60f
+  val BubbleTime = 5f
   val BubbleRadius = 51f
 
   def apply(id: Long, player: ClientId, position: Vector2) =

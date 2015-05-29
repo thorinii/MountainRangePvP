@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import mountainrangepvp.engine.bloom.Bloom;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.engine.util.EventBus;
 import mountainrangepvp.game.world.Session;
@@ -19,7 +20,7 @@ import java.time.Duration;
  */
 public class WorldRenderer {
 
-    private static final Color SKY_COLOUR = new Color(0.564f, 0.745f, 0.898f, 1);
+    private static final Color SKY_COLOUR = new Color(0.07f, 0.09f, 0.19f, 1);
 
     private final Vector2 screen;
     private final SpriteBatch batch;
@@ -36,6 +37,7 @@ public class WorldRenderer {
     private final ChatRenderer chatRenderer;
     private final MiniMapRenderer miniMapRenderer;
     private final LeaderBoardRenderer leaderBoardRenderer;
+    private final Bloom bloom;
 
     private final Texture crossHairTexture;
 
@@ -62,33 +64,33 @@ public class WorldRenderer {
         chatRenderer = new ChatRenderer(batch, textRenderer);
         miniMapRenderer = new MiniMapRenderer(batch);
         leaderBoardRenderer = new LeaderBoardRenderer(batch, textRenderer);
+
+        bloom = new Bloom(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+                          false, false, true);
+        bloom.setTreshold(0.6f);
+        bloom.blurPasses = 2;
     }
 
     public void render(Vector2 scroll, Duration pingTime) {
+        Snapshot snapshot = session.getSnapshot();
+
+        bloom.startCapture();
         Gdx.gl.glClearColor(SKY_COLOUR.r, SKY_COLOUR.g, SKY_COLOUR.b, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        Snapshot snapshot = session.getSnapshot();
 
         backgroundRenderer.render(scroll);
         entityRenderer.render(scroll, snapshot, session.localPlayerEntity().isDefined());
         terrainRenderer.render(scroll, session.getTerrain());
-        chatRenderer.render(session.chatManager());
-        leaderBoardRenderer.render(snapshot);
-        miniMapRenderer.render(scroll, snapshot, session.getTerrain());
-
         drawCrosshair();
 
-        String pingMillis = String.valueOf(pingTime.toMillis());
-        int entityCount = snapshot.entities().size();
+        bloom.stopCaptureAndRender();
 
-        textRenderer.setSize(15);
-        textRenderer.setColour(Color.RED);
-        textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
-        textRenderer.drawString(batch, eventBus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
-        textRenderer.drawString(batch, pingMillis + " ms ping", 10, screen.y - 50);
-        textRenderer.drawString(batch, entityCount + " entities", 10, screen.y - 70);
-        textRenderer.setColour(Color.BLACK);
+
+        miniMapRenderer.render(scroll, snapshot, session.getTerrain());
+        leaderBoardRenderer.render(snapshot);
+        chatRenderer.render(session.chatManager());
+
+        drawDebug(pingTime, snapshot);
     }
 
     private void drawCrosshair() {
@@ -103,5 +105,18 @@ public class WorldRenderer {
         batch.begin();
         batch.draw(crossHairTexture, mouse.x, mouse.y);
         batch.end();
+    }
+
+    private void drawDebug(Duration pingTime, Snapshot snapshot) {
+        String pingMillis = String.valueOf(pingTime.toMillis());
+        int entityCount = snapshot.entities().size();
+
+        textRenderer.setSize(15);
+        textRenderer.setColour(Color.RED);
+        textRenderer.drawString(batch, Gdx.graphics.getFramesPerSecond() + " fps", 10, screen.y - 10);
+        textRenderer.drawString(batch, eventBus.getMessagesPerFrame() + " mpf", 10, screen.y - 30);
+        textRenderer.drawString(batch, pingMillis + " ms ping", 10, screen.y - 50);
+        textRenderer.drawString(batch, entityCount + " entities", 10, screen.y - 70);
+        textRenderer.setColour(Color.BLACK);
     }
 }
