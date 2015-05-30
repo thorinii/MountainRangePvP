@@ -11,8 +11,8 @@ object ShotEntity {
 
   def apply(id: Long, owner: ClientId, base: Vector2, direction: Vector2) =
     new ShotEntity(id, owner,
-               base, direction.cpy().scl(ShotEntity.Speed),
-               onGround = false, age = 0f)
+                   base, direction.cpy().scl(ShotEntity.Speed),
+                   onGround = false, age = 0f)
 }
 
 case class ShotEntity(id: Long, owner: ClientId,

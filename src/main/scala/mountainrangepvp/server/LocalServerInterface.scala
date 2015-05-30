@@ -1,10 +1,10 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import java.util.concurrent.atomic.AtomicLong
 
+import mountainrangepvp.core._
 import mountainrangepvp.engine.Log
 import mountainrangepvp.engine.util.EventBus
-import mountainrangepvp.core._
 import mountainrangepvp.net._
 
 import scala.collection.concurrent.TrieMap

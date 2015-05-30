@@ -1,14 +1,13 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import java.time.Duration
 import java.util.concurrent.atomic.AtomicLong
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.core.{Terrain, HillsHeightMap}
+import mountainrangepvp.core.{HillsHeightMap, Terrain, _}
 import mountainrangepvp.engine.Log
 import mountainrangepvp.engine.util.EventBus
-import mountainrangepvp.core._
-import mountainrangepvp.net.{MultiLagTimer, PingMessage, PingedMessage, SnapshotMessage}
+import mountainrangepvp.net.{PingMessage, PingedMessage, SnapshotMessage}
 
 /**
  * Container of game systems.
@@ -71,16 +70,16 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     val now = System.currentTimeMillis()
     _snapshot.players.foreach { id =>
       _multiLagTimer = _multiLagTimer.start(id.id, now)(pingId => out.send(id.id, PingMessage(pingId)))
-    }
+                              }
   }
 
   private def processTimers(snapshot: Snapshot): Snapshot = {
     val nextSnapshot = snapshot.respawnTimers.filter(_.expired).foldLeft(snapshot) { (next, timer) =>
       next.addPlayerEntity(idGenerator(), timer.player, new Vector2((Math.random() * 800 - 40).toFloat, 100))
-    }
+                                                                                   }
     nextSnapshot.headlessPlayers.foldLeft(nextSnapshot) { (next, player) =>
       next.addRespawnTimer(player.id, 3)
-    }.removeExpiredTimers
+                                                        }.removeExpiredTimers
   }
 
 

@@ -4,14 +4,14 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import mountainrangepvp.engine.Log;
 import mountainrangepvp.client.ClientGame;
 import mountainrangepvp.client.GameSettings;
-import mountainrangepvp.net.server.LocalServerInterface;
-import mountainrangepvp.net.server.ServerThread;
-import mountainrangepvp.net.server.SessionConfig;
+import mountainrangepvp.engine.Log;
 import mountainrangepvp.net.tcp.TcpServerInterface;
 import mountainrangepvp.net.tcp.TcpServerWrapper;
+import mountainrangepvp.server.LocalServerInterface;
+import mountainrangepvp.server.ServerThread;
+import mountainrangepvp.server.SessionConfig;
 
 /**
  * @author lachlan

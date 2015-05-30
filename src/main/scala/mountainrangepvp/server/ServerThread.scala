@@ -1,4 +1,4 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import mountainrangepvp.engine.Log
 import mountainrangepvp.engine.util.EventBus

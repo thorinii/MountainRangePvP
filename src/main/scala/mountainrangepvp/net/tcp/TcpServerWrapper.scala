@@ -10,9 +10,9 @@ import io.netty.channel.{ChannelFuture, ChannelInitializer, ChannelOption, Event
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
 import io.netty.util.concurrent.Future
 import mountainrangepvp.engine.Log
-import mountainrangepvp.net.server.LocalServerInterface
+import mountainrangepvp.net.ServerInterface
 
-class TcpServerWrapper(log: Log, server: LocalServerInterface, port: Int) {
+class TcpServerWrapper(log: Log, server: ServerInterface, port: Int) {
   private final val bossGroup: EventLoopGroup = new NioEventLoopGroup
   private final val workerGroup: EventLoopGroup = new NioEventLoopGroup
   private var channel: ChannelFuture = null

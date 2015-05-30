@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 /**
  * Bloomlib allow easy but efficient way to add bloom effect as post process
  * effect
- * <p>
+ * <p/>
  * From <a href="https://code.google.com/p/bloom-lib">bloom-lib</a>. Licensed Apache License 2.0
  *
  * @author kalle_h

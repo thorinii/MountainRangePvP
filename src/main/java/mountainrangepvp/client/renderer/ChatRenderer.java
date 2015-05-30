@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.core.ChatLine;
 import mountainrangepvp.core.ChatManager;
 import mountainrangepvp.core.ClientId;
 import mountainrangepvp.core.Snapshot;
+import mountainrangepvp.engine.ui.TextRenderer;
 import scala.Option;
 import scala.collection.JavaConversions;
 

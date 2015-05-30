@@ -30,10 +30,10 @@ class EventBus {
 
   def subscribe[T <: Event](eventClass: Class[T], handler: EventHandler[T]): Unit = {
     val d: Dispatcher[T] = dispatchers.get(eventClass).map(_.asInstanceOf[Dispatcher[T]]).getOrElse {
-      val d = new Dispatcher[T]
-      dispatchers += (eventClass -> d)
-      d
-    }
+                                                                                                      val d = new Dispatcher[T]
+                                                                                                      dispatchers += (eventClass -> d)
+                                                                                                      d
+                                                                                                    }
 
     d.add(handler)
   }

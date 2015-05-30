@@ -1,10 +1,10 @@
-package mountainrangepvp.net.client
+package mountainrangepvp.client
 
 import java.time.Duration
 
+import mountainrangepvp.core._
 import mountainrangepvp.engine.Log
 import mountainrangepvp.engine.util.EventBus
-import mountainrangepvp.core._
 import mountainrangepvp.net._
 
 /**

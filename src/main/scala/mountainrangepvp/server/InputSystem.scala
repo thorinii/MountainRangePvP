@@ -1,4 +1,4 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import com.badlogic.gdx.math.MathUtils
 import mountainrangepvp.core.{ClientId, InputCommand, PlayerEntity, Snapshot}
@@ -26,7 +26,7 @@ class InputSystem(idGenerator: () => Long) {
       val (snapshot, nextState) = processPlayer(dt, nextSnapshot, id, state)
       nextSnapshot = snapshot
       id -> nextState
-    }
+                                            }
 
     nextSnapshot
   }

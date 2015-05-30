@@ -1,4 +1,4 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 /**
  * Static session settings.

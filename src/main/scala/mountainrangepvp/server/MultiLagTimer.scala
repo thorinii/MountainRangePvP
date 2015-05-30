@@ -1,4 +1,4 @@
-package mountainrangepvp.net
+package mountainrangepvp.server
 
 import java.time.Duration
 

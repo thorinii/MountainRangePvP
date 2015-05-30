@@ -1,4 +1,4 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.core.InputCommand

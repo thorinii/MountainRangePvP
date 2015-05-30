@@ -1,7 +1,7 @@
 package mountainrangepvp.engine.ui;
 
-        import com.badlogic.gdx.Gdx;
-        import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 /**
  * From <a href="https://code.google.com/p/bloom-lib">bloom-lib</a>. Licensed Apache License 2.0

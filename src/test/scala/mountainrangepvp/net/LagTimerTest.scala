@@ -2,6 +2,7 @@ package mountainrangepvp.net
 
 import java.time.Duration
 
+import mountainrangepvp.server.LagTimer
 import org.junit.Test
 
 class LagTimerTest {

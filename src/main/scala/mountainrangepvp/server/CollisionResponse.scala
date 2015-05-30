@@ -1,4 +1,4 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import com.badlogic.gdx.math.Vector2
 import mountainrangepvp.core._
@@ -26,10 +26,10 @@ class CollisionResponse {
       case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, _) =>
         if (bouncesOffPlayer(shot, player))
           entities.map {
-            case s: ShotEntity if s.id == shot.id =>
-              ricochet(s, player)
-            case e => e
-          }
+                         case s: ShotEntity if s.id == shot.id =>
+                           ricochet(s, player)
+                         case e => e
+                       }
         else if (killsPlayer(shot, player))
           entities.filterNot(_.id == shot.id).filterNot(_.id == player.id)
         else entities
@@ -53,19 +53,19 @@ class CollisionResponse {
     intersection.map { intersection =>
       val direction = intersection.cpy().sub(playerCentre).nor()
       shot.retarget(intersection, direction)
-    }.getOrElse(shot)
+                     }.getOrElse(shot)
   }
 
 
   private def shotsThatHit(collisions: Set[Collision]): Set[(ClientId, ClientId)] =
     collisions.flatMap {
-      case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, _) =>
-        if (killsPlayer(shot, player)) {
-          Some((shot.owner, player.player))
-        } else None
+                         case EntityToEntityCollision(player: PlayerEntity, shot: ShotEntity, _) =>
+                           if (killsPlayer(shot, player)) {
+                             Some((shot.owner, player.player))
+                           } else None
 
-      case _ => None
-    }
+                         case _ => None
+                       }
 
 
   private def isAlive(e: Entity) = e match {

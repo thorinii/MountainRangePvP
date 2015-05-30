@@ -1,4 +1,4 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import mountainrangepvp.core.ClientId
 import mountainrangepvp.net.ToClientMessage

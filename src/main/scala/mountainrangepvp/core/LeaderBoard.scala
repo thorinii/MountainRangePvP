@@ -44,5 +44,5 @@ case class LeaderBoard(players: Set[Stats]) {
       if (stats.player == hitPair._1) stats.plusHit
       else if (stats.player == hitPair._2) stats.plusDeath
       else stats
-    })
+                     })
 }

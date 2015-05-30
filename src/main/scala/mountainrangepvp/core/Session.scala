@@ -1,7 +1,6 @@
 package mountainrangepvp.core
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.core.{Terrain, HillsHeightMap, HeightMap, ChatManager}
 import mountainrangepvp.engine.Log
 import mountainrangepvp.engine.util.EventBus
 

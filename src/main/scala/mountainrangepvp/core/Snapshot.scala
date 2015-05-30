@@ -49,14 +49,14 @@ case class Snapshot(seed: Int,
 
   def removePlayerEntity(playerId: ClientId) =
     copy(entities = entities.filterNot {
-      case p: PlayerEntity => p.player == playerId
-      case _ => false
-    })
+                                         case p: PlayerEntity => p.player == playerId
+                                         case _ => false
+                                       })
 
   def getPlayerEntity(playerId: ClientId) = entities.find {
-    case p: PlayerEntity => p.player == playerId
-    case _ => false
-  }.map(_.asInstanceOf[PlayerEntity])
+                                                            case p: PlayerEntity => p.player == playerId
+                                                            case _ => false
+                                                          }.map(_.asInstanceOf[PlayerEntity])
 
 
   def nicknameFor(playerId: ClientId) = players.find(_.id == playerId).map(_.nickname).getOrElse("<UNKNOWN>")
@@ -64,9 +64,9 @@ case class Snapshot(seed: Int,
 
   def updatePlayer(playerId: ClientId, f: PlayerEntity => PlayerEntity) =
     copy(entities = entities.map {
-      case p: PlayerEntity if p.player == playerId => f(p)
-      case e => e
-    })
+                                   case p: PlayerEntity if p.player == playerId => f(p)
+                                   case e => e
+                                 })
 
 
   def tickTimers(dt: Float) =
@@ -77,9 +77,9 @@ case class Snapshot(seed: Int,
 
 
   def headlessPlayers = players.filterNot(player => entities.exists {
-    case p: PlayerEntity if p.player == player.id => true
-    case _ => false
-  })
+                                                                      case p: PlayerEntity if p.player == player.id => true
+                                                                      case _ => false
+                                                                    })
 }
 
 case class Player(id: ClientId, nickname: String)

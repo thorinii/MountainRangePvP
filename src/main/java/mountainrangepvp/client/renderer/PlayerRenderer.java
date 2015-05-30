@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.core.PlayerEntity;
+import mountainrangepvp.engine.ui.TextRenderer;
 import org.lwjgl.opengl.GL11;
 
 /**

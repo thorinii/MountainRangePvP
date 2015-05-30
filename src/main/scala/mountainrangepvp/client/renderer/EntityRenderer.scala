@@ -3,8 +3,8 @@ package mountainrangepvp.client.renderer
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.engine.ui.TextRenderer
 import mountainrangepvp.core.{Entity, PlayerEntity, ShotEntity, Snapshot}
+import mountainrangepvp.engine.ui.TextRenderer
 
 /**
  * Renders Entities by delegating to Player and ShotRenderers.

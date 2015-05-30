@@ -3,10 +3,10 @@ package mountainrangepvp.client.renderer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.core.ClientId;
 import mountainrangepvp.core.LeaderBoard;
 import mountainrangepvp.core.Snapshot;
+import mountainrangepvp.engine.ui.TextRenderer;
 import scala.collection.JavaConversions;
 
 /**

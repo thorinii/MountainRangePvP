@@ -1,16 +1,14 @@
 package mountainrangepvp.client;
 
 import com.badlogic.gdx.Gdx;
-import mountainrangepvp.core.ChatManager;
-import mountainrangepvp.engine.AudioManager;
-import mountainrangepvp.engine.util.EventBus;
-import mountainrangepvp.engine.util.EventHandler;
-import mountainrangepvp.engine.Log;
 import mountainrangepvp.client.input.InputHandler;
 import mountainrangepvp.client.renderer.GameScreen;
 import mountainrangepvp.core.*;
+import mountainrangepvp.engine.AudioManager;
+import mountainrangepvp.engine.Log;
+import mountainrangepvp.engine.util.EventBus;
+import mountainrangepvp.engine.util.EventHandler;
 import mountainrangepvp.net.ServerInterface;
-import mountainrangepvp.net.client.Client;
 
 /**
  * Container of game systems.

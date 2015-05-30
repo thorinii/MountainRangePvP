@@ -3,9 +3,9 @@ package mountainrangepvp.client.input
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.math.Vector2
+import mountainrangepvp.core._
 import mountainrangepvp.engine.input.{Bindings, InputMapper, InputState, StateAccumulatingInputProcessor}
 import mountainrangepvp.engine.util.EventBus
-import mountainrangepvp.core._
 
 class InputHandler(eventBus: EventBus, screenWidth: Int, screenHeight: Int) {
   private val inputMapper = new InputMapper

@@ -1,8 +1,7 @@
-package mountainrangepvp.net.server
+package mountainrangepvp.server
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.core._
-import mountainrangepvp.core.Terrain
+import mountainrangepvp.core.{Terrain, _}
 
 /**
  * Steps the entities forward and computes collisions.
@@ -13,8 +12,8 @@ class PhysicsSystem {
     val (stepped, sweptShapes, groundCollisions) =
       snapshot.entities.map(e => stepEntity(dt, terrain, e)).
       foldLeft((Set.empty[Entity], Map.empty[Entity, Shape], Set.empty[Collision])) {
-        case ((es, ss, cs), (e, s, c)) => (es + e, ss + (e -> s), cs ++ c)
-      }
+                                                                                      case ((es, ss, cs), (e, s, c)) => (es + e, ss + (e -> s), cs ++ c)
+                                                                                    }
 
 
     val entityCollisions = for (

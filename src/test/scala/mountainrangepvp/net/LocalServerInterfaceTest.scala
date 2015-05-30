@@ -3,7 +3,7 @@ package mountainrangepvp.net
 import mountainrangepvp.engine.Log
 import mountainrangepvp.engine.util.EventBus
 import mountainrangepvp.core._
-import mountainrangepvp.net.server.LocalServerInterface
+import mountainrangepvp.server.LocalServerInterface
 import org.junit.Test
 
 class LocalServerInterfaceTest {
