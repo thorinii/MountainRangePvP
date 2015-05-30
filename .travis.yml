@@ -5,11 +5,12 @@ jdk:
 - oraclejdk8
 script:
 - sbt -no-colors test assembly
+- cp "target/scala-2.11/mountainrangepvp-assembly-1.0.jar" "target/mrpvp.jar"
 deploy:
   provider: releases
   api_key:
     secure: bMzWHfuShSyQuhln5p5talwCRPL2stkSj7pAAYKEBKBzyx5PcA2Ae+rwG8cj1YeWDHneYvdbVfW1bUnVPKeoRjkOIZOiu0ZQLFet892v1nfE8DULMdudbJbCKeUS6D3PtBNmXogaCxjOyPVLKcqtVwebE+ZVVWkknetQMHDckoY=
-  file: "target/scala-2.11/mountainrangepvp-assembly-1.0.jar"
+  file: "target/mrpvp.jar"
   skip_cleanup: true
   on:
     tags: true
