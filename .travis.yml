@@ -3,7 +3,6 @@ scala:
 - 2.11.5
 jdk:
 - oraclejdk8
-- openjdk7
 script:
 - sbt -no-colors test assembly
 deploy:
