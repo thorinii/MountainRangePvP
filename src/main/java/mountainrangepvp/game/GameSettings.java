@@ -1,6 +1,6 @@
 package mountainrangepvp.game;
 
-import mountainrangepvp.game.world.Old_Player.Team;
+import mountainrangepvp.game.world.Team;
 import mountainrangepvp.net.NetworkConstants;
 
 /**

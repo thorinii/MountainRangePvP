@@ -88,7 +88,7 @@ public class WorldRenderer {
 
         miniMapRenderer.render(scroll, snapshot, session.getTerrain());
         leaderBoardRenderer.render(snapshot);
-        chatRenderer.render(session.chatManager());
+        chatRenderer.render(snapshot, session.chatManager());
 
         drawDebug(pingTime, snapshot);
     }

@@ -7,7 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import mountainrangepvp.engine.ui.TextRenderer;
 import mountainrangepvp.game.world.ChatLine;
 import mountainrangepvp.game.world.ChatManager;
-import mountainrangepvp.game.world.Old_Player;
+import mountainrangepvp.game.world.ClientId;
+import mountainrangepvp.game.world.Snapshot;
+import scala.Option;
+import scala.collection.JavaConversions;
 
 /**
  * @author lachlan
@@ -31,37 +34,36 @@ public class ChatRenderer {
         background = new Texture(Gdx.files.internal("chat/background.png"));
     }
 
-    public void render(ChatManager chatManager) {
+    public void render(Snapshot snapshot, ChatManager chatManager) {
         batch.begin();
-        drawChatMessages(chatManager);
+        drawChatMessages(snapshot, chatManager);
 
         if (chatManager.isChatting())
             drawCurrentChat(chatManager);
         batch.end();
     }
 
-    private void drawChatMessages(ChatManager chatManager) {
+    private void drawChatMessages(Snapshot snapshot, ChatManager chatManager) {
         int i = 0;
 
-        for (ChatLine line : chatManager.getLinesHead(20)) {
+        for (ChatLine line : JavaConversions.asJavaIterable(chatManager.getLinesHead(20))) {
             if (!chatManager.isChatting() && line.isOld())
                 continue;
-            if (line.getText().startsWith("/"))
+            if (line.text().startsWith("/"))
                 continue;
 
-            Old_Player p = line.getPlayer();
-            String name = line.getPlayerName();
+            Option<ClientId> player = line.player();
 
             String text;
-            if (p == null)
-                text = line.getText();
+            if (player.isEmpty())
+                text = line.text();
             else
-                text = name + ": " + line.getText();
+                text = snapshot.nicknameFor(player.get()) + ": " + line.text();
 
-            if (p == null)
+            if (player.isEmpty())
                 textRenderer.setColour(Color.BLACK);
             else
-                textRenderer.setColour(COLOURS[p.getTeam().ordinal()]);
+                textRenderer.setColour(COLOURS[0]);
             textRenderer.drawString(batch, text, 15, 45 + 15 + i * 25);
 
             i++;
