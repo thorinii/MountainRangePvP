@@ -1,6 +1,7 @@
 package mountainrangepvp.net.server
 
-import mountainrangepvp.engine.util.{EventBus, Log}
+import mountainrangepvp.engine.Log
+import mountainrangepvp.engine.util.EventBus
 
 import scala.concurrent.duration._
 

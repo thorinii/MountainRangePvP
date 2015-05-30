@@ -1,6 +1,6 @@
 package mountainrangepvp.net
 
-import mountainrangepvp.game.world.ClientId
+import mountainrangepvp.core.ClientId
 
 /**
  * The interface the client talks to, either in-process or over the network.

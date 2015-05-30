@@ -4,8 +4,10 @@ import java.time.Duration
 import java.util.concurrent.atomic.AtomicLong
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world._
+import mountainrangepvp.core.{Terrain, HillsHeightMap}
+import mountainrangepvp.engine.Log
+import mountainrangepvp.engine.util.EventBus
+import mountainrangepvp.core._
 import mountainrangepvp.net.{MultiLagTimer, PingMessage, PingedMessage, SnapshotMessage}
 
 /**

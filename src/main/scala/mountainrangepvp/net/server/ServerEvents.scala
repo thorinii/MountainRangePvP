@@ -1,7 +1,7 @@
 package mountainrangepvp.net.server
 
 import mountainrangepvp.engine.util.Event
-import mountainrangepvp.game.world.{ClientId, InputCommand}
+import mountainrangepvp.core.{ClientId, InputCommand}
 
 case class PlayerJoined(id: ClientId, nickname: String) extends Event
 

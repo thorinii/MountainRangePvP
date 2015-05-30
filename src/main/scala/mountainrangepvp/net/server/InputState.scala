@@ -1,7 +1,7 @@
 package mountainrangepvp.net.server
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.game.world.InputCommand
+import mountainrangepvp.core.InputCommand
 
 /**
  * Computes input state for each frame from an accumulated series of commands.

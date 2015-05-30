@@ -1,6 +1,6 @@
 package mountainrangepvp.net.server
 
-import mountainrangepvp.game.world.ClientId
+import mountainrangepvp.core.ClientId
 import mountainrangepvp.net.ToClientMessage
 
 /**

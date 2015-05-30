@@ -1,7 +1,7 @@
 package mountainrangepvp.net.server
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.game.world.Entity
+import mountainrangepvp.core.Entity
 
 sealed abstract class Collision(val hitter: Entity)
 

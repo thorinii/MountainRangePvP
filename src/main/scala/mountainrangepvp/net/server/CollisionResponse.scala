@@ -1,7 +1,7 @@
 package mountainrangepvp.net.server
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.game.world._
+import mountainrangepvp.core._
 
 /**
  * Handles collisions between shots, terrain, and players

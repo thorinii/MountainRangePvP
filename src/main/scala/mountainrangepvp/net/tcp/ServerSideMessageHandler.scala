@@ -6,8 +6,8 @@ import java.nio.channels.ClosedChannelException
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
 import io.netty.util.AttributeKey
-import mountainrangepvp.engine.util.Log
-import mountainrangepvp.game.world.ClientId
+import mountainrangepvp.core.ClientId
+import mountainrangepvp.engine.Log
 import mountainrangepvp.net._
 
 /**

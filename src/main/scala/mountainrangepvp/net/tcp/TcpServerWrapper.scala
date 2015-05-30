@@ -9,7 +9,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.channel.{ChannelFuture, ChannelInitializer, ChannelOption, EventLoopGroup}
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
 import io.netty.util.concurrent.Future
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.Log
 import mountainrangepvp.net.server.LocalServerInterface
 
 class TcpServerWrapper(log: Log, server: LocalServerInterface, port: Int) {

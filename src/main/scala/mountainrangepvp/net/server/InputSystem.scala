@@ -1,7 +1,7 @@
 package mountainrangepvp.net.server
 
 import com.badlogic.gdx.math.MathUtils
-import mountainrangepvp.game.world.{ClientId, InputCommand, PlayerEntity, Snapshot}
+import mountainrangepvp.core.{ClientId, InputCommand, PlayerEntity, Snapshot}
 
 /**
  * Created by lachlan on 21/05/15.

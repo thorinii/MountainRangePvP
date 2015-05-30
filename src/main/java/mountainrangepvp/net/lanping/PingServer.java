@@ -1,6 +1,6 @@
 package mountainrangepvp.net.lanping;
 
-import mountainrangepvp.engine.util.Log;
+import mountainrangepvp.engine.Log;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

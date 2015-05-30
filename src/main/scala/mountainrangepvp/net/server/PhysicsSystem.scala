@@ -1,7 +1,8 @@
 package mountainrangepvp.net.server
 
 import com.badlogic.gdx.math.Vector2
-import mountainrangepvp.game.world._
+import mountainrangepvp.core._
+import mountainrangepvp.core.Terrain
 
 /**
  * Steps the entities forward and computes collisions.

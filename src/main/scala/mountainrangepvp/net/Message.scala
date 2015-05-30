@@ -2,7 +2,7 @@ package mountainrangepvp.net
 
 import java.time.Duration
 
-import mountainrangepvp.game.world.{ClientId, InputCommand, Snapshot}
+import mountainrangepvp.core.{ClientId, InputCommand, Snapshot}
 
 
 sealed trait Message

@@ -2,7 +2,7 @@ package mountainrangepvp.net
 
 import java.time.Duration
 
-import mountainrangepvp.game.world.ClientId
+import mountainrangepvp.core.ClientId
 
 /**
  * Calculates the network ping time for several clients.

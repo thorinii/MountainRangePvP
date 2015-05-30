@@ -11,8 +11,8 @@ import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.NioSocketChannel
 import io.netty.handler.codec.{LengthFieldBasedFrameDecoder, LengthFieldPrepender}
 import io.netty.util.concurrent.Future
-import mountainrangepvp.engine.util.Log
-import mountainrangepvp.game.world.ClientId
+import mountainrangepvp.core.ClientId
+import mountainrangepvp.engine.Log
 import mountainrangepvp.net._
 
 class TcpServerInterface(log: Log, host: String, port: Int) extends ServerInterface {
