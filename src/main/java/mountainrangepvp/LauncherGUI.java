@@ -1,8 +1,8 @@
 package mountainrangepvp;
 
-import mountainrangepvp.engine.util.Log;
-import mountainrangepvp.game.GameSettings;
-import mountainrangepvp.game.world.Team;
+import mountainrangepvp.client.GameSettings;
+import mountainrangepvp.core.Team;
+import mountainrangepvp.engine.Log;
 import mountainrangepvp.net.lanping.PingClient;
 import mountainrangepvp.net.lanping.PingClient.ServerData;
 

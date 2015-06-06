@@ -1,8 +1,9 @@
 package mountainrangepvp.net
 
-import mountainrangepvp.engine.util.{EventBus, Log}
-import mountainrangepvp.game.world._
-import mountainrangepvp.net.server.LocalServerInterface
+import mountainrangepvp.engine.Log
+import mountainrangepvp.engine.util.EventBus
+import mountainrangepvp.core._
+import mountainrangepvp.server.LocalServerInterface
 import org.junit.Test
 
 class LocalServerInterfaceTest {

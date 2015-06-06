@@ -2,7 +2,7 @@ package mountainrangepvp.net.tcp
 
 import io.netty.buffer.ByteBuf
 import io.netty.channel.{ChannelHandlerContext, SimpleChannelInboundHandler}
-import mountainrangepvp.engine.util.Log
+import mountainrangepvp.engine.Log
 import mountainrangepvp.net._
 
 /**

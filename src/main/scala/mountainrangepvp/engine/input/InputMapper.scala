@@ -30,7 +30,7 @@ class InputMapper {
       if (state.buttonDown(b)) {
         mouseButtons.get(b).foreach(state => mapped += state -> true)
       }
-    }
+                                                     }
 
     state.keys.flatMap(keys.get).foreach(mapped += _ -> true)
 

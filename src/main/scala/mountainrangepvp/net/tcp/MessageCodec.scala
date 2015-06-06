@@ -6,7 +6,7 @@ import java.time.Duration
 import com.badlogic.gdx.math.Vector2
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
-import mountainrangepvp.game.world._
+import mountainrangepvp.core._
 import mountainrangepvp.net._
 
 /**
