@@ -63,7 +63,7 @@ public class MiniMapRenderer {
     }
 
     private void drawTerrain(Vector2 scroll, Terrain terrain) {
-        Slice slice = terrain.getSlice(
+        Slice slice = terrain.sliceAt(
                 (int) scroll.x + width / 2 - (int) (WIDTH * H_SCALE) / 2,
                 (int) (WIDTH * H_SCALE));
 

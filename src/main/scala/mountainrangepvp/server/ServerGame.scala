@@ -52,7 +52,7 @@ class ServerGame(log: Log, eventBus: EventBus, out: Outgoing) {
     sendPingQuery()
     eventBus.flushPendingMessages()
 
-    if (_snapshot.seed != _terrain.getSeed)
+    if (_snapshot.seed != _terrain.seed)
       _terrain = new Terrain(new HillsHeightMap(_snapshot.seed))
 
     _snapshot = _inputSystem.process(dt, _snapshot)

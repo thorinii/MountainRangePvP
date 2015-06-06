@@ -19,7 +19,7 @@ class Session(log: Log, eventBus: EventBus,
 
   private def updateSnapshot(s: Snapshot) = {
     snapshot = s
-    if (terrain == null || terrain.getSeed != s.seed) {
+    if (terrain == null || terrain.seed != s.seed) {
       val heightMap: HeightMap = new HillsHeightMap(s.seed)
       terrain = new Terrain(heightMap)
     }

@@ -5,7 +5,7 @@
 package mountainrangepvp.core.terrain;
 
 import com.badlogic.gdx.math.Vector2;
-import mountainrangepvp.core.AbstractHeightMap;
+import mountainrangepvp.core.HeightMap;
 import mountainrangepvp.core.Terrain;
 import mountainrangepvp.core.Terrain.Slice;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class TerrainTest {
     @Test
     public void testPositiveOriginSlice() {
         Terrain terrain = new Terrain(new TestGenerator());
-        Slice result = terrain.getSlice(0, 200);
+        Slice result = terrain.sliceAt(0, 200);
 
         assertEquals(10, result.get(5));
         assertEquals(11, result.get(105));
@@ -29,7 +29,7 @@ public class TerrainTest {
     @Test
     public void testPositiveBlock2Slice() {
         Terrain terrain = new Terrain(new TestGenerator());
-        Slice result = terrain.getSlice(1024, 200);
+        Slice result = terrain.sliceAt(1024, 200);
 
         assertEquals(12, result.get(5));
         assertEquals(13, result.get(105));
@@ -38,7 +38,7 @@ public class TerrainTest {
     @Test
     public void testNegativeOriginSlice() {
         Terrain terrain = new Terrain(new TestGenerator());
-        Slice result = terrain.getSlice(-200, 200);
+        Slice result = terrain.sliceAt(-200, 200);
 
         assertEquals(6, result.get(5));
         assertEquals(7, result.get(105));
@@ -47,7 +47,7 @@ public class TerrainTest {
     @Test
     public void testNegativeBlock2Slice() {
         Terrain terrain = new Terrain(new TestGenerator());
-        Slice result = terrain.getSlice(-400, 200);
+        Slice result = terrain.sliceAt(-400, 200);
 
         assertEquals(8, result.get(5));
         assertEquals(9, result.get(105));
@@ -61,15 +61,15 @@ public class TerrainTest {
         Vector2 p1 = new Vector2(1000, 5);
         Vector2 p2 = new Vector2(1030, 5);
 
-        assertTrue(terrain.collideLine(p1, p2));
-        assertTrue(terrain.collideLine(p2, p1));
+        assertTrue("didn't collide forwards", terrain.collideLine(p1, p2));
+        assertTrue("didn't collide backwards", terrain.collideLine(p2, p1));
 
         // Test should not be collision
         p1 = new Vector2(1000, 14);
         p2 = new Vector2(1030, 14);
 
-        assertFalse(terrain.collideLine(p1, p2));
-        assertFalse(terrain.collideLine(p2, p1));
+        assertFalse("collided forwards", terrain.collideLine(p1, p2));
+        assertFalse("collided backwards", terrain.collideLine(p2, p1));
     }
 
     @Test
@@ -80,15 +80,15 @@ public class TerrainTest {
         Vector2 p1 = new Vector2(-400, 5);
         Vector2 p2 = new Vector2(-380, 5);
 
-        assertTrue(terrain.collideLine(p1, p2));
-        assertTrue(terrain.collideLine(p2, p1));
+        assertTrue("didn't collide forwards", terrain.collideLine(p1, p2));
+        assertTrue("didn't collide backwards", terrain.collideLine(p2, p1));
 
         // Test should not be collision
         p1 = new Vector2(-400, 14);
         p2 = new Vector2(-380, 14);
 
-        assertFalse(terrain.collideLine(p1, p2));
-        assertFalse(terrain.collideLine(p2, p1));
+        assertFalse("collided forwards", terrain.collideLine(p1, p2));
+        assertFalse("collided backwards", terrain.collideLine(p2, p1));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class TerrainTest {
         assertEquals(6, terrain.getHighestPointBetween(-196, -100));
     }
 
-    private class TestGenerator extends AbstractHeightMap {
+    private class TestGenerator extends HeightMap {
 
         @Override
         public int getSample(int x) {

@@ -59,7 +59,7 @@ class PhysicsSystem {
   private def standOnGround(terrain: Terrain, opos: Vector2, npos: Vector2) = {
     val oldX = opos.x
 
-    var point = terrain.getSample(npos.x.toInt)
+    var point = terrain.sample(npos.x.toInt)
 
     if (point - npos.y > PlayerEntity.MaxWalkingGradient) {
       val maxX = npos.x
@@ -69,12 +69,12 @@ class PhysicsSystem {
       var walkable = true
       while (walkable) {
         npos.x += direction
-        point = terrain.getSample(npos.x.toInt)
+        point = terrain.sample(npos.x.toInt)
         walkable = point - npos.y <= PlayerEntity.MaxWalkingGradient
       }
 
       npos.x -= direction
-      point = terrain.getSample(npos.x.toInt)
+      point = terrain.sample(npos.x.toInt)
     }
 
     if (point > npos.y) {
@@ -84,7 +84,7 @@ class PhysicsSystem {
   }
 
   private def collideWithGround(terrain: Terrain, pos: Vector2) = {
-    var point = terrain.getSample(pos.x.toInt)
+    var point = terrain.sample(pos.x.toInt)
     if (point > pos.y) Some(new Vector2(pos.x, point))
     else None
   }

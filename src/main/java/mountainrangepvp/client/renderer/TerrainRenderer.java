@@ -32,7 +32,7 @@ public class TerrainRenderer {
     }
 
     public void render(Vector2 scroll, Terrain map) {
-        Terrain.Slice slice = map.getSlice((int) scroll.x, width);
+        Terrain.Slice slice = map.sliceAt((int) scroll.x, width);
 
         /*
          * Render the block(s)
